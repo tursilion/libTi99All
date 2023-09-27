@@ -4,6 +4,7 @@
 #include "files.h"
 #include "vdp.h"
 
+#ifdef TI99
 // uses: scratchpad >8340-8348, >8354, >8355, >8356, >83d0, >83d2, GPLWS
 
 #define DSR_NAME_LEN	*((volatile unsigned int*)0x8354)
@@ -17,7 +18,7 @@ unsigned char __attribute__((noinline)) dsrlnkraw(unsigned int vdp) {
 
 	vdp+=9;
 	DSR_PAB_POINTER = vdp;
-
+ 
 	unsigned char size = vdpreadchar(vdp);
 	unsigned char cnt=0;
 	while (cnt < 8) {
@@ -114,3 +115,14 @@ unsigned char __attribute__((noinline)) dsrlnkraw(unsigned int vdp) {
     }
 
 }
+#endif
+
+#ifdef COLECO
+// no equivalent at this time - maybe Adam someday?
+
+unsigned char dsrlnkraw(unsigned int vdp) {
+    (void)vdp;
+    return 1;   // return failed
+}
+
+#endif

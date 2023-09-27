@@ -1,8 +1,8 @@
 
 #include "vdp.h"
 
-#ifdef TI99
 void bm_drawlinefast(int x1, int y1, int x2, int y2, int mode) {
+#ifdef TI99
 	__asm__(
 	"	mov %0,@>8324		; y2 -> r2\n"
 	"	mov %1,@>8326		; x2 -> r3\n"
@@ -15,10 +15,10 @@ void bm_drawlinefast(int x1, int y1, int x2, int y2, int mode) {
 	: "r" (y2), "r" (x2), "r" (y1), "r" (x1), "r" (mode)
 	: "r11"
 	);
-}
 #endif
 
 #ifdef COLECO
 // TODO: this is not only not faster, it does not handle XOR mode
 	bm_drawline(x1,y1,x2,y2,mode);
 #endif
+}

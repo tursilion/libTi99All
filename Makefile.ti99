@@ -23,7 +23,7 @@ OBJECT_LIST_EA5=\
 NAME=libti99.a
 
 C_FLAGS=\
-  -O2 -std=c99 -s --save-temp -I./ -fno-builtin
+  -O2 -std=c99 -DTI99 -s --save-temp -I./ -fno-builtin
 
 # List of compiled objects used in executable
 OBJECT_LIST=\
@@ -44,16 +44,21 @@ OBJECT_LIST=\
   conio_getvram.o   \
   conio_kbhit.o     \
   conio_screensize.o\
-  dsr_files.o		\
   dsr_dsrlnk.o		\
   dsr_dsrlnkraw.o	\
+  dsr_files.o		\
+  f18a_detect.o		\
+  f18a_loadpal.o	\
+  f18a_lock.o		\
+  f18a_reset.o		\
+  f18a_startgpu.o	\
+  f18a_unlock.o		\
   grom_readdata.o	\
   grom_writedata.o	\
+  joystfast.o		\
   kscan.o			\
   kscanfast.o		\
-  joystfast.o		\
   math_sqrt.o   \
-  player.o			\
   puff.o        \
   puff16k.o     \
   rs232_geterrs.o   \
@@ -75,7 +80,6 @@ OBJECT_LIST=\
   rs232raw_setPIOoutput.o \
   rs232raw_writebyte.o \
   speech.o \
-  stcount.o			\
   str_atoi.o      \
   str_gets.o      \
   str_int2str.o   \
@@ -84,37 +88,35 @@ OBJECT_LIST=\
   str_memset.o    \
   str_strcmp.o	\
   str_strcpy.o    \
-  str_strncpy.o    \
   str_strlen.o		\
+  str_strncpy.o    \
   str_uint2hex.o  \
   str_uint2str.o  \
+  sys_checkquit.o	\
   sys_exit.o      \
   sys_halt.o			\
-  sys_checkquit.o	\
-  tiplayer.o		\
-  tiplayer30hz.o	\
-  tiplayersfx.o		\
-  tiplayersfx30hz.o	\
   vdp_bigbuf.o          \
+  vdp_bmclearhlinefast.o	\
   vdp_bmclearpixel.o \
   vdp_bmclearscreen.o \
   vdp_bmcolor.o \
   vdp_bmconsolefont.o \
   vdp_bmdrawline.o \
+  vdp_bmdrawlinefast.o	\
   vdp_bmputs.o \
+  vdp_bmsethlinefast.o	\
   vdp_bmsetpixel.o \
+  vdp_byte2hex.o	\
   vdp_char.o		\
   vdp_charset.o		\
   vdp_charsetlc.o	\
   vdp_delsprite.o	\
-  vdp_f18a.o		\
+  vdp_fasterhexprint.o	\
+  vdp_fasthexprint.o	\
   vdp_gchar.o		\
   vdp_gplvdp.o		\
   vdp_hchar.o		\
   vdp_hexprint.o	\
-  vdp_fasthexprint.o\
-  vdp_fasterhexprint.o\
-  vdp_byte2hex.o	\
   vdp_ints.o		\
   vdp_memcpy.o		\
   vdp_memread.o		\
@@ -123,10 +125,11 @@ OBJECT_LIST=\
   vdp_putchar.o   \
   vdp_puts.o	\
   vdp_putstring.o	\
+  vdp_rawmemcpy.o	\
+  vdp_rawmemset.o	\
   vdp_readchar.o	\
   vdp_screenchar.o	\
   vdp_scrnscroll.o	\
-  vdp_fastscrnscroll.o	\
   vdp_setbitmap.o	\
   vdp_setgraphics.o	\
   vdp_setmode.o		\

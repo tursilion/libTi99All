@@ -30,10 +30,18 @@
 #define SPCH_STATUS_TALK 0x80
 #define SPCH_STATUS_LOW 0x40
 
+#ifdef TI99
 struct __attribute__((__packed__)) LpcPlaybackCtx {
     char* addr;
     int remaining;
 };
+#endif
+#ifdef COLECO
+struct LpcPlaybackCtx {
+    char* addr;
+    int remaining;
+};
+#endif
 
 
 /*

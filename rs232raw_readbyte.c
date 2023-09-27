@@ -21,6 +21,7 @@ int rs232raw_readbyte(int rawCRU) {
     return ret;
 #endif
 #ifdef COLECO
+    (void)rawCRU;
 	return SERIAL_IO;
 #endif
 }

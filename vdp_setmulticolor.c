@@ -1,6 +1,6 @@
 #include "vdp.h"
 
-unsigned char set_multicolor(unsigned char sprite_mode) {
+unsigned char set_multicolor_raw(unsigned char sprite_mode) {
 	// this layout is untested
     vdpchar = vdpchar_default;
     scrn_scroll = scrn_scroll_default;

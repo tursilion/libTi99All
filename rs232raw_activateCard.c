@@ -10,4 +10,7 @@ void rs232raw_activateCard(int card) {
         "mov %0,r12\n\tsbo 0\n\rsbo 7" : : "r"(card) : "r12" 
     );
 #endif
+#ifdef COLECO
+    (void)card;
+#endif
 }

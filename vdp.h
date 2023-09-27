@@ -66,6 +66,7 @@ __asm
 	nop
 __endasm;
 }
+#endif
 
 // TODO: need some hardware testing to understand the VDP limits
 // Can you write the address register full speed? Is it /only/ VRAM access that needs the delay?
@@ -191,6 +192,13 @@ extern volatile unsigned char vdpLimi;
 #define VDP_INT_POLL {	\
 	VDP_INT_ENABLE;		\
 	VDP_INT_DISABLE; }
+	
+// this might have no value... we'll see
+// If using KSCAN, you must put a copy of VDP register 1 (returned by the 'set' functions)
+// at this address, otherwise the first time a key is pressed, the value will be overwritten.
+// The console uses this to undo the screen timeout blanking.
+#define VDP_REG1_KSCAN_MIRROR	*((volatile unsigned char*)0)
+	
 #endif
 
 //*********************
@@ -583,4 +591,5 @@ extern unsigned char gSaveIntCnt;	// console interrupt count byte
 
 // 512 byte lookup table for converting a byte to two ASCII hex characters
 extern const unsigned int byte2hex[256];
+
 #endif /* VDP_H */

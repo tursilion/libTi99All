@@ -29,4 +29,9 @@ void gplvdp(int vect, int adr, int cnt) {
 	}
 #endif
 // there is no GROM on Coleco
+#ifdef COLECO
+    (void)vect;
+    (void)adr;
+    (void)cnt;
+#endif
 }

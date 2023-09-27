@@ -59,7 +59,12 @@
 #define DSR_STATUS_EOF			0x01		// else not at end of file
 
 // PAB struct
+#ifdef TI99
 struct __attribute__((__packed__)) PAB {
+#endif
+#ifdef COLECO
+struct PAB {
+#endif
 	unsigned char OpCode;			// see DSR_xxx list above
 	unsigned char Status;			// file type and error code (DSR_ERR_xxx and DSR_TYPE_xxx)
 	unsigned int  VDPBuffer;		// address of the data buffer in VDP memory

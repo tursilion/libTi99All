@@ -28,4 +28,9 @@ void rs232_setbps(int card, int uart, int bps) {
 
     rs232raw_deactivateCard(card);
 #endif
+#ifdef COLECO
+    (void)card;
+    (void)uart;
+    (void)bps;
+#endif
 }

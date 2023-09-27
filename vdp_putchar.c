@@ -1,7 +1,7 @@
 #include "vdp.h"
 
 // write a character with end of line detection
-int putchar(int x) {
+unsigned char putchar(unsigned char x) {
   if (x == '\n') {
     scrn_scroll();
     nTextPos = nTextRow;

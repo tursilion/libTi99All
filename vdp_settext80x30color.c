@@ -1,22 +1,23 @@
 #include "vdp.h"
+#include "f18a.h"
 
 // TODO: text modes should not rely on conio support if possible...
 
-// TODO: need to get the byte code for non-TI systems
+#if 0
 static void gpu_scroll(void)
 {
      __asm__(
 // copy code starting at loop0 to VDP address >4000
-	"li r0,>3f16\n"  // source
+   "li r0,>3f16\n"   // source
 "	li r1,>4000\n"   // dest
-"       li r2,>34/2\n" // count
+"   li r2,>34/2\n"   // count
 "loopx\n"
 "	mov *r0+,*r1+\n"
 "	dec r2\n"
-"       jne loopx\n"
-"       b @>4000\n"
+"   jne loopx\n"
+"   b @>4000\n"
 
-// move 23 rows of chars up
+// move 29 rows of chars up
 "loop0\n"
 "	li r0,80\n"
 "	clr r1\n"
@@ -47,6 +48,21 @@ static void gpu_scroll(void)
      "r0","r1","r2"
      );
 }
+#endif
+
+static const unsigned char gpu_scroll[] = {
+    // this is the assembled code of the above routine
+    0x02,0x00,0x3F,0x16,0x02,0x01,0x40,0x00,
+    0x02,0x02,0x00,0x1A,0xCC,0x70,0x06,0x02,
+    0x16,0xFD,0x04,0x60,0x40,0x00,0x02,0x00,
+    0x00,0x50,0x04,0xC1,0x02,0x02,0x04,0x88,
+    0xCC,0x70,0x06,0x02,0x16,0xFD,0x02,0x00,
+    0x20,0x20,0x02,0x02,0x00,0x28,0xCC,0x40,
+    0x06,0x02,0x16,0xFD,0x02,0x00,0x18,0x50,
+    0x02,0x01,0x18,0x00,0x02,0x02,0x04,0x88,
+    0xCC,0x70,0x06,0x02,0x16,0xFD,0x03,0x40,
+    0x10,0xE6
+};
 
 extern unsigned int conio_scrnCol; // conio_bgcolor.c
 
@@ -83,7 +99,7 @@ void set_text80x30_color(void)
 }
 
 // requires F18A!!
-int set_text80x30_color_raw() {
+unsigned char set_text80x30_color_raw() {
     // unlock the F18A (should be done before setting the mode)
     unlock_f18a();
     nTextRow = 80 * 29;

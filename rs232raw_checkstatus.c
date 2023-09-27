@@ -23,6 +23,7 @@ int rs232raw_checkstatus(int rawCRU) {
     return ret;
 #endif
 #ifdef COLECO
+    (void)rawCRU;
 	return 0;
 #endif
 }

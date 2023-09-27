@@ -18,6 +18,7 @@ void rs232raw_writebyte(int rawCRU, int ch) {
     );
 #endif
 #ifdef COLECO
+    (void)rawCRU;
 	SERIAL_IO=ch;
 #endif
 }

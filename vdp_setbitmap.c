@@ -1,6 +1,6 @@
 #include "vdp.h"
 
-unsigned char set_bitmap(unsigned char sprite_mode) {
+unsigned char set_bitmap_raw(unsigned char sprite_mode) {
 	// note: no masking, full size bitmap mode
     vdpchar = vdpchar_default;
     scrn_scroll = scrn_scroll_default;

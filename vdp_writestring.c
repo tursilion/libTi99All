@@ -1,6 +1,6 @@
 #include "vdp.h"
 
-void writestring(int row, int col, char *pStr) {
+void writestring(unsigned char row, unsigned char col, char *pStr) {
 	if (nTextFlags&TEXT_WIDTH_32) {
 		VDP_SET_ADDRESS_WRITE(VDP_SCREEN_POS(row,col)+gImage);
 	} else if (nTextFlags&TEXT_WIDTH_40) {

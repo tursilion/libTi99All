@@ -15,6 +15,7 @@ int rs232raw_poll(int rawCRU) {
     return ret;
 #endif
 #ifdef COLECO
+    (void)rawCRU;
 	return 0;
 #endif
 }

@@ -37,6 +37,9 @@ void rs232_setcontrol(int card, int uart, int control) {
         : : "r"(rawCRU), "r"(control) : "r12" 
     );
 #endif
+#ifdef COLECO
+    (void)control;
+#endif
 
     rs232raw_deactivateCard(card);
 }
