@@ -1,6 +1,6 @@
 #include "vdp.h"
 
-static unsigned char masks[] = {
+static const unsigned char masks[] = {
 	0xff, 0x7f, 0x3f, 0x1f, 0x0f, 0x07, 0x03, 0x01
 };
 

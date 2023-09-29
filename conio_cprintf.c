@@ -1,7 +1,7 @@
 #include "conio.h"
 #include "string.h"
 
-char conio_sprintfbuf[256];
+extern unsigned char vdp_bigbuf[256];
 
 // helper function to put the string out - string will be modified and is
 // expected to be 256 chars in length
@@ -122,9 +122,9 @@ int cprintf(const char *fmt, ...) {
 
                     case 'c':   // char
                        i = va_arg(argp, int);
-                       conio_sprintfbuf[0]=i;
-                       conio_sprintfbuf[1]='\0';
-                       cnt += fmt_print(conio_sprintfbuf, 0, width, left, precis, 0);
+                       vdp_bigbuf[0]=i;
+                       vdp_bigbuf[1]='\0';
+                       cnt += fmt_print(vdp_bigbuf, 0, width, left, precis, 0);
                        done = 1;
                        break;
 
@@ -132,16 +132,16 @@ int cprintf(const char *fmt, ...) {
                     case 'd':   // decimal
                         i = va_arg(argp, int);
                         s = int2str(i);
-                        strcpy(conio_sprintfbuf, s);
-                        cnt += fmt_print(conio_sprintfbuf, zero, width, left, precis, plus);
+                        strcpy(vdp_bigbuf, s);
+                        cnt += fmt_print(vdp_bigbuf, zero, width, left, precis, plus);
                         done = 1;
                         break;
 
                     case 'u':   // unsigned decimal
                         u = va_arg(argp, unsigned int);
                         s = uint2str(u);
-                        strcpy(conio_sprintfbuf, s);
-                        cnt += fmt_print(conio_sprintfbuf, zero, width, left, precis, plus);
+                        strcpy(vdp_bigbuf, s);
+                        cnt += fmt_print(vdp_bigbuf, zero, width, left, precis, plus);
                         done = 1;
                         break;
 
@@ -159,67 +159,67 @@ int cprintf(const char *fmt, ...) {
                         u = va_arg(argp, unsigned int);
                         i = (u&0xf000)>>12;
                         if (i>9) i+=7;
-                        conio_sprintfbuf[0]=i+'0';
+                        vdp_bigbuf[0]=i+'0';
                         i = (u&0xf00)>>8;
                         if (i>9) i+=7;
-                        conio_sprintfbuf[1]=i+'0';
+                        vdp_bigbuf[1]=i+'0';
                         i = (u&0xf0)>>4;
                         if (i>9) i+=7;
-                        conio_sprintfbuf[2]=i+'0';
+                        vdp_bigbuf[2]=i+'0';
                         i = (u&0xf);
                         if (i>9) i+=7;
-                        conio_sprintfbuf[3]=i+'0';
-                        conio_sprintfbuf[4]='\0';
+                        vdp_bigbuf[3]=i+'0';
+                        vdp_bigbuf[4]='\0';
                         if (!zero) {
                             // remove leading zeros
-                            while (conio_sprintfbuf[0]=='0') {
+                            while (vdp_bigbuf[0]=='0') {
                                 // my memcpy is safe in this direction only...
-                                memcpy(&conio_sprintfbuf[0], &conio_sprintfbuf[1], 4);  // includes NUL
+                                memcpy(&vdp_bigbuf[0], &vdp_bigbuf[1], 4);  // includes NUL
                             }
-                            if (conio_sprintfbuf[0] == '\0') {
-                                conio_sprintfbuf[0]='0';
-                                conio_sprintfbuf[1]='\0';
+                            if (vdp_bigbuf[0] == '\0') {
+                                vdp_bigbuf[0]='0';
+                                vdp_bigbuf[1]='\0';
                             }
                         }
                         if (!ucase) {
                             // make lowercase
                             for (int idx=0; idx<4; ++idx) {
-                                if ((conio_sprintfbuf[idx]>='A')&&(conio_sprintfbuf[idx]<='F')) {
-                                    conio_sprintfbuf[idx]+=32;  // make lowercase
+                                if ((vdp_bigbuf[idx]>='A')&&(vdp_bigbuf[idx]<='F')) {
+                                    vdp_bigbuf[idx]+=32;  // make lowercase
                                 }
                             }
                         }
-                        cnt += fmt_print(conio_sprintfbuf, 0, width, left, precis, 0);
+                        cnt += fmt_print(vdp_bigbuf, 0, width, left, precis, 0);
                         done = 1;
                         break;
 
                     case 'o':   // octal (roughly same as hex)
                         u = va_arg(argp, unsigned int);
                         i = (u&0x8000)>>15;
-                        conio_sprintfbuf[0]=i+'0';
+                        vdp_bigbuf[0]=i+'0';
                         i = (u&0x7000)>>12;
-                        conio_sprintfbuf[1]=i+'0';
+                        vdp_bigbuf[1]=i+'0';
                         i = (u&0x0e00)>>9;
-                        conio_sprintfbuf[2]=i+'0';
+                        vdp_bigbuf[2]=i+'0';
                         i = (u&0x01c0)>>6;
-                        conio_sprintfbuf[3]=i+'0';
+                        vdp_bigbuf[3]=i+'0';
                         i = (u&0x0038)>>3;
-                        conio_sprintfbuf[4]=i+'0';
+                        vdp_bigbuf[4]=i+'0';
                         i = (u&0x0007);
-                        conio_sprintfbuf[5]=i+'0';
-                        conio_sprintfbuf[6]='\0';
+                        vdp_bigbuf[5]=i+'0';
+                        vdp_bigbuf[6]='\0';
                         if (!zero) {
                             // remove leading zeros
-                            while (conio_sprintfbuf[0]=='0') {
+                            while (vdp_bigbuf[0]=='0') {
                                 // my memcpy is safe in this direction only...
-                                memcpy(&conio_sprintfbuf[0], &conio_sprintfbuf[1], 6);  // includes NUL
+                                memcpy(&vdp_bigbuf[0], &vdp_bigbuf[1], 6);  // includes NUL
                             }
-                            if (conio_sprintfbuf[0] == '\0') {
-                                conio_sprintfbuf[0]='0';
-                                conio_sprintfbuf[1]='\0';
+                            if (vdp_bigbuf[0] == '\0') {
+                                vdp_bigbuf[0]='0';
+                                vdp_bigbuf[1]='\0';
                             }
                         }
-                        cnt += fmt_print(conio_sprintfbuf, 0, width, left, precis, 0);
+                        cnt += fmt_print(vdp_bigbuf, 0, width, left, precis, 0);
                         done = 1;
                         break;
 

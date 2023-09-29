@@ -1,3 +1,6 @@
+// TODO: puff currently needs about 700 bytes of static data and this is too much
+// for the Coleco to be usable. Can we move it out to a struct? To VRAM (with speed cost?)
+
 /* puff.h
   Copyright (C) 2002-2013 Mark Adler, all rights reserved
   version 2.3, 21 Jan 2013

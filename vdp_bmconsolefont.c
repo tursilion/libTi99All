@@ -1,8 +1,11 @@
 
 #include "vdp.h"
 
-// room for the patterns of the displayable characters
+#ifdef TI99
+// room for the patterns of the displayable characters - not needed on Coleco
+// TODO: maybe we can rework the TI code to pull from GROM instead of buffering in RAM?
 unsigned char bmFont[BM_FONT_SIZE];
+#endif
 
 void bm_consolefont() {
   // setup graphics mode and load the charset from grom

@@ -1,5 +1,5 @@
 #include "system.h"
-#include "puff.h"
+//#include "puff.h"
 #include "conio.h"
 #include "math.h"
 #include "kscan.h"
@@ -262,12 +262,13 @@ int main() {
 	charsetlc();
     textcolor(COLOR_WHITE);
     bgcolor(COLOR_DKBLUE);
+    clrscr();
 	puts("Include F18A tests? (Y/N)");
 	for(;;) {
 		kscan(KSCAN_MODE_BASIC);
-		if ((KSCAN_KEY == 'Y')||(KSCAN_KEY=='N')) break;
+		if ((KSCAN_KEY == 'Y')||(KSCAN_KEY=='N')||(KSCAN_KEY=='1')||(KSCAN_KEY=='0')) break;
 	}
-	if (KSCAN_KEY == 'Y') f18=1;
+	if ((KSCAN_KEY == 'Y')||(KSCAN_KEY=='1')) f18=1;
 	
 
     testBitmapMode();
@@ -293,6 +294,8 @@ int main() {
     hexprint(sizeof(float));
     putstring("\n");
 
+#if 0
+    // puff currently eats a lot of RAM and isn't good for Coleco
 	dstlen=32;
 	srclen=sizeof(helloworldraw);
 	int x = puff(outbuf, &dstlen, helloworldraw, &srclen);
@@ -302,6 +305,7 @@ int main() {
     outbuf[31] = '\0';
 	putstring(outbuf);
 	putstring("\n");
+#endif
 
     // testing conio... better screen output code
     cursor(1);

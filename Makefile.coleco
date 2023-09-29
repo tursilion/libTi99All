@@ -140,7 +140,7 @@ OBJECT_LIST=\
 #  vdp_puts.$(EXT)
 
 # Recipe to compile the library
-all: library test example
+all: library example test
 
 library: $(OBJECT_LIST)
 	$(RM) testlib.$(EXT) testlib.asm

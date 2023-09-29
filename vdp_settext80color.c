@@ -50,7 +50,7 @@ static void gpu_scroll(void)
 }
 #endif
 
-static const unsigned char gpu_scroll[] = {
+const unsigned char gpu_scroll80[] = {
     // this is the assembled code of the above routine
     0x02,0x00,0x3F,0x16,0x02,0x01,0x40,0x00,
     0x02,0x02,0x00,0x1A,0xCC,0x70,0x06,0x02,
@@ -114,7 +114,7 @@ unsigned char set_text80_color_raw() {
 	nTextFlags = TEXT_FLAG_IS_F18A | TEXT_FLAG_HAS_ATTRIBUTES | TEXT_WIDTH_80;
 
     // load GPU scroll function
-    vdpmemcpy(0x3f00, gpu_scroll, sizeof(gpu_scroll));
+    vdpmemcpy(0x3f00, gpu_scroll80, sizeof(gpu_scroll80));
 	startgpu_f18a(0x3f00);
 
     return unblank;

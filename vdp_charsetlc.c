@@ -20,21 +20,17 @@ const unsigned char TrueLowerCase[] = {				// chars 96-122
 	 0x00,0x00,0x20,0x54,0x08,0x00,0x00,0x00
 };
 
-#ifdef TI99
 void charsetlc() {
 	vdpmemcpy(gPattern+0x300, TrueLowerCase, sizeof(TrueLowerCase));
+
+#ifdef TI99
 	gplvdp(0x0018, gPattern+0x100-1, 64);	// the rest of the character set (-1 to shift it up to match lowercase)
-	vdpmemset(gPattern+(30*8), 0xfc, 8);	// cursor
-}
 #endif
+
 #ifdef COLECO
 #define COLECO_FONT (unsigned char*)0x15A3
-void charsetlc() {
-	vdpmemcpy(gPattern+0x300, TrueLowerCase, sizeof(TrueLowerCase));
 	vdpmemcpy(gPattern+0x100, COLECO_FONT, 64*8);	// the rest of the character set (Coleco font isn't shifted like TI's)
-	vdpmemset(gPattern+(30*8), 0xfc, 8);	// cursor
-}
 #endif
 
-
-
+	vdpmemset(gPattern+(30*8), 0xfc, 8);	// cursor
+}
