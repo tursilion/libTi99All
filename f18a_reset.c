@@ -20,5 +20,5 @@ void reset_f18a() {
     VDP_SET_REGISTER(VDP_REG_COL, 0);         // do this first to minimize the time for a flash
     VDP_SET_REGISTER(VDP_REG_MODE1, VDP_MODE1_16K);
     
-    loadpal_f18a(DEFAULT_PALETTE, 16);
+    loadpal_f18a(DEFAULT_PALETTE, 0, 16);
 }

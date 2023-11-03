@@ -53,5 +53,6 @@ volatile __sfr __at 0x52 AY_DATA_READ;
 #define AY_ENV_SHAPE    13
 #define AY_PORTA        14
 #define AY_PORTB        15
+#endif
 
 #endif /* SOUND_H */

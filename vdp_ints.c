@@ -2,9 +2,10 @@
 // You can copy this file and use it at will if it's useful
 
 #include "vdp.h"
-#include <stdint.h>
 
 #ifdef COLECO
+#include <stdint.h>
+
 // Coleco specific init code so that the nmi counts like the TI interrupt
 // it also provides the user interrupt hook
 // no other TI functionality is simulated (automotion, automusic, quit)
@@ -104,6 +105,8 @@ void clearUserIntHook() {
 #endif
 
 #ifdef TI99
+#define SOUND		*((volatile unsigned char*)0x8400)
+
 void vdpinit() {
 	// not normally called, but maybe it should be
 	// shut off the sound generator

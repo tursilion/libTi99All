@@ -103,6 +103,7 @@ OBJECT_LIST=\
   vdp_bmconsolefont.o \
   vdp_bmdrawline.o \
   vdp_bmdrawlinefast.o	\
+  vdp_bmasmdrawlinefast.o \
   vdp_bmputs.o \
   vdp_bmsethlinefast.o	\
   vdp_bmsetpixel.o \

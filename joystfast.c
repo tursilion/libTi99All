@@ -6,7 +6,7 @@
 
 #ifdef TI99
 
-void joystfast(int unit) {
+void joystfast(unsigned char unit) {
 	unsigned int result;
 
 	// read the joystick lines (column 6 or 7, (5 added to unit))

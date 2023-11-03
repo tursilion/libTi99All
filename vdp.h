@@ -159,6 +159,8 @@ extern volatile unsigned char VDP_STATUS_MIRROR;
 	// disable QUIT key testing
 	#define VDP_INT_CTRL_DISABLE_QUIT		0x10
 
+// TODO: not just the wait for vblank, we need a safe way to CHECK interrupt. Coleco can use vdpLimi&0x80, TI needs to check CRU bit 2
+
 #ifdef TI99
 // wait for a vblank (interrupts disabled - will work unreliably if enabled)
 // call vdpwaitvint() instead if you want to keep running the console interrupt
@@ -172,6 +174,12 @@ extern volatile unsigned char VDP_STATUS_MIRROR;
 // Note that on the TI interrupts DISABLED is the default state
 #define VDP_INT_ENABLE			__asm__("LIMI 2")
 #define VDP_INT_DISABLE			__asm__("LIMI 0")
+
+// If using KSCAN, you must put a copy of VDP register 1 (returned by the 'set' functions)
+// at this address, otherwise the first time a key is pressed, the value will be overwritten.
+// The console uses this to undo the screen timeout blanking.
+#define FIX_KSCAN(x) VDP_REG1_KSCAN_MIRROR=(x);
+
 #endif
 #ifdef COLECO
 // wait for a vblank (interrupts disabled - will work unreliably if enabled)
@@ -189,17 +197,23 @@ extern volatile unsigned char vdpLimi;
 // to prevent double-call.
 #define VDP_INT_ENABLE			{ if (vdpLimi&0x80) { vdpLimi=0; my_nmi(); } __asm__("\tpush hl\n\tld hl,#_vdpLimi\n\tset 0,(hl)\n\tpop hl"); }
 #define VDP_INT_DISABLE			{ __asm__("\tpush hl\n\tld hl,#_vdpLimi\n\tres 0,(hl)\n\tpop hl"); }
-#define VDP_INT_POLL {	\
-	VDP_INT_ENABLE;		\
-	VDP_INT_DISABLE; }
 	
 // this might have no value... we'll see
 // If using KSCAN, you must put a copy of VDP register 1 (returned by the 'set' functions)
 // at this address, otherwise the first time a key is pressed, the value will be overwritten.
 // The console uses this to undo the screen timeout blanking.
 #define VDP_REG1_KSCAN_MIRROR	*((volatile unsigned char*)0)
+
+// If using KSCAN, you must put a copy of VDP register 1 (returned by the 'set' functions)
+// at this address, otherwise the first time a key is pressed, the value will be overwritten.
+// The console uses this to undo the screen timeout blanking. (not needed on Coleco)
+#define FIX_KSCAN(x)
 	
 #endif
+
+#define VDP_INT_POLL {	\
+	VDP_INT_ENABLE;		\
+	VDP_INT_DISABLE; }
 
 //*********************
 // Register settings
@@ -396,7 +410,7 @@ int vdpprintf(char *str, ...);
 void raw_vdpmemset(unsigned char ch, int cnt);
 
 // raw_vdpmemcpy - copies bytes from CPU to current VDP address
-void raw_vdpmemcpy(unsigned char *p, int cnt);
+void raw_vdpmemcpy(const unsigned char *p, int cnt);
 
 // putstring - writes a string with limited formatting to the bottom of the screen
 // Inputs: NUL-terminated string to write

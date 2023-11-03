@@ -26,7 +26,7 @@ void lock_f18a();
 
 // load a palette into the F18A
 // data format is 12-bit 0RGB (4 bits each gun)
-void loadpal_f18a(const unsigned int *ptr, unsigned char cnt);
+void loadpal_f18a(const unsigned int *ptr, unsigned char first, unsigned char cnt);
 
 // start executing TMS9900 GPU code from VDP address adr
 void startgpu_f18a(unsigned int adr);

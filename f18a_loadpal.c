@@ -5,8 +5,8 @@
 
 // load an F18A palette from ptr (16-bit words, little endian)
 // data format is 12-bit 0RGB color.
-void loadpal_f18a(const unsigned int *ptr, unsigned char cnt) {
-	VDP_SET_REGISTER(F18A_REG_DPM, F18A_DPM_ENABLE|F18A_DPM_INC);
+void loadpal_f18a(const unsigned int *ptr, unsigned char first, unsigned char cnt) {
+	VDP_SET_REGISTER(F18A_REG_DPM, F18A_DPM_ENABLE|F18A_DPM_INC|(first&0x3f));
 	// Reg 47, value: 1100 0000, DPM = 1, AUTO INC = 1, palreg 0.       
 
 	while (cnt-- > 0) {

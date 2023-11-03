@@ -2,6 +2,11 @@
 // This code and library released into the Public Domain
 // You can copy this file and use it at will ;)
 
+// Mode 0 reads only the keyboard.
+// Mode 1 and 2 read the joystick fire button, and if not pressed, then reads the keyboard
+// if that ends up too slow I might make a separate function just for the fire buttons... 
+// but that helps parity between the TI and Coleco versions.
+
 #include "kscan.h"
 
 #ifdef TI99
@@ -15,9 +20,27 @@ const unsigned char keymap[] = {
 		'/',';','P','0','1','A','Q','Z'
 };
 
-void kscanfast(int mode) {
-	if (mode == 0) {
-		KSCAN_KEY = 0xff;
+void kscanfast(unsigned char mode) {
+	KSCAN_KEY = 0xff;
+	
+    if (mode > 0) {
+		unsigned int key;
+
+		int col = 0x0600;		// joystick 1 fire column
+
+		if (mode == 2) {
+			col = 0x0700;		// make that joystick 2
+		}
+
+		__asm__("li r12,>0024\n\tldcr %1,3\n\tsrc r12,7\n\tli r12,>0006\n\tclr %0\n\tstcr %0,1" : "=r"(key) : "r"(col) : "r12");	// set cru, column, delay, read (only need 1 bit)
+		if (key == 0) {
+			KSCAN_KEY = 18;
+			return;
+		}
+	}
+
+    // otherwise read the keyboard
+	{
 		for (unsigned int col=0; col < 0x0600; col += 0x0100) {
 			unsigned int key;
 			__asm__("li r12,>0024\n\tldcr %1,3\n\tsrc r12,7\n\tli r12,>0006\n\tclr %0\n\tstcr %0,8" : "=r"(key) : "r"(col) : "r12");	// set cru, column, delay, read
@@ -33,21 +56,6 @@ void kscanfast(int mode) {
 				KSCAN_KEY = keymap[(col>>5)+cnt];
 				return;
 			}
-		}
-	} else {
-		unsigned int key;
-
-		int col = 0x0600;		// joystick 1 fire column
-
-		if (mode == 2) {
-			col = 0x0700;		// make that joystick 2
-		}
-
-		__asm__("li r12,>0024\n\tldcr %1,3\n\tsrc r12,7\n\tli r12,>0006\n\tclr %0\n\tstcr %0,1" : "=r"(key) : "r"(col) : "r12");	// set cru, column, delay, read (only need 1 bit)
-		if (key == 0) {
-			KSCAN_KEY = 18;
-		} else {
-			KSCAN_KEY = 0xff;
 		}
 	}
 }

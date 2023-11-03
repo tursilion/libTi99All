@@ -17,6 +17,8 @@ unsigned char vdpwaitvint() {
 	while (VDP_INT_COUNTER == gSaveIntCnt) { } 
 	gSaveIntCnt=VDP_INT_COUNTER; 
 	VDP_INT_DISABLE; 
+	
+	return ret;
 }
 #endif
 
