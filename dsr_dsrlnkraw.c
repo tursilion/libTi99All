@@ -73,7 +73,7 @@ unsigned char __attribute__((noinline)) dsrlnkraw(unsigned int vdp) {
 	"       ai   r2,8            	; offset (contains the data statement, so 8 for a device, for >4008)\n"
 	"       jmp  a2340				; always jump into the loop from here\n"
 	"a233a  mov  @0x83d2,r2         ; next sub\n"
-	"       sbo  0                  ; card on (already is, isn't it??)\n"
+	"       sbo  0                  ; card on (already is, isn't it?)\n"
 	"a2340  mov  *r2,r2             ; grab link pointer to next\n"
 	"       jeq  a2310              ; if no pointer, link back to get next card\n"
 	"       mov  r2,@0x83d2         ; save link address in >83d2\n"

@@ -33,6 +33,41 @@ volatile unsigned char KSCAN_JOYX;
 // Address to check the status byte. KSCAN_MASK is set if a key was pressed
 volatile unsigned char KSCAN_STATUS;
 
+// coleco and SMS are very different here
+
+#ifdef SMS
+
+static volatile __sfr __at 0xdc pad0;
+static volatile __sfr __at 0xdd pad1;
+
+void joystfast(unsigned char unit) {
+	unsigned char key;
+
+	if ((unit == KSCAN_MODE_LEFT) || (unit == KSCAN_MODE_RIGHT)) {
+		KSCAN_JOYX = 0;
+		KSCAN_JOYY = 0;
+
+		if (unit == KSCAN_MODE_RIGHT) {
+            // this pad has data on both port
+			key = pad0;
+			if ((key&0x80)==0) KSCAN_JOYY = JOY_DOWN;
+			if ((key&0x40)==0) KSCAN_JOYY = JOY_UP;
+			key = pad1;
+            if ((key&0x02)==0) KSCAN_JOYX = JOY_RIGHT;
+            if ((key&0x01)==0) KSCAN_JOYX = JOY_LEFT;
+		} else {
+            // this pad is all on port 0
+			key = pad0;
+            if ((key&0x08)==0) KSCAN_JOYX = JOY_RIGHT;
+            if ((key&0x04)==0) KSCAN_JOYX = JOY_LEFT;
+			if ((key&0x02)==0) KSCAN_JOYY = JOY_DOWN;
+			if ((key&0x01)==0) KSCAN_JOYY = JOY_UP;
+		}
+	}
+}
+
+#else
+
 static volatile __sfr __at 0xfc port0;
 static volatile __sfr __at 0xff port1;
 static volatile __sfr __at 0x80 port2;
@@ -70,4 +105,6 @@ void joystfast(unsigned char unit) {
 		}
 	}
 }
+
+#endif
 #endif

@@ -24,6 +24,7 @@
 
 #endif
 #ifdef COLECO
+// SMS uses the same ports
 // Read Data
 volatile __sfr __at 0xbe VDPRD;
 // Read Status
@@ -58,6 +59,7 @@ inline void VDP_SAFE_DELAY(void) {
 // to get to 8uS, we'd need 4 NOPS (although 3 would work 90% of the time... 0.12uS difference! So close! Maybe another instruction?)
 // However, OUTI/OUTD are the slower instructions, the fastest OUT is OUT (p),A, which is 11 cycles (3.073 uS)
 // To get to 8uS there, we do need 5 NOPs (although the last cycle is only off by 0.44uS)
+#ifndef SMS
 __asm
 	nop
 	nop
@@ -65,6 +67,7 @@ __asm
 	nop
 	nop
 __endasm;
+#endif
 }
 #endif
 

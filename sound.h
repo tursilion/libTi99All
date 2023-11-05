@@ -11,7 +11,11 @@
 #define SOUND		*((volatile unsigned char*)0x8400)
 #endif
 #ifdef COLECO
+#ifdef SMS
+volatile __sfr __at 0x06 SOUND;
+#else
 volatile __sfr __at 0xff SOUND;
+#endif
 #endif
 
 
@@ -30,6 +34,7 @@ volatile __sfr __at 0xff SOUND;
 inline void MUTE_SOUND()					{ SOUND=TONE1_VOL|0x0f; SOUND=TONE2_VOL|0x0f; SOUND=TONE3_VOL|0x0f; SOUND=NOISE_VOL|0x0f; }
 
 #ifdef COLECO
+#ifndef SMS
 //*********************
 // AY sound chip access (if SGM installed)
 //*********************
@@ -53,6 +58,8 @@ volatile __sfr __at 0x52 AY_DATA_READ;
 #define AY_ENV_SHAPE    13
 #define AY_PORTA        14
 #define AY_PORTB        15
+
+#endif
 #endif
 
 #endif /* SOUND_H */

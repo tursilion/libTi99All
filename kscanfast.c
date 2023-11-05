@@ -63,6 +63,39 @@ void kscanfast(unsigned char mode) {
 #endif
 
 #ifdef COLECO
+
+// coleco and SMS are very different
+
+#ifdef SMS
+
+static volatile __sfr __at 0xdc pad0;
+static volatile __sfr __at 0xdd pad1;
+extern unsigned char pause;
+
+// TODO: reset reads as bit 0x10 on pad1 - do we need to manually handle reset in software?
+
+// For SMS, all modes except 2 read controller 1, and 2 reads controller 2
+void kscanfast(unsigned char mode) {
+	unsigned char key;
+	
+	KSCAN_KEY = 0xff;
+
+	if (mode == KSCAN_MODE_RIGHT) {
+		key = pad1;
+		if ((key&0x08)==0) KSCAN_KEY=JOY_FIRE2;
+		if ((key&0x04)==0) KSCAN_KEY=JOY_FIRE;   // todo: make it possible to read both at once?
+	} else {
+		key = pad0;
+		if ((key&0x20)==0) KSCAN_KEY=JOY_FIRE2;
+		if ((key&0x10)==0) KSCAN_KEY=JOY_FIRE;   // todo: make it possible to read both at once?
+	}
+	
+	key=pad1;
+	if (key&0x10) KSCAN_KEY='#';      // reset
+	if (pause) { pause=0; KSCAN_KEY='*'; }
+}
+
+#else
 #define SELECT 0x2a
 
 // note: keys index 8 and 4 are fire 2 and fire 3, respectively
@@ -116,4 +149,6 @@ void kscanfast(unsigned char mode) {
 	}
 
 }
+
+#endif
 #endif

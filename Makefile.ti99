@@ -166,19 +166,10 @@ example: library example.o $(OBJECT_LIST_EA5)
 	$(EA5_SPLIT) example.ea5.bin
 	cp EXAMPL* $(CLASSIC99_DSK1)
 
-# Recipe to clean all compiled objects
-.phony clean:
-	-rm *.o
-	-rm *.a
-	-rm *.s
-	-rm *.i
-	-rm *.elf
-	-rm *.map
-	-rm *.bin
-	-rm TESTLI*
-
 # Recipe to compile all assembly files
 %.o: %.asm
+	$(GAS) $< -o $@
+%.o: %.assembly
 	$(GAS) $< -o $@
 
 # Recipe to compile all C files

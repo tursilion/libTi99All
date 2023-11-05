@@ -154,17 +154,12 @@ example: library example.$(EXT) crt0_coleco.$(EXT)
 	$(CC) -mz80 --no-std-crt0 --code-loc 0x8100 --data-loc 0x7000 -l./$(NAME) "./crt0_coleco.$(EXT)" example.$(EXT) 
 	"d:/work/coleco/tursi/makemegacart/release/makemegacart.exe" crt0_coleco.ihx example.rom
 
-# Recipe to clean all compiled objects
-.phony clean:
-	$(RM) *.rel *.map *.lst *.lnk 
-	$(RM) *.sym *.asm *~ *.$(EXT) 
-	$(RM) *.$(EXT)bj *.ihx *.rom 
-	$(RM) *.a *.lib
-
 # Recipe to compile all C files
 %.rel: %.c
 	$(CC) -c $< $(CFLAGS) -o $@
 
 # Recipe to compile all assembly files
 %.rel: %.s
+	$(AS) -o $@ $<
+%.rel: %.assembly
 	$(AS) -o $@ $<
