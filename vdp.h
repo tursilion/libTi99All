@@ -166,9 +166,8 @@ extern volatile unsigned char VDP_STATUS_MIRROR;
 // call vdpwaitvint() instead if you want to keep running the console interrupt
 // DO NOT USE the non-CRU version - this will miss interrupts.
 //#define VDP_WAIT_VBLANK  		while (!(VDPST & VDP_ST_INT)) { }
-#define VDP_WAIT_VBLANK_CRU	  __asm__( "clr r12\nvdp%=:\n\ttb 2\n\tjeq vdp%=\n\tmovb @>8802,r12" : : : "r12" );
-// This version lets you get the status register into a variable (pass the desired variable)
-#define VDP_WAIT_VBLANK_CRU_STATUS(x)	  __asm__( "clr r12\n\t\nvdp%=:\n\ttb 2\n\tjeq vdp%=\n\tmovb @>8802,%0" : "=rm" (x) : : "r12" );
+#define VDP_WAIT_VBLANK_CRU	  __asm__( "clr r12\nvdp%=:\n\ttb 2\n\tjeq vdp%=" : : : "r12" );
+#define VDP_CLEAR_VBLANK { VDP_INT_DISABLE; VDP_STATUS_MIRROR = VDPST; }
 
 // we enable interrupts via the CPU instruction, not the VDP itself, because it's faster
 // Note that on the TI interrupts DISABLED is the default state
@@ -187,7 +186,7 @@ extern volatile unsigned char VDP_STATUS_MIRROR;
 extern volatile unsigned char vdpLimi;
 #define VDP_WAIT_VBLANK_CRU	  while ((vdpLimi&0x80) == 0) { }
 
-#define VDP_CLEAR_VBLANK { vdpLimi = 0; VDP_STATUS_MIRROR = VDPST; }
+#define VDP_CLEAR_VBLANK { vdpLimi = 0; VDP_STATUS_MIRROR = VDPST; }    // has to force to 0 to clear any pending unprocessed int
 
 // we enable interrupts via a mask byte, as Coleco ints are NMI
 // Note that the enable therefore needs to check a flag!
