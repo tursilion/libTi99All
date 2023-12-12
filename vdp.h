@@ -77,20 +77,33 @@ __endasm;
 //		ADR,ADR_WR,DATA,>DELAY<
 //		ADR,ADR_RD,>DELAY<,DATA
 // I've taken out the address write safety for that reason, we will see! Even the MSX guys aren't sure.
+
+#ifdef TI99
+// the TI GCC currently doesn't optimize the MSB access very well, so this saves two 8 bit shifts
+// and a handful of instructions. Even using pointers the C code is still 4 instructions long
+
 // Set VDP address for read (no bit added)
-inline void VDP_SET_ADDRESS(unsigned int x)							{	VDPWA=((x)&0xff); VDPWA=((x)>>8);			}
+inline void VDP_SET_ADDRESS(unsigned int x)     { __asm__ ( "swpb %0\n\tmovb %0,@>8c02\n\tswpb %0\n\tmovb %0,@>8c02" : : "r"(x) : "cc"); }
+
+// Set VDP address for write (adds 0x4000 bit)
+inline void VDP_SET_ADDRESS_WRITE(unsigned int x) { __asm__ ( "swpb %0\n\tmovb %0,@>8c02\n\tswpb %0\n\tori %0,>4000\n\tmovb %0,@>8c02\n\tandi %0,>3fff" : : "r"(x) : "cc"); }
+
+#else
+// Set VDP address for read (no bit added)
+inline void VDP_SET_ADDRESS(unsigned int x)						{	VDPWA=((x)&0xff); VDPWA=((x)>>8);			}
 
 // Set VDP address for write (adds 0x4000 bit)
 inline void VDP_SET_ADDRESS_WRITE(unsigned int x)					{	VDPWA=((x)&0xff); VDPWA=(((x|0x4000)>>8));	}
+#endif
 
 // Set VDP write-only register 'r' to value 'v'
-inline void VDP_SET_REGISTER(unsigned char r, unsigned char v)		{	VDPWA=(v); VDPWA=(0x80|(r));				}
+inline void VDP_SET_REGISTER(unsigned char r, unsigned char v)	{	VDPWA=(v); VDPWA=(0x80|(r));				}
 
 // get a screen offset for 32x24 graphics mode
 inline int VDP_SCREEN_POS(unsigned int r, unsigned int c)			{	return (((r)<<5)+(c));						}
 
 // get a screen offset for 40x24 text mode
-inline int VDP_SCREEN_TEXT(unsigned int r, unsigned int c)			{	return (((r)<<5)+((r)<<3)+(c));				}
+inline int VDP_SCREEN_TEXT(unsigned int r, unsigned int c)		{	return (((r)<<5)+((r)<<3)+(c));				}
 
 // get a screen offset for 80x24 text mode
 inline int VDP_SCREEN_TEXT80(unsigned int r, unsigned int c)	    {	return (((r)<<6)+((r)<<4)+(c));				}
@@ -98,7 +111,7 @@ inline int VDP_SCREEN_TEXT80(unsigned int r, unsigned int c)	    {	return (((r)<
 // get a screen offset for 64x24 graphics mode
 // NOTE: This is not a real VDP address, it's a virtual address that vdpchar64 understands
 // Do not add gImage to it!
-inline int VDP_SCREEN_TEXT64(unsigned int r, unsigned int c)			{	return (((r)<<6)+(c));						}
+inline int VDP_SCREEN_TEXT64(unsigned int r, unsigned int c)		{	return (((r)<<6)+(c));						}
 
 //*********************
 // VDP Console interrupt control

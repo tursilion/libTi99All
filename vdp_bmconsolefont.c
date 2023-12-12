@@ -8,7 +8,7 @@ unsigned char bmFont[BM_FONT_SIZE];
 #endif
 
 void bm_consolefont() {
-  // setup graphics mode and load the charset from grom
+  // load the charset from grom
   // then copy those patterns out to RAM
 #ifdef TI99
 	// TODO: we can do better here and go from GROM straight to RAM

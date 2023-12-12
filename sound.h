@@ -38,6 +38,17 @@ inline void MUTE_SOUND()					{ SOUND=TONE1_VOL|0x0f; SOUND=TONE2_VOL|0x0f; SOUND
 //*********************
 // AY sound chip access (if SGM installed)
 //*********************
+// NOTE: The Phoenix implementation of the AY is somewhat bugged.
+// To ensure your software works there, make sure of these two
+// requirements:
+// 1) At startup, set mixer and volume registers to 0 - even if you aren't using them.
+//    It may be best to just zero all registers to ensure there's no garbage in them.
+// 2) The mixer only runs if channel A/B/C tone frequency is in range. So if you have
+//    a channel that is noise only, set a small but legal value on the tone generator
+//    as well (ie: 16). You won't hear the tone but without it, you won't hear the noise
+//    either.
+// These are based on observation and experimentation and are not confirmed in the HDL.
+
 volatile __sfr __at 0x50 AY_REGISTER;
 volatile __sfr __at 0x51 AY_DATA_WRITE;
 volatile __sfr __at 0x52 AY_DATA_READ;
