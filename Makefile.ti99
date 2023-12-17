@@ -23,7 +23,7 @@ OBJECT_LIST_EA5=\
 NAME=libti99.a
 
 C_FLAGS=\
-  -O2 -std=c99 -DTI99 -s --save-temp -I./ -fno-builtin
+  -O2 -std=c99 -DTI99 -s --save-temp -I../ -fno-builtin
 
 # List of compiled objects used in executable
 OBJECT_LIST=\
@@ -155,23 +155,23 @@ library: $(OBJECT_LIST)
 	$(AR) rcs $(NAME) $(OBJECT_LIST)
 
 test: library testlib.o $(OBJECT_LIST_EA5) 
-	$(LD) $(OBJECT_LIST_EA5) testlib.o $(LDFLAGS_EA5) -L. -lti99 -o testlib.ea5.elf > ea5.map
+	$(LD) $(OBJECT_LIST_EA5) testlib.o $(LDFLAGS_EA5) -L. -lti99 -o testlib.ea5.elf > ea5_testlib.map
 	$(ELF2EA5) testlib.ea5.elf testlib.ea5.bin
 	$(EA5_SPLIT) testlib.ea5.bin
 	cp TESTLI* $(CLASSIC99_DSK1)
 
 example: library example.o $(OBJECT_LIST_EA5) 
-	$(LD) $(OBJECT_LIST_EA5) example.o $(LDFLAGS_EA5) -L. -lti99 -o example.ea5.elf > ea5.map
+	$(LD) $(OBJECT_LIST_EA5) example.o $(LDFLAGS_EA5) -L. -lti99 -o example.ea5.elf > ea5_example.map
 	$(ELF2EA5) example.ea5.elf example.ea5.bin
 	$(EA5_SPLIT) example.ea5.bin
 	cp EXAMPL* $(CLASSIC99_DSK1)
 
 # Recipe to compile all assembly files
-%.o: %.asm
+%.o: ../%.asm
 	$(GAS) $< -o $@
-%.o: %.assembly
+%.o: ../%.assembly
 	$(GAS) $< -o $@
 
 # Recipe to compile all C files
-%.o: %.c
+%.o: ../%.c
 	$(CC) -c $< $(C_FLAGS) -o $@

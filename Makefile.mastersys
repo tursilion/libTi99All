@@ -4,7 +4,7 @@
 CC = "D:/work/coleco/sdcc20230715/bin/sdcc"
 AS = "D:/work/coleco/sdcc20230715/bin/sdasz80"
 AR = "D:/work/coleco/sdcc20230715/bin/sdar"
-CFLAGS = -mz80 -c -DCOLECO "-I../include" "-I." --std-sdcc99 --less-pedantic --vc -DENABLEFX --opt-code-speed --fsigned-char
+CFLAGS = -mz80 -c -DCOLECO "-I../include" "-I.." --std-sdcc99 --less-pedantic --vc -DENABLEFX --opt-code-speed --fsigned-char
 AFLAGS = -plosgff
 RM = cmd //c del
 # might need to use o for older SDCC, rel for newer
@@ -155,11 +155,11 @@ example: library example.$(EXT) crt0_sms.$(EXT)
 	"d:/work/coleco/tursi/makemegacart/release/makemegacart.exe" -sms crt0_sms.ihx example.sms
 
 # Recipe to compile all C files
-%.rel: %.c
+%.rel: ../%.c
 	$(CC) -c $< $(CFLAGS) -o $@
 
 # Recipe to compile all assembly files
-%.rel: %.s
+%.rel: ../%.s
 	$(AS) -o $@ $<
-%.rel: %.assembly
+%.rel: ../%.assembly
 	$(AS) -o $@ $<

@@ -258,6 +258,7 @@ void test_speech() {
 int main() {
 	int f18 = 0;
 	
+	// TODO: Bug: If F18A is already unlocked, we'll get sprite garbage on screen. Lock F18A before starting.
 	set_text();
 	charsetlc();
     textcolor(COLOR_WHITE);

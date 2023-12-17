@@ -1,10 +1,8 @@
-RM = cmd //c del
-
 all:
 	echo Try make ti, make coleco, or make sms. Try make clean between them.
 
-# Recipe to clean all compiled objects
-.phony clean:
+# files to delete to clean
+.phonya wipefolder:
 	-rm *.o
 	-rm *.a
 	-rm *.s
@@ -21,13 +19,41 @@ all:
 	-rm EXAMPL*
 	-rm *.rom
 	-rm *.sms
+
+# clean one folder
+.phonyb cleanti:
+	-mkdir buildti
+	cp Makefile.stub buildti/Makefile
+	make -C buildti wipefolder
+	cd ..
 	
-.phony2 ti:
-	make -f Makefile.ti99 all
+.phonyc cleancoleco:    
+	-mkdir buildcoleco
+	cp Makefile.stub buildcoleco/Makefile
+	make -C buildcoleco wipefolder
+	cd ..
+
+.phonyd cleansms:
+	-mkdir buildsms
+	cp Makefile.stub buildsms/Makefile
+	make -C buildsms wipefolder
+	cd ..
+
+# Recipe to clean all compiled objects
+.phonye clean: cleanti cleancoleco cleansms
+	@echo Done
+
+.phonyf ti:
+	-mkdir buildti
+	cp Makefile.stub buildti/Makefile
+	make -C buildti -f ../Makefile.ti99 all
 	
-.phony3 coleco:
-	make -f Makefile.coleco all
+.phonyg coleco:
+	-mkdir buildcoleco
+	cp Makefile.stub buildti/Makefile
+	make -C buildcoleco -f ../Makefile.coleco all
 	
-.phony4 sms:
-	make -f Makefile.mastersys all
-    
+.phonyh sms:
+	-mkdir buildsms
+	cp Makefile.stub buildti/Makefile
+	make -C buildsms -f ../Makefile.mastersys all
