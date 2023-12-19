@@ -20,3 +20,26 @@ Note that the current version of puff has all error handling disabled, it just c
 So test your streams before using it!
 
 The GCC patches and build instructions (not related to this lib) are here: http://atariage.com/forums/topic/164295-gcc-for-the-ti/page__st__125
+
+...
+
+Bug in testlib1:
+
+Only in 64-column mode, only with the new compiler, and only with libti99ALL, the printf test fails:
+
+(03d)
+-12345 =0-12345 (should be -12345 = -12345)
+
+(Hello)
+3Hello'      (should be 'Hello')
+|     Hell*  (*=garbage character, should be '     Hello')
+oHello    *  (should be 'Hello     ')
+ Hel'        (should be 'Hel')
+
+Decimal (123 -456): 12* -456     (should be 123 -456)
+Unsigned (123 65080): 12* 65080  (should be 123 65080)
+
+Octal (17001):c17001  (should be 17001 (space instead of 'c'))
+
+Screen is 6462*, Cursor at40423  (should be Screen is 64x24, Cursor at 0,23)
+
