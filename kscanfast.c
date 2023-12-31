@@ -32,7 +32,7 @@ void kscanfast(unsigned char mode) {
 			col = 0x0700;		// make that joystick 2
 		}
 
-		__asm__("li r12,>0024\n\tldcr %1,3\n\tsrc r12,7\n\tli r12,>0006\n\tclr %0\n\tstcr %0,1" : "=r"(key) : "r"(col) : "r12");	// set cru, column, delay, read (only need 1 bit)
+		__asm__ volatile ("li r12,>0024\n\tldcr %1,3\n\tsrc r12,7\n\tli r12,>0006\n\tclr %0\n\tstcr %0,1" : "=r"(key) : "r"(col) : "r12","cc");	// set cru, column, delay, read (only need 1 bit)
 		if (key == 0) {
 			KSCAN_KEY = 18;
 			return;
@@ -43,7 +43,7 @@ void kscanfast(unsigned char mode) {
 	{
 		for (unsigned int col=0; col < 0x0600; col += 0x0100) {
 			unsigned int key;
-			__asm__("li r12,>0024\n\tldcr %1,3\n\tsrc r12,7\n\tli r12,>0006\n\tclr %0\n\tstcr %0,8" : "=r"(key) : "r"(col) : "r12");	// set cru, column, delay, read
+			__asm__ volatile("li r12,>0024\n\tldcr %1,3\n\tsrc r12,7\n\tli r12,>0006\n\tclr %0\n\tstcr %0,8" : "=r"(key) : "r"(col) : "r12","cc");	// set cru, column, delay, read
 			unsigned int shift=0x8000;
 
 			for (int cnt=7; cnt>=0; cnt--) {

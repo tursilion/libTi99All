@@ -119,7 +119,7 @@ static void vdpchar64(int pAddr, unsigned char ch)
 {
     extern int text64_scroll;
     static unsigned int last_offset = 0xffff;
-    unsigned int buf[4];
+    static unsigned int buf[4];
     unsigned int mask = pAddr & 1 ? 0xf0f0 : 0x0f0f, mask2 = ~mask;
     const unsigned int *font = font3x5 + ch*4;
     unsigned offset = (pAddr - gImage) / 2 ; // byte offset
