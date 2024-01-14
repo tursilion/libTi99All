@@ -6,7 +6,6 @@ void fast_scrn_scroll_default();
 unsigned char set_text80_raw() {
 	unsigned char unblank = VDP_MODE1_16K | VDP_MODE1_UNBLANK | VDP_MODE1_TEXT | VDP_MODE1_INT;
 
-	vdpchar = vdpchar_default;
 	scrn_scroll = scrn_scroll_default;
 
 	VDP_SET_REGISTER(VDP_REG_MODE0, VDP_MODE0_80COL);

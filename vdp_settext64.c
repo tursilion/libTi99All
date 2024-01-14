@@ -6,15 +6,12 @@ int text64_scroll = 0;
 
 static void fast_scrn_scroll64();
 
-static void vdpchar64(int pAddr, unsigned char ch);
-
 unsigned char set_text64_raw(void) {
     extern unsigned int conio_scrnCol; // conio_bgcolor.c
 
 	// note: no masking, full size bitmap mode
 	unsigned char unblank = VDP_MODE1_16K | VDP_MODE1_UNBLANK | VDP_MODE1_INT;
 
-	vdpchar = vdpchar64;
 	scrn_scroll = fast_scrn_scroll64;
 
 	VDP_SET_REGISTER(VDP_REG_MODE1, VDP_MODE1_16K);		// no need to OR in the sprite mode for now
@@ -22,7 +19,7 @@ unsigned char set_text64_raw(void) {
 	VDP_SET_REGISTER(VDP_REG_SIT, 0x0E);	gImage = 0x3800;
 	VDP_SET_REGISTER(VDP_REG_CT, 0xFF);		gColor = 0x2000;
 	VDP_SET_REGISTER(VDP_REG_PDT, 0x03);	gPattern = 0x0000;
-	VDP_SET_REGISTER(VDP_REG_SAL, 0x76);	gSprite = 0x3B00;	vdpchar_default(gSprite, 0xd0);
+	VDP_SET_REGISTER(VDP_REG_SAL, 0x76);	gSprite = 0x3B00;	vdpchar(gSprite, 0xd0);
 	VDP_SET_REGISTER(VDP_REG_SDT, 0x03);	gSpritePat = 0x1800;
 	nTextRow = 64*23;
 	nTextEnd = 64*24-1;
@@ -32,7 +29,7 @@ unsigned char set_text64_raw(void) {
 	int i;
     VDP_SET_ADDRESS_WRITE(gImage);
 	for (i = 0; i < 32*24; i++) {
-            VDPWD = i;
+        VDPWD = i;
 	}
 	vdpmemset(gPattern, 0, 32*24*8);
 	vdpmemset(gColor, conio_scrnCol, 32*24*8);
@@ -114,15 +111,16 @@ const unsigned int font3x5[] = {
 0xCCAA,0xAA00,0x0000,0x0000, 0xCC44,0x88CC,0x0000,0x0000, 0x0000,0xEEEE,0xEE00,0x0000, 0x0000,0x0000,0x0000,0x0000,
 };
 
-
-static void vdpchar64(int pAddr, unsigned char ch)
+void vdpchar64(int pAddr, unsigned char ch)
 {
     extern int text64_scroll;
     static unsigned int last_offset = 0xffff;
     static unsigned int buf[4];
     unsigned int mask = pAddr & 1 ? 0xf0f0 : 0x0f0f, mask2 = ~mask;
     const unsigned int *font = font3x5 + ch*4;
-    unsigned offset = (pAddr - gImage) / 2 ; // byte offset
+    unsigned offset;
+    if (pAddr > 1536) pAddr-=gImage;    // don't include gImage
+    offset = pAddr / 2 ; // byte offset
     offset = (offset & 0xff1f) + ((offset + text64_scroll) & 0x00e0);
     offset = offset * 8 + gPattern;
     if (offset != last_offset) {
@@ -157,10 +155,8 @@ void fast_scrn_scroll64() {
     text64_scroll = (text64_scroll + 0x20) & 0x00e0;
     ch = text64_scroll;
 
-    VDP_SET_ADDRESS_WRITE(gImage);
-    for (i = 0; i < 7*32; i++) {
-	VDPWD = ch++;
-    }
+    vdpwriteinc(gImage, ch, 7*32);
+    ch+=7*32;
 
     // copy 32 patterns from middle to top
     vdpmemread(gPattern + src, vdp_bigbuf, 256);
@@ -168,10 +164,8 @@ void fast_scrn_scroll64() {
     vdpmemread(gColor + src, vdp_bigbuf, 256);
     vdpmemcpy(gColor + dst, vdp_bigbuf, 256);
 
-    VDP_SET_ADDRESS_WRITE(gImage + 7*32);
-    for (i = 0; i < 8*32; i++) {
-	VDPWD = ch++;
-    }
+    vdpwriteinc(gImage+7*32, ch, 8*32);
+    ch+=8*32;
 
     // copy 32 patterns from bottom to middle
     src += 8*32*8;
@@ -181,10 +175,7 @@ void fast_scrn_scroll64() {
     vdpmemread(gColor + src, vdp_bigbuf, 256);
     vdpmemcpy(gColor + dst, vdp_bigbuf, 256);
 
-    VDP_SET_ADDRESS_WRITE(gImage + 15*32);
-    for (i = 0; i < 9*32; i++) {
-	VDPWD = ch++;
-    }
+    vdpwriteinc(gImage+15*32, ch, 9*32);
 
     // clear the last line
     dst += 8*32*8;

@@ -6,7 +6,7 @@
 // turns off the card and the card LED
 void rs232raw_activateCard(int card) {
 #ifdef TI99
-    __asm__ (
+    __asm__  volatile (
         "mov %0,r12\n\tsbo 0\n\rsbo 7" : : "r"(card) : "r12" 
     );
 #endif

@@ -7,7 +7,7 @@
 // this does manipulate RTS/DCD since everyone does ;)
 void rs232raw_writebyte(int rawCRU, int ch) {
 #ifdef TI99
-    __asm__ (
+    __asm__  volatile (
         "  mov %0,r12\n"	// get rawCRU
         "  sbo 16\n"		// set RTS low (this is what the card and FlipSide did...? maybe enables the write?)
         "  swpb %1\n"		// get the value into the MSB

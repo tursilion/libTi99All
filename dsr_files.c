@@ -12,7 +12,7 @@ unsigned int __attribute__((noinline)) searchdofiles(unsigned int base) {
 
 	// TODO: we could rewrite the rest of this in C, just adding support for SBO, SBZ and the actual call which
 	// needs to be wrapped with LWPI....
-	__asm__(
+	__asm__ volatile (
 	"seto %0			; not found\n\t"
 	"lwpi 0x83e0		; gplws\n\t"
 	"sbo 0				; turn on the rom (set above)\n\t"

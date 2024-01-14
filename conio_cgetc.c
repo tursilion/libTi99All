@@ -28,10 +28,10 @@ unsigned char cgetc() {
         }
         if (conio_cursorFlag) {
             if (blink == -BLINK_RATE) {
-                vdpchar(conio_getvram(), conio_cursorChar);
+                vsetchar(conio_getvram(), conio_cursorChar);
             }
             if (blink == 0) {
-                vdpchar(conio_getvram(), ' ');
+                vsetchar(conio_getvram(), ' ');
             }
             if (blink < BLINK_RATE) {
                 ++blink;
@@ -42,6 +42,6 @@ unsigned char cgetc() {
         k = kscan(5);
     } while ((k == 255) || ((KSCAN_STATUS&KSCAN_MASK) == 0));
 
-    vdpchar(conio_getvram(), ' ');
+    vsetchar(conio_getvram(), ' ');
     return k;
 }

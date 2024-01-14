@@ -29,7 +29,7 @@ void __attribute__((noinline)) gpldsrlnk(unsigned int vdp) {
 	vdp+=9;
 	DSR_PAB_POINTER = vdp;
 
-	__asm__(
+	__asm__ volatile (
 	"		ai r10,-38				; make stack room to save workspace, rtn & zero word\n"
 	"		lwpi 0x83e0				; get gplws\n"
 	"		li r0,0x8300			; source wp for backup\n"

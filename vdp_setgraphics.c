@@ -8,7 +8,6 @@ void fast_scrn_scroll_default();
 // setting up standard screen modes - blanks the screen and returns the unblank command
 // interrupts are also disabled. Unblank will re-enable them, too, write it to VDP_REG_MODE1
 unsigned char set_graphics_raw(unsigned char sprite_mode) {
-    vdpchar = vdpchar_default;
     scrn_scroll = scrn_scroll_default;
 
 	unsigned char unblank = VDP_MODE1_16K | VDP_MODE1_UNBLANK | VDP_MODE1_INT | sprite_mode;

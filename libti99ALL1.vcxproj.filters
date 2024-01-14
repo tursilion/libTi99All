@@ -1,0 +1,473 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Asm">
+      <UniqueIdentifier>{057da786-efc5-495d-8338-81d503f07b68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Docs">
+      <UniqueIdentifier>{9842dafa-b5af-4316-81f1-15bfa67c0d22}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="conio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="f18a.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="files.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="grom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="halt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="kscan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="puff.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="puff16k.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rs232.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="speech.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="string.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="system.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vdp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="conio_bgcolor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="conio_cclear.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="conio_cclearxy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="conio_cgetc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="conio_chline.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="conio_chlinexy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="conio_clrscr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="conio_cprintf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="conio_cputc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="conio_cputcxy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="conio_cputs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="conio_cputsxy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="conio_cvline.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="conio_cvlinexy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="conio_getvram.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="conio_kbhit.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="conio_screensize.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dsr_dsrlnk.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dsr_dsrlnkraw.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dsr_files.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dsr_gpldsrlnk.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="example.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="f18a_detect.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="f18a_loadpal.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="f18a_lock.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="f18a_reset.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="f18a_startgpu.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="f18a_unlock.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="grom_readdata.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="grom_writedata.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="joystfast.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="kscan.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="kscanfast.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="math_sqrt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="puff.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="puff16k.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rs232_geterrs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rs232_poll.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rs232_readbyte.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rs232_readPIO.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rs232_setbps.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rs232_setcontrol.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rs232_writebyte.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rs232_writePIO.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rs232raw_activateCard.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rs232raw_checkstatus.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rs232raw_deactivateCard.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rs232raw_geterrs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rs232raw_getuart.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rs232raw_poll.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rs232raw_readbyte.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rs232raw_setPIOinput.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rs232raw_setPIOoutput.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rs232raw_writebyte.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="speech.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="str_atoi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="str_gets.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="str_int2str.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="str_memcmp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="str_memcpy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="str_memset.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="str_strcmp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="str_strcpy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="str_strlen.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="str_strncpy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="str_uint2hex.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="str_uint2str.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sys_checkquit.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sys_exit.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sys_halt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="testlib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_bigbuf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_bmclearhlinefast.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_bmclearpixel.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_bmclearscreen.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_bmcolor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_bmconsolefont.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_bmdrawline.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_bmdrawlinefast.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_bmputs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_bmsethlinefast.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_bmsetpixel.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_byte2hex.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_char.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_charset.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_charsetlc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_delsprite.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_fasterhexprint.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_fasthexprint.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_fastscrnscroll.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_gchar.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_gplvdp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_hchar.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_hexprint.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_ints.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_memcpy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_memread.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_memset.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_printf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_putchar.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_puts.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_putstring.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_rawmemcpy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_rawmemset.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_readchar.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_screenchar.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_scrnscroll.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_setbitmap.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_setgraphics.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_setmode.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_setmulticolor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_settext.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_settext64.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_settext80.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_settext80color.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_settext80x30color.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_sprite.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_textdefs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_vchar.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_waitvint.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_writeinc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_writescreeninc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_writestring.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_vsetchar.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_getscreenoffset.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="crt0_coleco.assembly">
+      <Filter>Asm</Filter>
+    </None>
+    <None Include="crt0_ea5.assembly">
+      <Filter>Asm</Filter>
+    </None>
+    <None Include="crt0_sms.assembly">
+      <Filter>Asm</Filter>
+    </None>
+    <None Include="vdp_bmasmdrawlinefast.assembly">
+      <Filter>Asm</Filter>
+    </None>
+    <None Include="readme.md">
+      <Filter>Docs</Filter>
+    </None>
+    <None Include="Makefile" />
+    <None Include="Makefile.coleco" />
+    <None Include="Makefile.mastersys" />
+    <None Include="Makefile.stub" />
+    <None Include="Makefile.ti99" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="puff_README.txt">
+      <Filter>Docs</Filter>
+    </Text>
+  </ItemGroup>
+</Project>

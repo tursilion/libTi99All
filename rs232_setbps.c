@@ -12,7 +12,7 @@ void rs232_setbps(int card, int uart, int bps) {
 	// chip is supposed to turn them off for you. But again, I'm thinking
 	// about buggy emulation and broken future chips. ;)
 
-    __asm__ (
+    __asm__  volatile (
         "  mov %0,r12\n"	// get the rawcru address
         "  sbz 14\n"		// not request to write control word
         "  sbz 13\n"		// not request to write interval register

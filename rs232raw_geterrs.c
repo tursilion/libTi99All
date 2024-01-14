@@ -12,7 +12,7 @@ int rs232raw_geterrs(int rawCRU) {
 #ifdef TI99
     int ret;
 
-    __asm__ (
+    __asm__ volatile  (
         "mov %1,r12\n\tai r12,18\n\tclr %0\n\tstcr %0,4\n\tswpb %0" : "=rm" (ret) : "r" (rawCRU) : "r12" 
     );
 

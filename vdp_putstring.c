@@ -17,7 +17,7 @@ void putstring(char *s) {
 
 		default:
 			if ((tmp < 32) || (tmp >= 127)) tmp='.';
-			vdpchar(nTextPos, tmp);
+			vsetchar(nTextPos, tmp);
 			nTextPos++;
 			if (nTextPos > nTextEnd) {
 				scrn_scroll();

@@ -6,9 +6,9 @@ unsigned char putchar(unsigned char x) {
     scrn_scroll();
     nTextPos = nTextRow;
   } else if (x == '\r') {
-		nTextPos = nTextRow;
+	nTextPos = nTextRow;
   } else {
-    vdpchar(nTextPos, x);
+    vsetchar(nTextPos, x);
     ++nTextPos;
     if (nTextPos > nTextEnd) {
       scrn_scroll();

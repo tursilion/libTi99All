@@ -10,7 +10,7 @@ void gets(char *buf, int maxlen) {
   oldch = 255;
   
   while (cnt) {
-    vdpchar(nTextPos, 30);  // cursor
+    vsetchar(nTextPos, 30);  // cursor
     while (kscan(5) == oldch) {  // wait for key, 99/4 mode, allow interrupts
       VDP_INT_ENABLE;
       VDP_INT_DISABLE;
@@ -20,7 +20,7 @@ void gets(char *buf, int maxlen) {
       case '\r':
         cnt = 0;
         *buf = '\0';
-        vdpchar(nTextPos, ' ');
+        vsetchar(nTextPos, ' ');
         putchar('\n');
         // wait for enter to be released
         while (kscan(5) == oldch) {
@@ -32,7 +32,7 @@ void gets(char *buf, int maxlen) {
       case 8:   // backspace
         if (cnt < maxlen) {
           ++cnt;
-          vdpchar(nTextPos, ' ');
+          vsetchar(nTextPos, ' ');
           --nTextPos;
           --buf;
         }

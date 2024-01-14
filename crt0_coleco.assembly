@@ -53,7 +53,7 @@ start:
 	ld	bc,#0xFFFE			; switch in code bank
    	ld	a,(bc)				; note that this does NOT set the local pBank variable, user code still must do that!
 	call gsinit				; Initialize global variables. (always at end of code bank, so need above bank switch)
-	call _vdpinit			; Initialize something or other ;)
+	call _vdpinit			; Initialize video system (also mutes SN)
 	call _main
 	rst 0x0					; Restart when main() returns.
 

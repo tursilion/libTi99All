@@ -13,3 +13,4 @@
 *.map
 *.bin
 *.elf
+.vs/

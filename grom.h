@@ -38,7 +38,7 @@
 
 // Set the GROM address - this value will be used for read or write
 #ifdef TI99
-inline void GROM_SET_ADDRESS(unsigned int x) { __asm__("movb %0,@>9c02\n\tswpb %0\n\tmovb %0,@>9c02\n\tswpb %0" : : "r"(x) : "cc"); }
+inline void GROM_SET_ADDRESS(unsigned int x) { __asm__ volatile ("movb %0,@>9c02\n\tswpb %0\n\tmovb %0,@>9c02\n\tswpb %0" : : "r"(x) : "cc"); }
 #else
 inline void GROM_SET_ADDRESS(unsigned int x)		{	GROMWA=((x)>>8); GROMWA=((x)&0xff);					}
 #endif

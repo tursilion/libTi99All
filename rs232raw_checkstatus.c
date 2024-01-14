@@ -16,7 +16,7 @@ int rs232raw_checkstatus(int rawCRU) {
 #ifdef TI99
     int ret;
 
-    __asm__ (
+    __asm__  volatile (
         "mov %1,r12\n\tai r12,42\n\tclr %0\n\tstcr %0,8\n\tswpb %0" : "=rm" (ret) : "r" (rawCRU) : "r12" 
     );
 

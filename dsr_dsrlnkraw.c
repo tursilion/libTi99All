@@ -47,7 +47,7 @@ unsigned char __attribute__((noinline)) dsrlnkraw(unsigned int vdp) {
 
 	// TODO: we could rewrite the rest of this in C, just adding support for SBO, SBZ and the actual call which
 	// needs to be wrapped with LWPI....
-	__asm__(
+	__asm__ volatile (
 	"		ai r10,-34				; make stack room to save workspace & zero word\n"
 	"		lwpi 0x83e0				; get gplws\n"
 	"		li r0,0x8300			; source wp for backup\n"

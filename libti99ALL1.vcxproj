@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{4a117210-9973-43b8-b688-2febba64e641}</ProjectGuid>
+    <RootNamespace>libti99ALL1</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="conio.h" />
+    <ClInclude Include="f18a.h" />
+    <ClInclude Include="files.h" />
+    <ClInclude Include="grom.h" />
+    <ClInclude Include="halt.h" />
+    <ClInclude Include="kscan.h" />
+    <ClInclude Include="math.h" />
+    <ClInclude Include="player.h" />
+    <ClInclude Include="puff.h" />
+    <ClInclude Include="puff16k.h" />
+    <ClInclude Include="rs232.h" />
+    <ClInclude Include="sound.h" />
+    <ClInclude Include="speech.h" />
+    <ClInclude Include="string.h" />
+    <ClInclude Include="system.h" />
+    <ClInclude Include="vdp.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="conio_bgcolor.c" />
+    <ClCompile Include="conio_cclear.c" />
+    <ClCompile Include="conio_cclearxy.c" />
+    <ClCompile Include="conio_cgetc.c" />
+    <ClCompile Include="conio_chline.c" />
+    <ClCompile Include="conio_chlinexy.c" />
+    <ClCompile Include="conio_clrscr.c" />
+    <ClCompile Include="conio_cprintf.c" />
+    <ClCompile Include="conio_cputc.c" />
+    <ClCompile Include="conio_cputcxy.c" />
+    <ClCompile Include="conio_cputs.c" />
+    <ClCompile Include="conio_cputsxy.c" />
+    <ClCompile Include="conio_cvline.c" />
+    <ClCompile Include="conio_cvlinexy.c" />
+    <ClCompile Include="conio_getvram.c" />
+    <ClCompile Include="conio_kbhit.c" />
+    <ClCompile Include="conio_screensize.c" />
+    <ClCompile Include="dsr_dsrlnk.c" />
+    <ClCompile Include="dsr_dsrlnkraw.c" />
+    <ClCompile Include="dsr_files.c" />
+    <ClCompile Include="dsr_gpldsrlnk.c" />
+    <ClCompile Include="example.c" />
+    <ClCompile Include="f18a_detect.c" />
+    <ClCompile Include="f18a_loadpal.c" />
+    <ClCompile Include="f18a_lock.c" />
+    <ClCompile Include="f18a_reset.c" />
+    <ClCompile Include="f18a_startgpu.c" />
+    <ClCompile Include="f18a_unlock.c" />
+    <ClCompile Include="grom_readdata.c" />
+    <ClCompile Include="grom_writedata.c" />
+    <ClCompile Include="joystfast.c" />
+    <ClCompile Include="kscan.c" />
+    <ClCompile Include="kscanfast.c" />
+    <ClCompile Include="math_sqrt.c" />
+    <ClCompile Include="puff.c" />
+    <ClCompile Include="puff16k.c" />
+    <ClCompile Include="rs232raw_activateCard.c" />
+    <ClCompile Include="rs232raw_checkstatus.c" />
+    <ClCompile Include="rs232raw_deactivateCard.c" />
+    <ClCompile Include="rs232raw_geterrs.c" />
+    <ClCompile Include="rs232raw_getuart.c" />
+    <ClCompile Include="rs232raw_poll.c" />
+    <ClCompile Include="rs232raw_readbyte.c" />
+    <ClCompile Include="rs232raw_setPIOinput.c" />
+    <ClCompile Include="rs232raw_setPIOoutput.c" />
+    <ClCompile Include="rs232raw_writebyte.c" />
+    <ClCompile Include="rs232_geterrs.c" />
+    <ClCompile Include="rs232_poll.c" />
+    <ClCompile Include="rs232_readbyte.c" />
+    <ClCompile Include="rs232_readPIO.c" />
+    <ClCompile Include="rs232_setbps.c" />
+    <ClCompile Include="rs232_setcontrol.c" />
+    <ClCompile Include="rs232_writebyte.c" />
+    <ClCompile Include="rs232_writePIO.c" />
+    <ClCompile Include="speech.c" />
+    <ClCompile Include="str_atoi.c" />
+    <ClCompile Include="str_gets.c" />
+    <ClCompile Include="str_int2str.c" />
+    <ClCompile Include="str_memcmp.c" />
+    <ClCompile Include="str_memcpy.c" />
+    <ClCompile Include="str_memset.c" />
+    <ClCompile Include="str_strcmp.c" />
+    <ClCompile Include="str_strcpy.c" />
+    <ClCompile Include="str_strlen.c" />
+    <ClCompile Include="str_strncpy.c" />
+    <ClCompile Include="str_uint2hex.c" />
+    <ClCompile Include="str_uint2str.c" />
+    <ClCompile Include="sys_checkquit.c" />
+    <ClCompile Include="sys_exit.c" />
+    <ClCompile Include="sys_halt.c" />
+    <ClCompile Include="testlib.c" />
+    <ClCompile Include="vdp_bigbuf.c" />
+    <ClCompile Include="vdp_bmclearhlinefast.c" />
+    <ClCompile Include="vdp_bmclearpixel.c" />
+    <ClCompile Include="vdp_bmclearscreen.c" />
+    <ClCompile Include="vdp_bmcolor.c" />
+    <ClCompile Include="vdp_bmconsolefont.c" />
+    <ClCompile Include="vdp_bmdrawline.c" />
+    <ClCompile Include="vdp_bmdrawlinefast.c" />
+    <ClCompile Include="vdp_bmputs.c" />
+    <ClCompile Include="vdp_bmsethlinefast.c" />
+    <ClCompile Include="vdp_bmsetpixel.c" />
+    <ClCompile Include="vdp_byte2hex.c" />
+    <ClCompile Include="vdp_char.c" />
+    <ClCompile Include="vdp_charset.c" />
+    <ClCompile Include="vdp_charsetlc.c" />
+    <ClCompile Include="vdp_delsprite.c" />
+    <ClCompile Include="vdp_fasterhexprint.c" />
+    <ClCompile Include="vdp_fasthexprint.c" />
+    <ClCompile Include="vdp_fastscrnscroll.c" />
+    <ClCompile Include="vdp_gchar.c" />
+    <ClCompile Include="vdp_getscreenoffset.c" />
+    <ClCompile Include="vdp_gplvdp.c" />
+    <ClCompile Include="vdp_hchar.c" />
+    <ClCompile Include="vdp_hexprint.c" />
+    <ClCompile Include="vdp_ints.c" />
+    <ClCompile Include="vdp_memcpy.c" />
+    <ClCompile Include="vdp_memread.c" />
+    <ClCompile Include="vdp_memset.c" />
+    <ClCompile Include="vdp_printf.c" />
+    <ClCompile Include="vdp_putchar.c" />
+    <ClCompile Include="vdp_puts.c" />
+    <ClCompile Include="vdp_putstring.c" />
+    <ClCompile Include="vdp_rawmemcpy.c" />
+    <ClCompile Include="vdp_rawmemset.c" />
+    <ClCompile Include="vdp_readchar.c" />
+    <ClCompile Include="vdp_screenchar.c" />
+    <ClCompile Include="vdp_scrnscroll.c" />
+    <ClCompile Include="vdp_setbitmap.c" />
+    <ClCompile Include="vdp_setgraphics.c" />
+    <ClCompile Include="vdp_setmode.c" />
+    <ClCompile Include="vdp_setmulticolor.c" />
+    <ClCompile Include="vdp_settext.c" />
+    <ClCompile Include="vdp_settext64.c" />
+    <ClCompile Include="vdp_settext80.c" />
+    <ClCompile Include="vdp_settext80color.c" />
+    <ClCompile Include="vdp_settext80x30color.c" />
+    <ClCompile Include="vdp_sprite.c" />
+    <ClCompile Include="vdp_textdefs.c" />
+    <ClCompile Include="vdp_vchar.c" />
+    <ClCompile Include="vdp_vsetchar.c" />
+    <ClCompile Include="vdp_waitvint.c" />
+    <ClCompile Include="vdp_writeinc.c" />
+    <ClCompile Include="vdp_writescreeninc.c" />
+    <ClCompile Include="vdp_writestring.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="crt0_coleco.assembly" />
+    <None Include="crt0_ea5.assembly" />
+    <None Include="crt0_sms.assembly" />
+    <None Include="Makefile" />
+    <None Include="Makefile.coleco" />
+    <None Include="Makefile.mastersys" />
+    <None Include="Makefile.stub" />
+    <None Include="Makefile.ti99" />
+    <None Include="readme.md" />
+    <None Include="vdp_bmasmdrawlinefast.assembly" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="puff_README.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

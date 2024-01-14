@@ -11,14 +11,14 @@ void writestring(unsigned char row, unsigned char col, char *pStr) {
         // we can use a slower version here... we really have no choice
         int adr = VDP_SCREEN_TEXT64(row,col);
 	    while (*pStr) {
-            vdpchar(adr++, *(pStr++));
+            vsetchar(adr++, *(pStr++));
 	    }
         return;
 	} else {
 		return;
 	}
 
-    // write the string to the tiles
+    // write the string to the tiles - note no attributes, use conio
 	while (*pStr) {
 		VDPWD = *(pStr++);
 	}

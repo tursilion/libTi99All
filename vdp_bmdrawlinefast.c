@@ -3,7 +3,7 @@
 
 void bm_drawlinefast(int x1, int y1, int x2, int y2, int mode) {
 #ifdef TI99
-	__asm__(
+	__asm__ volatile (
 	"	mov %0,@>8324		; y2 -> r2\n"
 	"	mov %1,@>8326		; x2 -> r3\n"
 	"	mov %2,@>8328		; y1 -> r4\n"

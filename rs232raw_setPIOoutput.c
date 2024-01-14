@@ -7,6 +7,6 @@
 void rs232raw_setPIOoutput(int card) {
     rs232raw_activateCard(card);
 #ifdef TI99	
-    __asm__ ( "MOV %0,R12\n\tSBZ 1" : : "r" (card) : "r12" );
+    __asm__  volatile ( "MOV %0,R12\n\tSBZ 1" : : "r" (card) : "r12" );
 #endif
 }

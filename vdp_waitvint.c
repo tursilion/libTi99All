@@ -39,7 +39,7 @@ unsigned char vdpwaitvint() {
 	// wait for the interrupt to run (if we missed it, it ran already and this won't wait)
 	if (!ret) {
         // set the enable flag
-        __asm__("\tpush hl\n\tld hl,#_vdpLimi\n\tset 0,(hl)\n\tpop hl"); 
+        __asm__ volatile ("\tpush hl\n\tld hl,#_vdpLimi\n\tset 0,(hl)\n\tpop hl"); 
 	
 		// this countdown should be unnecessary. But if the user has
 		// messed with the interrupt flags or status register, or

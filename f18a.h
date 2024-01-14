@@ -32,7 +32,7 @@ void loadpal_f18a(const unsigned int *ptr, unsigned char first, unsigned char cn
 void startgpu_f18a(unsigned int adr);
 
 // extra F18A registers
-#define F18A_REG_SIT2           (unsigned char)0x0A	 // SIT2 - this value times >0400
+#define F18A_REG_SIT2           (unsigned char)0x0A	    // SIT2 - this value times >0400
 #define F18A_REG_CT2            (unsigned char)0x0B     // CT2 - this value times >0040
 #define F18A_REG_STATUS         (unsigned char)0x0F     // Status register to read
 #define F18A_REG_HINT           (unsigned char)0x13     // Horizontal interrupt line

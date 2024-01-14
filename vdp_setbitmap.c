@@ -2,7 +2,6 @@
 
 unsigned char set_bitmap_raw(unsigned char sprite_mode) {
 	// note: no masking, full size bitmap mode
-    vdpchar = vdpchar_default;
     scrn_scroll = scrn_scroll_default;
 
 	unsigned char unblank = VDP_MODE1_16K | VDP_MODE1_UNBLANK | VDP_MODE1_INT | sprite_mode;

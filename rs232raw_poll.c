@@ -8,7 +8,7 @@ int rs232raw_poll(int rawCRU) {
 #ifdef TI99
     int ret;
 
-    __asm__ (
+    __asm__  volatile (
         "MOV %1,R12\n\tCLR %0\n\tTB 21\n\tJNE NCH\n\tSETO %0\nNCH" : "=rm" (ret) : "r" (rawCRU) : "r12" 
     );
 

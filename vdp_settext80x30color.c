@@ -6,7 +6,7 @@
 #if 0
 static void gpu_scroll(void)
 {
-     __asm__(
+     __asm__ volatile (
 // copy code starting at loop0 to VDP address >4000
    "li r0,>3f16\n"   // source
 "	li r1,>4000\n"   // dest
@@ -66,13 +66,6 @@ static const unsigned char gpu_scroll80x30[] = {
 
 extern unsigned int conio_scrnCol; // conio_bgcolor.c
 
-static void vdpchar80color(int pAddr, unsigned char ch) {
-    VDP_SET_ADDRESS_WRITE(pAddr);
-    VDPWD=ch;
-    VDP_SET_ADDRESS_WRITE(pAddr-gImage+gColor);
-    VDPWD=conio_scrnCol;
-}
-
 static void fast_scrn_scroll_80color() {
     // similar to the slow_scrn_scroll, but uses a larger fixed
     // buffer for far more speed
@@ -82,7 +75,7 @@ static void fast_scrn_scroll_80color() {
     VDP_SET_REGISTER(0x38,1); // trigger GPU code
 
     VDP_SET_REGISTER(0x0f,2); // status register to read = SR2
-    while (VDPST & 0x80);    // wait for GPU status to be idle
+    while (VDPST & 0x80);     // wait for GPU status to be idle
     VDP_SET_REGISTER(0x0f,0); // status register to read = SR0
 
     extern unsigned int conio_scrnCol; // conio_bgcolor.c
@@ -122,7 +115,6 @@ unsigned char set_text80x30_color_raw() {
     gSprite = 0x0A00; // to 0x0B00
     VDP_SET_REGISTER(VDP_REG_SDT, 0x02); // sprites can use any of the font patterns.
 
-    vdpchar = vdpchar80color;
     scrn_scroll = fast_scrn_scroll_80color;
 
     // sprites are active when F18A is unlocked

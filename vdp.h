@@ -83,10 +83,10 @@ __endasm;
 // and a handful of instructions. Even using pointers the C code is still 4 instructions long
 
 // Set VDP address for read (no bit added)
-inline void VDP_SET_ADDRESS(unsigned int x)     { __asm__ ( "swpb %0\n\tmovb %0,@>8c02\n\tswpb %0\n\tmovb %0,@>8c02" : : "r"(x) : "cc"); }
+inline void VDP_SET_ADDRESS(unsigned int x)     { __asm__  volatile ( "swpb %0\n\tmovb %0,@>8c02\n\tswpb %0\n\tmovb %0,@>8c02" : : "r"(x) : "cc"); }
 
 // Set VDP address for write (adds 0x4000 bit)
-inline void VDP_SET_ADDRESS_WRITE(unsigned int x) { __asm__ ( "swpb %0\n\tmovb %0,@>8c02\n\tswpb %0\n\tori %0,>4000\n\tmovb %0,@>8c02\n\tandi %0,>3fff" : : "r"(x) : "cc"); }
+inline void VDP_SET_ADDRESS_WRITE(unsigned int x) { __asm__  volatile ( "swpb %0\n\tmovb %0,@>8c02\n\tswpb %0\n\tori %0,>4000\n\tmovb %0,@>8c02\n\tandi %0,>3fff" : : "r"(x) : "cc"); }
 
 #else
 // Set VDP address for read (no bit added)
@@ -110,8 +110,9 @@ inline int VDP_SCREEN_TEXT80(unsigned int r, unsigned int c)	    {	return (((r)<
 
 // get a screen offset for 64x24 graphics mode
 // NOTE: This is not a real VDP address, it's a virtual address that vdpchar64 understands
-// Do not add gImage to it!
 inline int VDP_SCREEN_TEXT64(unsigned int r, unsigned int c)		{	return (((r)<<6)+(c));						}
+
+// Note getscreenoffset(x,y) can be used for a mode-independent lookup
 
 //*********************
 // VDP Console interrupt control
@@ -182,13 +183,13 @@ extern volatile unsigned char VDP_STATUS_MIRROR;
 // call vdpwaitvint() instead if you want to keep running the console interrupt
 // DO NOT USE the non-CRU version - this will miss interrupts.
 //#define VDP_WAIT_VBLANK  		while (!(VDPST & VDP_ST_INT)) { }
-#define VDP_WAIT_VBLANK_CRU	  __asm__( "clr r12\nvdp%=:\n\ttb 2\n\tjeq vdp%=" : : : "r12" );
+#define VDP_WAIT_VBLANK_CRU	  __asm__ volatile ( "clr r12\nvdp%=:\n\ttb 2\n\tjeq vdp%=" : : : "r12","cc" );
 #define VDP_CLEAR_VBLANK { VDP_INT_DISABLE; VDP_STATUS_MIRROR = VDPST; }
 
 // we enable interrupts via the CPU instruction, not the VDP itself, because it's faster
 // Note that on the TI interrupts DISABLED is the default state
-#define VDP_INT_ENABLE			__asm__("LIMI 2")
-#define VDP_INT_DISABLE			__asm__("LIMI 0")
+#define VDP_INT_ENABLE			__asm__ volatile ("LIMI 2")
+#define VDP_INT_DISABLE			__asm__ volatile ("LIMI 0")
 
 // If using KSCAN, you must put a copy of VDP register 1 (returned by the 'set' functions)
 // at this address, otherwise the first time a key is pressed, the value will be overwritten.
@@ -210,8 +211,8 @@ extern volatile unsigned char vdpLimi;
 // on enable, we make sure we are disabled before entering the NMI, just in case we race
 // with another one. All the assumptions in the code assume that ints are disabled on entry
 // to prevent double-call.
-#define VDP_INT_ENABLE			{ if (vdpLimi&0x80) { vdpLimi=0; my_nmi(); } __asm__("\tpush hl\n\tld hl,#_vdpLimi\n\tset 0,(hl)\n\tpop hl"); }
-#define VDP_INT_DISABLE			{ __asm__("\tpush hl\n\tld hl,#_vdpLimi\n\tres 0,(hl)\n\tpop hl"); }
+#define VDP_INT_ENABLE			{ if (vdpLimi&0x80) { vdpLimi=0; my_nmi(); } __asm__ volatile ("\tpush hl\n\tld hl,#_vdpLimi\n\tset 0,(hl)\n\tpop hl"); }
+#define VDP_INT_DISABLE			{ __asm__ volatile ("\tpush hl\n\tld hl,#_vdpLimi\n\tres 0,(hl)\n\tpop hl"); }
 	
 // this might have no value... we'll see
 // If using KSCAN, you must put a copy of VDP register 1 (returned by the 'set' functions)
@@ -359,6 +360,7 @@ unsigned char set_bitmap_raw(unsigned char sprite_mode);
 void set_bitmap(unsigned char sprite_mode);
 
 // writestring - writes an arbitrary string of characters at any position on the screen
+// This is a fast low level function with no formatting or attributes, except in 64 column mode.
 // Inputs: row and column (zero-based), NUL-terminated string to write
 // Note: supports text mode
 void writestring(unsigned char row, unsigned char col, char *pStr);
@@ -383,9 +385,19 @@ void vdpwriteinc(int pAddr, unsigned char nStart, int cnt);
 
 // vdpchar - write a character to VDP memory (NOT to be confused with basic's CALL CHAR)
 // Inputs: VDP address to write, character to be written
-// use indirect function call for each mode
-extern void (*vdpchar)(int pAddr, unsigned char ch);
-void vdpchar_default(int pAddr, unsigned char ch);
+// This is NOT for writing text, use vsetchar
+void vdpchar(int pAddr, unsigned char ch);
+
+// vsetchar - write a text character to a text screen (mode independent)
+// inputs: VDP address (not offset), character to be written
+// Note: 64 column mode will work with an offset only
+void vsetchar(int pAddr, unsigned char ch);
+
+// vdpchar64 - low level function to emit on the 64 char screen only
+// Needed in many places, so defined here
+// inputs: offset in the psuedo screen, character
+void vdpchar64(int pAddr, unsigned char ch);
+
 
 // vdpreadchar - read a character from VDP memory
 // Inputs: VDP address to read
@@ -426,6 +438,9 @@ void raw_vdpmemset(unsigned char ch, int cnt);
 
 // raw_vdpmemcpy - copies bytes from CPU to current VDP address
 void raw_vdpmemcpy(const unsigned char *p, int cnt);
+
+// convert an x,y into an offset based on the screen mode
+unsigned int getscreenoffset(int x, int y);
 
 // putstring - writes a string with limited formatting to the bottom of the screen
 // Inputs: NUL-terminated string to write

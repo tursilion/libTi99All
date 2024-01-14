@@ -2,7 +2,6 @@
 
 unsigned char set_multicolor_raw(unsigned char sprite_mode) {
 	// this layout is untested
-    vdpchar = vdpchar_default;
     scrn_scroll = scrn_scroll_default;
 
 	unsigned char unblank = VDP_MODE1_16K | VDP_MODE1_UNBLANK | VDP_MODE1_MULTI | VDP_MODE1_INT | sprite_mode;

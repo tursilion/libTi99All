@@ -95,6 +95,7 @@ OBJECT_LIST=\
   vdp_fasterhexprint.$(EXT)	\
   vdp_fasthexprint.$(EXT)	\
   vdp_gchar.$(EXT)		\
+  vdp_getscreenoffset.$(EXT) \
   vdp_gplvdp.$(EXT)		\
   vdp_hchar.$(EXT)		\
   vdp_hexprint.$(EXT)	\
@@ -122,6 +123,7 @@ OBJECT_LIST=\
   vdp_sprite.$(EXT)		\
   vdp_textdefs.$(EXT)	\
   vdp_vchar.$(EXT)		\
+  vdp_vsetchar.$(EXT)	\
   vdp_waitvint.$(EXT)	\
   vdp_writeinc.$(EXT)	\
   vdp_writescreeninc.$(EXT)	\

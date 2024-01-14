@@ -7,6 +7,7 @@ AR = "D:/work/coleco/sdcc20230715/bin/sdar"
 CFLAGS = -mz80 -c -DCOLECO "-I../include" "-I.." --std-sdcc99 --less-pedantic --vc -DENABLEFX --opt-code-speed --fsigned-char
 AFLAGS = -plosgff
 RM = cmd //c del
+
 # might need to use o for older SDCC, rel for newer
 EXT=rel
 
@@ -95,6 +96,7 @@ OBJECT_LIST=\
   vdp_fasterhexprint.$(EXT)	\
   vdp_fasthexprint.$(EXT)	\
   vdp_gchar.$(EXT)		\
+  vdp_getscreenoffset.$(EXT) \
   vdp_gplvdp.$(EXT)		\
   vdp_hchar.$(EXT)		\
   vdp_hexprint.$(EXT)	\
@@ -122,6 +124,7 @@ OBJECT_LIST=\
   vdp_sprite.$(EXT)		\
   vdp_textdefs.$(EXT)	\
   vdp_vchar.$(EXT)		\
+  vdp_vsetchar.$(EXT)	\
   vdp_waitvint.$(EXT)	\
   vdp_writeinc.$(EXT)	\
   vdp_writescreeninc.$(EXT)	\

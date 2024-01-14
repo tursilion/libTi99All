@@ -9,7 +9,7 @@ int rs232raw_readbyte(int rawCRU) {
 #ifdef TI99
     int ret;
 
-    __asm__ (
+    __asm__ volatile  (
         "  mov %1,r12\n"	// get rawCRU
         "  clr %0\n"		// clear rx register
         "  stcr %0,8\n"		// get byte

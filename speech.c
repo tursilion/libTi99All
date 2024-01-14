@@ -15,7 +15,7 @@ typedef void (*read_func)();
 // This will be copied to scratch pad for execution at SAFE_READ_PAD + 2
 // it is 12 bytes long (gcc will insert the return)
 void safe_read() {
-  __asm__(
+  __asm__ volatile (
     "MOVB @>9000,@%0\n\t"
     "NOP\n\t"
     "NOP\n\t"
@@ -24,14 +24,14 @@ void safe_read() {
 }
 
 void delay_asm_12() {
-  __asm__(
+  __asm__ volatile (
     "NOP\n\t"
     "NOP"
   );
 }
 
 void delay_asm_42() {
-  __asm__(
+  __asm__ volatile (
     "\tLI r12,10\n"
     "loop%=\n\t"
     "DEC r12\n\t"
@@ -79,7 +79,7 @@ void say_data(const char* addr, int len) {
   speech_start(&ctx);
   while(ctx.remaining > 0) {
     // Wait for VDP Interrupt via CRU
-    __asm__(
+    __asm__ volatile (
       "clr r12\n\t"
       "tb 2\n\t"
       "jeq -4\n\t"

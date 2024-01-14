@@ -2,6 +2,8 @@
 // You can copy this file and use it at will if it's useful
 
 #include "vdp.h"
+#include "f18a.h"
+#include "sound.h"
 
 #ifdef COLECO
 #include <stdint.h>
@@ -62,9 +64,6 @@ void my_nmi() {
 	// if it fired, so we will do the same here and not reset it.
 }
 
-// the init code needs this to mute the audio channels
-volatile __sfr __at 0xff SOUND;
-
 // called automatically by crt0.S (not in TI version)
 void vdpinit() {
 	volatile unsigned int x;
@@ -74,6 +73,20 @@ void vdpinit() {
 	SOUND = 0xbf;
 	SOUND = 0xdf;
 	SOUND = 0xff;
+	
+	// also silence and reset the AY sound chip in case it's present (if not present these
+	// port writes should go nowhere)
+    // note: turns out this is also important to work around a Phoenix AY powerup bug
+    AY_REGISTER = AY_VOLA;
+    AY_DATA_WRITE = 0x0;
+    AY_REGISTER = AY_VOLB;
+    AY_DATA_WRITE = 0x0;
+    AY_REGISTER = AY_VOLC;
+    AY_DATA_WRITE = 0x0;
+    // To work around another Phoenix AY bug, make sure the tone C generator is 
+    // running at an audible rate
+    AY_REGISTER = AY_PERIODC_LOW;
+    AY_DATA_WRITE = 0x10;
 
     // zero variables
     VDP_STATUS_MIRROR = 0;
@@ -90,7 +103,12 @@ void vdpinit() {
 	x=60000;
 	while (++x != 0) { }		// counts till we loop at 65536
 
-	VDP_STATUS_MIRROR = VDPST;	// init and clear any pending interrupt
+    // reset the system and accomodate known alternate VDPs
+    // First, reset then lock the F18A if any - this also turns off the screen
+    reset_f18a();
+    lock_f18a();
+
+    VDP_STATUS_MIRROR = VDPST;	// init and clear any pending interrupt
 }
 
 // NOT atomic! Do NOT call with interrupts enabled!
@@ -105,19 +123,44 @@ void clearUserIntHook() {
 #endif
 
 #ifdef TI99
-#define SOUND		*((volatile unsigned char*)0x8400)
+// contains default init for 9938 regs 8-15 that make it more compatible
+const unsigned char REG9938Init[8] = {
+    0x08,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+};
 
 void vdpinit() {
-	// not normally called, but maybe it should be
 	// shut off the sound generator
 	SOUND = 0x9f;
 	SOUND = 0xbf;
 	SOUND = 0xdf;
 	SOUND = 0xff;
+	
+	// also silence and reset the SID if present (if not present nothing will be mapped when we write)
+	// we write the keyboard select to guarantee the SID blaster is mapped in
+	MAP_SID_BLASTER;
+	// mute all
+	SIDBLASTER_MODEVOL = 0;
+	// and TEST all the channels to reset them
+	SIDBLASTER_CR1 = SIDBLASTER_CR_TEST;
+	SIDBLASTER_CR2 = SIDBLASTER_CR_TEST;
+	SIDBLASTER_CR3 = SIDBLASTER_CR_TEST;
 
     // zero variables
     VDP_INT_HOOK = (void (*)())0;
     VDP_INT_COUNTER = 1;
+
+    // reset the system and accomodate known alternate VDPs
+    // First, reset then lock the F18A if any - this also turns off the screen
+    reset_f18a();
+    lock_f18a();
+
+    // now load some default values that make the 9938 happy
+    for (int i=0; i<8; ++i) {
+        VDP_SET_REGISTER(i+8, REG9938Init[i]);
+    }
+
+    // NOTE: a stock 9918 will be very confused, but your first call should
+    // be one of the set_xxx calls to init a display mode
 
 	VDP_STATUS_MIRROR = VDPST;	// init and clear any pending interrupt
 }

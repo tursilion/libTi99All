@@ -1,6 +1,6 @@
  def _start
  def _init_data
-
+ 
 # Entry point for C runtime initilization code
 #
 # This will set initial values for data memory and otherwise create
@@ -45,11 +45,16 @@ bss_clear_top:
   jgt  bss_clear_top
 bss_clear_end:
 
-# zero the 'zero value' at >8320
-  clr @>8320
+# Clear flags and user interrupt
+  li r1,>0100
+  mov r1,@>83fc
+  clr @>83c4
 
 # Create the stack
   li sp, >4000
+  
+# call vdpinit to set critical variables
+  bl @vdpinit  
 
 # Start running C code
   bl @main

@@ -16,7 +16,7 @@ void rs232_setcontrol(int card, int uart, int control) {
 	// be very selective and not make assumptions!
 
 #ifdef TI99
-    __asm__ (
+    __asm__  volatile (
         "  mov %0,r12\n"	// get the rawcru address
         "  sbo 31\n"		// reset
         "  sbz 21\n"		// rts/cts interrupts off

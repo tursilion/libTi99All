@@ -2,7 +2,7 @@
 
 #ifdef TI99
 void exit() {
-  __asm__("clr @>83c4\n\tBLWP @>0000");
+  __asm__ volatile ("clr @>83c4\n\tBLWP @>0000");
 }
 #endif
 

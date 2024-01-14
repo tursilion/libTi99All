@@ -6,7 +6,7 @@
 #if 0
 static void gpu_scroll(void)
 {
-     __asm__(
+     __asm__ volatile (
 // copy code starting at loop0 to VDP address >4000
    "li r0,>3f16\n"   // source
 "	li r1,>4000\n"   // dest
@@ -66,13 +66,6 @@ const unsigned char gpu_scroll80[] = {
 
 extern unsigned int conio_scrnCol; // conio_bgcolor.c
 
-static void vdpchar80color(int pAddr, unsigned char ch) {
-    VDP_SET_ADDRESS_WRITE(pAddr);
-    VDPWD=ch;
-    VDP_SET_ADDRESS_WRITE(pAddr-gImage+gColor);
-    VDPWD=conio_scrnCol;
-}
-
 static void fast_scrn_scroll_80color() {
     const int line = nTextEnd - nTextRow + 1;
 
@@ -94,7 +87,6 @@ unsigned char set_text80_color_raw() {
     // unlock the F18A (should be done before setting the mode)
     unlock_f18a();
 
-    vdpchar = vdpchar80color;
     scrn_scroll = fast_scrn_scroll_80color;
 
     int unblank = VDP_MODE1_16K | VDP_MODE1_UNBLANK | VDP_MODE1_TEXT | VDP_MODE1_INT;
@@ -104,7 +96,7 @@ unsigned char set_text80_color_raw() {
     VDP_SET_REGISTER(VDP_REG_PDT, 0x02);	gPattern = 0x1000;
     VDP_SET_REGISTER(VDP_REG_CT, 0x20);		gColor = 0x800;
     // sprites are active when F18A is unlocked
-    VDP_SET_REGISTER(VDP_REG_SAL, 0x1800/0x80); gSprite = 0x1800; vdpchar_default(gSprite, 0xd0);
+    VDP_SET_REGISTER(VDP_REG_SAL, 0x1800/0x80); gSprite = 0x1800; vdpchar(gSprite, 0xd0);
     vdpmemset(gColor, conio_scrnCol, nTextEnd+1);	// clear the color table
     VDP_SET_REGISTER(0x32, 0x02);  // set Position-based tile attributes
 	
