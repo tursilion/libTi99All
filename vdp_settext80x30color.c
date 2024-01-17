@@ -84,6 +84,15 @@ static void fast_scrn_scroll_80color() {
     return;
 }
 
+static void vdpchar80col(int pAddr, unsigned char ch) {
+	VDP_SET_ADDRESS_WRITE(pAddr);
+	VDPWD=ch;
+        
+    // for 80 column color we also write a color byte (TODO: remove CONIO dependence)
+    VDP_SET_ADDRESS_WRITE(pAddr-gImage+gColor);
+    VDPWD=conio_scrnCol;
+}
+
 void set_text80x30_color(void)
 {
     unsigned char x = set_text80x30_color_raw();
@@ -98,7 +107,8 @@ unsigned char set_text80x30_color_raw() {
     nTextRow = 80 * 29;
     nTextEnd = (80 * 30) - 1;
     nTextPos = nTextRow;
-	nTextFlags = TEXT_FLAG_IS_F18A | TEXT_FLAG_HAS_ATTRIBUTES | TEXT_WIDTH_80 | TEXT_HEIGHT_30;
+	nTextFlags = TEXT_FLAG_IS_F18A | TEXT_FLAG_HAS_ATTRIBUTES | TEXT_WIDTH_80 | TEXT_HEIGHT_30 | TEXT_CUSTOM_VSETCHAR;
+    vsetchar = vdpchar80col;
 
     int unblank = VDP_MODE1_16K | VDP_MODE1_UNBLANK | VDP_MODE1_TEXT | VDP_MODE1_INT;
     VDP_SET_REGISTER(VDP_REG_MODE0, VDP_MODE0_80COL);

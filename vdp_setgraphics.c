@@ -3,7 +3,7 @@
 
 #include "vdp.h"
 
-void fast_scrn_scroll_default();
+void vsetchar_base(int pAddr, unsigned char ch);
 
 // setting up standard screen modes - blanks the screen and returns the unblank command
 // interrupts are also disabled. Unblank will re-enable them, too, write it to VDP_REG_MODE1
@@ -23,6 +23,7 @@ unsigned char set_graphics_raw(unsigned char sprite_mode) {
 	nTextEnd = 767;
 	nTextPos = nTextRow;
 	nTextFlags = TEXT_WIDTH_32;
+	vsetchar = vsetchar_base;
 	return unblank;
 }
 

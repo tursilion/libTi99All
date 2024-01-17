@@ -1,6 +1,6 @@
 #include "vdp.h"
 
-void fast_scrn_scroll_default();
+void vsetchar_base(int pAddr, unsigned char ch);
 
 unsigned char set_text_raw() {
 	unsigned char unblank = VDP_MODE1_16K | VDP_MODE1_UNBLANK | VDP_MODE1_TEXT | VDP_MODE1_INT;
@@ -18,7 +18,7 @@ unsigned char set_text_raw() {
 	nTextEnd = 23*40+39;
 	nTextPos = nTextRow;
 	nTextFlags = TEXT_WIDTH_40;
-
+	vsetchar = vsetchar_base;
 	return unblank;
 }
 

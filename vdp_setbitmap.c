@@ -1,5 +1,7 @@
 #include "vdp.h"
 
+extern void vsetchar_base(int pAddr, unsigned char ch);
+
 unsigned char set_bitmap_raw(unsigned char sprite_mode) {
 	// note: no masking, full size bitmap mode
     scrn_scroll = scrn_scroll_default;
@@ -17,6 +19,7 @@ unsigned char set_bitmap_raw(unsigned char sprite_mode) {
 	nTextEnd = 767;
 	nTextPos = nTextRow;
 	nTextFlags = TEXT_FLAG_IS_BITMAPPED | TEXT_FLAG_HAS_ATTRIBUTES | TEXT_WIDTH_32;
+	vsetchar = vsetchar_base;
 	return unblank;
 }
 

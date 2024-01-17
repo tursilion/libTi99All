@@ -82,6 +82,15 @@ static void fast_scrn_scroll_80color() {
     return;
 }
 
+static void vdpchar80col(int pAddr, unsigned char ch) {
+	VDP_SET_ADDRESS_WRITE(pAddr);
+	VDPWD=ch;
+        
+    // for 80 column color we also write a color byte (TODO: remove CONIO dependence)
+    VDP_SET_ADDRESS_WRITE(pAddr-gImage+gColor);
+    VDPWD=conio_scrnCol;
+}
+
 // requires F18A!!
 unsigned char set_text80_color_raw() {
     // unlock the F18A (should be done before setting the mode)
@@ -103,7 +112,8 @@ unsigned char set_text80_color_raw() {
     nTextRow = 80 * 23;
     nTextEnd = (80 * 24) - 1;
     nTextPos = nTextRow;
-	nTextFlags = TEXT_FLAG_IS_F18A | TEXT_FLAG_HAS_ATTRIBUTES | TEXT_WIDTH_80;
+	nTextFlags = TEXT_FLAG_IS_F18A | TEXT_FLAG_HAS_ATTRIBUTES | TEXT_WIDTH_80 | TEXT_CUSTOM_VSETCHAR;
+    vsetchar = vdpchar80col;
 
     // load GPU scroll function
     vdpmemcpy(0x3f00, gpu_scroll80, sizeof(gpu_scroll80));

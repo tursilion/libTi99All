@@ -251,6 +251,7 @@
     <ClCompile Include="vdp_getscreenoffset.c" />
     <ClCompile Include="vdp_gplvdp.c" />
     <ClCompile Include="vdp_hchar.c" />
+    <ClCompile Include="vdp_hchar64.c" />
     <ClCompile Include="vdp_hexprint.c" />
     <ClCompile Include="vdp_ints.c" />
     <ClCompile Include="vdp_memcpy.c" />
@@ -277,6 +278,7 @@
     <ClCompile Include="vdp_sprite.c" />
     <ClCompile Include="vdp_textdefs.c" />
     <ClCompile Include="vdp_vchar.c" />
+    <ClCompile Include="vdp_vchar64.c" />
     <ClCompile Include="vdp_vsetchar.c" />
     <ClCompile Include="vdp_waitvint.c" />
     <ClCompile Include="vdp_writeinc.c" />

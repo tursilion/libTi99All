@@ -8,7 +8,15 @@
 //*********************
 
 #ifdef TI99
-#define SOUND		*((volatile unsigned char*)0x8400)
+#define SOUNDCHIP 0x8400
+#define SOUND		*((volatile unsigned char*)SOUNDCHIP)
+
+// base addresses for each chip in the FORTI card
+#define FORTI_CHIP1 0x841c
+#define FORTI_CHIP2 0x841a
+#define FORTI_CHIP3 0x8416
+#define FORTI_CHIP4 0x840e
+#define FORTI_CONSOLE 0x841e
 #endif
 #ifdef COLECO
 #ifdef SMS

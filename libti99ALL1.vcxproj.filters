@@ -442,6 +442,12 @@
     <ClCompile Include="vdp_getscreenoffset.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="vdp_hchar64.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vdp_vchar64.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="crt0_coleco.assembly">

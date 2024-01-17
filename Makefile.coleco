@@ -99,6 +99,7 @@ OBJECT_LIST=\
   vdp_getscreenoffset.$(EXT) \
   vdp_gplvdp.$(EXT)		\
   vdp_hchar.$(EXT)		\
+  vdp_hchar64.$(EXT)		\
   vdp_hexprint.$(EXT)	\
   vdp_ints.$(EXT)		\
   vdp_memcpy.$(EXT)		\
@@ -124,6 +125,7 @@ OBJECT_LIST=\
   vdp_sprite.$(EXT)		\
   vdp_textdefs.$(EXT)	\
   vdp_vchar.$(EXT)		\
+  vdp_vchar64.$(EXT)		\
   vdp_vsetchar.$(EXT)	\
   vdp_waitvint.$(EXT)	\
   vdp_writeinc.$(EXT)	\

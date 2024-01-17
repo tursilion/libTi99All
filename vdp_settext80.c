@@ -2,6 +2,8 @@
 
 void fast_scrn_scroll_default();
 
+void vsetchar_base(int pAddr, unsigned char ch);
+
 // requires F18A or 9938!!
 unsigned char set_text80_raw() {
 	unsigned char unblank = VDP_MODE1_16K | VDP_MODE1_UNBLANK | VDP_MODE1_TEXT | VDP_MODE1_INT;
@@ -17,6 +19,7 @@ unsigned char set_text80_raw() {
 	nTextEnd = (80 * 24) - 1;
 	nTextPos = nTextRow;
 	nTextFlags = TEXT_FLAG_IS_F18A | TEXT_WIDTH_80;
+	vsetchar = vsetchar_base;
 
 	return unblank;
 }

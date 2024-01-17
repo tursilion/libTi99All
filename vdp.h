@@ -391,13 +391,8 @@ void vdpchar(int pAddr, unsigned char ch);
 // vsetchar - write a text character to a text screen (mode independent)
 // inputs: VDP address (not offset), character to be written
 // Note: 64 column mode will work with an offset only
-void vsetchar(int pAddr, unsigned char ch);
-
-// vdpchar64 - low level function to emit on the 64 char screen only
-// Needed in many places, so defined here
-// inputs: offset in the psuedo screen, character
-void vdpchar64(int pAddr, unsigned char ch);
-
+// WARNING: this is uninitialized until you call one of the setXXX graphics modes
+extern void (*vsetchar)(int pAddr, unsigned char ch);
 
 // vdpreadchar - read a character from VDP memory
 // Inputs: VDP address to read
@@ -486,10 +481,18 @@ void fast_scrn_scroll();
 // Note: for a single character, vdpscreenchar() is more efficient
 void hchar(unsigned char r, unsigned char c, unsigned char ch, int cnt);
 
+// hchar64 - slower version that supports all modes including 64 character
+// Inputs: row and column (0-based, not 1-based) to start, character to repeat, number of repetitions (not optional)
+void hchar64(unsigned char r, unsigned char c, unsigned char ch, int cnt);
+
 // vchar - repeat a character vertically on the screen, similar to CALL VCHAR
 // Inputs: row and column (0-based, not 1-based), character to repeat, number of repetitions (not optional)
 // Note: for a single character, vdpscreenchar() is more efficient
 void vchar(unsigned char r, unsigned char c, unsigned char ch, int cnt);
+
+// vchar - (slightly) slower version that supports all modes including 64 character
+// Inputs: row and column (0-based, not 1-based), character to repeat, number of repetitions (not optional)
+void vchar64(unsigned char r, unsigned char c, unsigned char ch, int cnt);
 
 // gchar - return a character from the screen, similar to CALL GCHAR
 // Inputs: row and column (0-based, not 1-based) to read from
@@ -625,11 +628,12 @@ extern int nTextPos,nTextFlags;
 #define TEXT_FLAG_IS_MULTICOLOR	 0x2000		// graphics in multicolor mode
 #define TEXT_FLAG_IS_F18A        0x1000		// mode is F18A specific
 #define TEXT_WIDTH_32            0x0800     // I wonder if I'll regret bitflags for width...
-#define TEXT_WIDTH_40            0x0400
+#define TEXT_WIDTH_40            0x0400		// Yes. TODO: move width and height to macros? Can calculate.
 #define TEXT_WIDTH_64            0x0200
 #define TEXT_WIDTH_80            0x0100
 #define TEXT_HEIGHT_24           0x0080
 #define TEXT_HEIGHT_30           0x0040
+#define TEXT_CUSTOM_VSETCHAR	 0x0020
 
 extern unsigned char gSaveIntCnt;	// console interrupt count byte
 

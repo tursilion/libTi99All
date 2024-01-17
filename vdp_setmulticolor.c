@@ -1,5 +1,7 @@
 #include "vdp.h"
 
+void vsetchar_base(int pAddr, unsigned char ch);
+
 unsigned char set_multicolor_raw(unsigned char sprite_mode) {
 	// this layout is untested
     scrn_scroll = scrn_scroll_default;
@@ -18,6 +20,7 @@ unsigned char set_multicolor_raw(unsigned char sprite_mode) {
 	nTextPos = nTextRow;
 	nTextFlags = TEXT_FLAG_IS_MULTICOLOR | TEXT_WIDTH_32;	// technically 32 characters, not sure here...
 														    // is printing to multicolor even useful?
+	vsetchar = vsetchar_base;
 	return unblank;
 }
 
