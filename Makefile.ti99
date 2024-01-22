@@ -19,8 +19,24 @@ EA5_SPLIT=$(EA5_SPLIT_DIR)/ea5split
 LDFLAGS_EA5=\
   --section-start .text=a000 --section-start .data=2080 -M
 
+# specific assembly files
+OBJECT_LIST_TIASM=\
+  vdp_bmasmdrawlinefast.$(EXT)
+
+# crt replacement functions (SDCC has better ones)
+OBJECT_LIST_CRT=\
+  str_memcmp.$(EXT)	\
+  str_memcpy.$(EXT) \
+  str_memset.$(EXT) \
+  str_strcmp.$(EXT)	\
+  str_strcpy.$(EXT) \
+  str_strlen.$(EXT)	\
+  str_strncpy.$(EXT) \
+  vdp_puts.$(EXT)
+
+# specific assembly files
 OBJECT_LIST_EA5=\
-  crt0_ea5.$(EXT)\
+  crt0_ea5.$(EXT)
 
 # output file
 NAME=libti99.a
@@ -28,138 +44,13 @@ NAME=libti99.a
 C_FLAGS=\
   -O2 -std=c99 -DTI99 -s --save-temp -I../ -fno-builtin
 
-# List of compiled objects used in executable
-OBJECT_LIST=\
-  conio_bgcolor.$(EXT)   \
-  conio_cclear.$(EXT)    \
-  conio_cclearxy.$(EXT)  \
-  conio_cgetc.$(EXT)     \
-  conio_chline.$(EXT)    \
-  conio_chlinexy.$(EXT)  \
-  conio_clrscr.$(EXT)    \
-  conio_cprintf.$(EXT)   \
-  conio_cputc.$(EXT)     \
-  conio_cputcxy.$(EXT)   \
-  conio_cputs.$(EXT)     \
-  conio_cputsxy.$(EXT)   \
-  conio_cvline.$(EXT)    \
-  conio_cvlinexy.$(EXT)  \
-  conio_getvram.$(EXT)   \
-  conio_kbhit.$(EXT)     \
-  conio_screensize.$(EXT)\
-  dsr_dsrlnk.$(EXT)		\
-  dsr_dsrlnkraw.$(EXT)	\
-  dsr_files.$(EXT)		\
-  f18a_detect.$(EXT)		\
-  f18a_loadpal.$(EXT)	\
-  f18a_lock.$(EXT)		\
-  f18a_reset.$(EXT)		\
-  f18a_startgpu.$(EXT)	\
-  f18a_unlock.$(EXT)		\
-  grom_readdata.$(EXT)	\
-  grom_writedata.$(EXT)	\
-  joystfast.$(EXT)		\
-  kscan.$(EXT)			\
-  kscanfast.$(EXT)		\
-  math_sqrt.$(EXT)   \
-  puff.$(EXT)        \
-  puff16k.$(EXT)     \
-  rs232_geterrs.$(EXT)   \
-  rs232_poll.$(EXT)  \
-  rs232_readbyte.$(EXT) \
-  rs232_readPIO.$(EXT) \
-  rs232_setbps.$(EXT) \
-  rs232_setcontrol.$(EXT) \
-  rs232_writebyte.$(EXT) \
-  rs232_writePIO.$(EXT) \
-  rs232raw_activateCard.$(EXT) \
-  rs232raw_checkstatus.$(EXT) \
-  rs232raw_deactivateCard.$(EXT) \
-  rs232raw_geterrs.$(EXT) \
-  rs232raw_getuart.$(EXT) \
-  rs232raw_poll.$(EXT) \
-  rs232raw_readbyte.$(EXT) \
-  rs232raw_setPIOinput.$(EXT) \
-  rs232raw_setPIOoutput.$(EXT) \
-  rs232raw_writebyte.$(EXT) \
-  speech.$(EXT) \
-  str_atoi.$(EXT)      \
-  str_gets.$(EXT)      \
-  str_int2str.$(EXT)   \
-  str_memcmp.$(EXT)    \
-  str_memcpy.$(EXT)    \
-  str_memset.$(EXT)    \
-  str_strcmp.$(EXT)	\
-  str_strcpy.$(EXT)    \
-  str_strlen.$(EXT)		\
-  str_strncpy.$(EXT)    \
-  str_uint2hex.$(EXT)  \
-  str_uint2str.$(EXT)  \
-  sys_checkquit.$(EXT)	\
-  sys_exit.$(EXT)      \
-  sys_halt.$(EXT)			\
-  vdp_bigbuf.$(EXT)          \
-  vdp_bmclearhlinefast.$(EXT)	\
-  vdp_bmclearpixel.$(EXT) \
-  vdp_bmclearscreen.$(EXT) \
-  vdp_bmcolor.$(EXT) \
-  vdp_bmconsolefont.$(EXT) \
-  vdp_bmdrawline.$(EXT) \
-  vdp_bmdrawlinefast.$(EXT)	\
-  vdp_bmasmdrawlinefast.$(EXT) \
-  vdp_bmputs.$(EXT) \
-  vdp_bmsethlinefast.$(EXT)	\
-  vdp_bmsetpixel.$(EXT) \
-  vdp_byte2hex.$(EXT)	\
-  vdp_char.$(EXT)		\
-  vdp_charset.$(EXT)		\
-  vdp_charsetlc.$(EXT)	\
-  vdp_delsprite.$(EXT)	\
-  vdp_fasterhexprint.$(EXT)	\
-  vdp_fasthexprint.$(EXT)	\
-  vdp_gchar.$(EXT)		\
-  vdp_getscreenoffset.$(EXT) \
-  vdp_gplvdp.$(EXT)		\
-  vdp_hchar.$(EXT)		\
-  vdp_hchar64.$(EXT)		\
-  vdp_hexprint.$(EXT)	\
-  vdp_ints.$(EXT)		\
-  vdp_memcpy.$(EXT)		\
-  vdp_memread.$(EXT)		\
-  vdp_memset.$(EXT)		\
-  vdp_printf.$(EXT)    \
-  vdp_putchar.$(EXT)   \
-  vdp_puts.$(EXT)	\
-  vdp_putstring.$(EXT)	\
-  vdp_rawmemcpy.$(EXT)	\
-  vdp_rawmemset.$(EXT)	\
-  vdp_readchar.$(EXT)	\
-  vdp_screenchar.$(EXT)	\
-  vdp_scrnscroll.$(EXT)	\
-  vdp_setbitmap.$(EXT)	\
-  vdp_setgraphics.$(EXT)	\
-  vdp_setmode.$(EXT)		\
-  vdp_setmulticolor.$(EXT)	\
-  vdp_settext.$(EXT)		\
-  vdp_settext64.$(EXT)		\
-  vdp_settext80.$(EXT)		\
-  vdp_settext80color.$(EXT)		\
-  vdp_settext80x30color.$(EXT)	\
-  vdp_sprite.$(EXT)		\
-  vdp_textdefs.$(EXT)	\
-  vdp_vchar.$(EXT)		\
-  vdp_vchar64.$(EXT)		\
-  vdp_vsetchar.$(EXT)	\
-  vdp_waitvint.$(EXT)	\
-  vdp_writeinc.$(EXT)	\
-  vdp_writescreeninc.$(EXT)	\
-  vdp_writestring.$(EXT)
+include ../Makefile.sources
 
 # Recipe to compile the library
 all: library test example
 
-library: $(OBJECT_LIST)
-	$(AR) rcs $(NAME) $(OBJECT_LIST)
+library: $(OBJECT_LIST) $(OBJECT_LIST_TIASM)
+	$(AR) rcs $(NAME) $(OBJECT_LIST) $(OBJECT_LIST_TIASM) $(OBJECT_LIST_CRT)
 
 test: library testlib.$(EXT) $(OBJECT_LIST_EA5) 
 	$(LD) $(OBJECT_LIST_EA5) testlib.$(EXT) $(LDFLAGS_EA5) -L. -lti99 -o testlib.ea5.elf > ea5_testlib.map

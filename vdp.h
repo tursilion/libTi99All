@@ -211,8 +211,8 @@ extern volatile unsigned char vdpLimi;
 // on enable, we make sure we are disabled before entering the NMI, just in case we race
 // with another one. All the assumptions in the code assume that ints are disabled on entry
 // to prevent double-call.
-#define VDP_INT_ENABLE			{ if (vdpLimi&0x80) { vdpLimi=0; my_nmi(); } __asm__ volatile ("\tpush hl\n\tld hl,#_vdpLimi\n\tset 0,(hl)\n\tpop hl"); }
-#define VDP_INT_DISABLE			{ __asm__ volatile ("\tpush hl\n\tld hl,#_vdpLimi\n\tres 0,(hl)\n\tpop hl"); }
+#define VDP_INT_ENABLE			{ if (vdpLimi&0x80) { vdpLimi=0; my_nmi(); } __asm__ ("\tpush hl\n\tld hl,#_vdpLimi\n\tset 0,(hl)\n\tpop hl"); }
+#define VDP_INT_DISABLE			{ __asm__ ("\tpush hl\n\tld hl,#_vdpLimi\n\tres 0,(hl)\n\tpop hl"); }
 	
 // this might have no value... we'll see
 // If using KSCAN, you must put a copy of VDP register 1 (returned by the 'set' functions)

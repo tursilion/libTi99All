@@ -1,3 +1,4 @@
+#include "vdp.h"
 #include "conio.h"
 #include "kscan.h"
 

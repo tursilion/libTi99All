@@ -41,7 +41,7 @@ unsigned char kscan(unsigned char mode) {
 	}
 	
 	key=pad1;
-	if (key&0x10) KSCAN_KEY='#';      // reset
+	if (key&0x10) KSCAN_KEY='#';      // reset - TODO: maybe I don't want this here now that I have checkReset?
 	if (pause) { pause=0; KSCAN_KEY='*'; }
  
 	if ((mode == KSCAN_MODE_LEFT) || (mode == KSCAN_MODE_RIGHT)) {

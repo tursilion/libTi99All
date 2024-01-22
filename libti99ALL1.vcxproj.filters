@@ -448,6 +448,9 @@
     <ClCompile Include="vdp_vchar64.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="checkreset.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="crt0_coleco.assembly">
@@ -470,6 +473,7 @@
     <None Include="Makefile.mastersys" />
     <None Include="Makefile.stub" />
     <None Include="Makefile.ti99" />
+    <None Include="Makefile.sources" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="puff_README.txt">

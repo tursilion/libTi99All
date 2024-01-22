@@ -52,7 +52,10 @@ void kscanfast(unsigned char mode) {
                 KSCAN_KEY = 18;
             }
         }
-        return;
+		if (KSCAN_KEY == 18) {
+	        return;
+		}
+		// else fall through and read the keyboard
 	}
 
     // otherwise read the keyboard

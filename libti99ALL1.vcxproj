@@ -157,6 +157,7 @@
     <ClInclude Include="vdp.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="checkreset.c" />
     <ClCompile Include="conio_bgcolor.c" />
     <ClCompile Include="conio_cclear.c" />
     <ClCompile Include="conio_cclearxy.c" />
@@ -292,6 +293,7 @@
     <None Include="Makefile" />
     <None Include="Makefile.coleco" />
     <None Include="Makefile.mastersys" />
+    <None Include="Makefile.sources" />
     <None Include="Makefile.stub" />
     <None Include="Makefile.ti99" />
     <None Include="readme.md" />

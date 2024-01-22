@@ -32,6 +32,9 @@
 	.globl _my_nmi
 	.globl _vdpLimi
     .globl _pause
+	.globl l__INITIALIZER
+	.globl s__INITIALIZED
+	.globl s__INITIALIZER
 
 	.area _HEADER(ABS)
 	.org 0x0000
@@ -202,6 +205,15 @@ clrup:
 
 	.area _GSINIT
 gsinit::
+	ld	bc, #l__INITIALIZER
+	ld	a, b
+	or	a, c
+	jr	Z, gsinit_next
+	ld	de, #s__INITIALIZED
+	ld	hl, #s__INITIALIZER
+	ldir
+gsinit_next:
+
 	.area _GSFINAL
 	ret
 
