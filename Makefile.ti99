@@ -49,7 +49,7 @@ include ../Makefile.sources
 # Recipe to compile the library
 all: library test example
 
-library: $(OBJECT_LIST) $(OBJECT_LIST_TIASM)
+library: $(OBJECT_LIST) $(OBJECT_LIST_TIASM) $(OBJECT_LIST_CRT)
 	$(AR) rcs $(NAME) $(OBJECT_LIST) $(OBJECT_LIST_TIASM) $(OBJECT_LIST_CRT)
 
 test: library testlib.$(EXT) $(OBJECT_LIST_EA5) 

@@ -21,7 +21,9 @@ void halt();
 void exit();
 #endif
 
-// reboot if quit key is pressed
-void checkquit();
+// return true if quit/reset is pressed
+// if you have F18A in your system, call reset_f18a()
+// then use exit() to reboot
+unsigned char check_reset();
 
 #endif /* SYSTEM_H */

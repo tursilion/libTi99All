@@ -5,11 +5,10 @@
 #include "kscan.h"
 
 #ifdef TI99
-// TODO: this function requires the TI ROM (0012 = 0008, 004c = 1100)
 unsigned char check_reset() {
     unsigned char ret;
     
-    __asm__ volatile("clr %0\n\tli r12,>0024\n\tli r0,8\n\tldcr r0,3\n\tsrc 12,7\n\tli r12,6\n\tstcr r0,8\n\tli r12,>1100\n\tczc r12,r5\n\tjne 2\n\tseto %0" : "=r"(ret) : : "r12","cc");
+    __asm__ volatile("clr %0\n\tli r12,>0024\n\tli r0,8\n\tldcr r0,3\n\tsrc 12,7\n\tli r12,6\n\tstcr r0,8\n\tli r12,>1100\n\tczc r12,r0\n\tjne 2\n\tseto %0" : "=r"(ret) : : "r12","cc");
     
     return ret;
 }

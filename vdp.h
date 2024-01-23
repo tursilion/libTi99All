@@ -454,7 +454,7 @@ int puts(char *s);
 // (X is byte only). This function will call in putchar().
 // Inputs: format string, and varable argument list
 // Returns: always returns 0
-// TODO: pull in the printf from Cool Herders
+// TODO: pull in the printf from Cool Herders, ditch vdpprintf
 int printf(char *str, ...);
 
 // hexprint - generates a 2 character hex string from an int and calls putstring to print it
@@ -606,6 +606,7 @@ extern unsigned char gBitmapColor;
 // This can be intialized by calling bm_consolefont(), or
 // by setting it to your own characterset patterns spanning
 // characters ' ' to '~'
+// TODO: ditch this concept - at least for systems that have the charset in ROM
 extern unsigned char* gBmFont;
 
 // global pointers for all to enjoy - make sure the screen setup code updates them!

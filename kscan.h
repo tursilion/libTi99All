@@ -88,7 +88,4 @@ void kscanfast(unsigned char mode);
 // returns data in KSCAN_JOYY and KSCAN_JOYX
 void joystfast(unsigned char unit);
 
-// check for reset key, return non-zero if pressed (varies by system)
-unsigned char check_reset();
-
 #endif /* KSCAN_H */

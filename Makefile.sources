@@ -1,6 +1,5 @@
 # List of compiled objects used in executable
 OBJECT_LIST=\
-  checkreset.$(EXT)      \
   conio_bgcolor.$(EXT)   \
   conio_cclear.$(EXT)    \
   conio_cclearxy.$(EXT)  \
@@ -59,7 +58,7 @@ OBJECT_LIST=\
   str_int2str.$(EXT)   \
   str_uint2hex.$(EXT)  \
   str_uint2str.$(EXT)  \
-  sys_checkquit.$(EXT)	\
+  sys_checkreset.$(EXT)      \
   sys_exit.$(EXT)      \
   sys_halt.$(EXT)			\
   vdp_bigbuf.$(EXT)          \
