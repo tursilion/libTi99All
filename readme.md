@@ -2,6 +2,15 @@
 
 This library is released by Tursi aka Mike Brent for TI-99/4A coding via GCC. It is released to the public domain with no restrictions (but credit would be nice if you use it). Likewise, I make no guarantees or promises!
 
+** TI-99/4A **
+This code is intended to be used with the version 1.30 patches to GCC 4.4.0 as described in this thread on AtariAge:
+https://forums.atariage.com/topic/164295-gcc-for-the-ti/page/45/#comments
+And found at this repository:
+https://github.com/mburkley/tms9900-gcc
+
+** ColecoVision, SMS, [MSX, GB ? maybe?] **
+This code is tested with SDCC dated 20230715
+
 Documentation is found in each of the .h files. The .h files are briefly described here:
 
 - grom.h   - helper definitions and functions for accessing GROM
@@ -35,3 +44,8 @@ SMS TestLib:
 - first screen not displaying correctly (do we have enough RAM for this app?)
 - can't answer Y/N anyway
 
+........
+
+For docs:
+
+-remember to include -DTI99 (or appropriate for others) on your C command line

@@ -11,7 +11,7 @@ void gets(char *buf, int maxlen) {
   
   while (cnt) {
     vsetchar(nTextPos, 30);  // cursor
-    while (kscan(5) == oldch) {  // wait for key, 99/4 mode, allow interrupts
+    while (kscan(5) == oldch) {  // wait for key, allow interrupts
       VDP_INT_ENABLE;
       VDP_INT_DISABLE;
     }
@@ -39,7 +39,7 @@ void gets(char *buf, int maxlen) {
         break;
       
       default:
-        if ((oldch >= ' ') && (oldch <= 'Z') && (cnt > 1)) {
+        if ((oldch >= ' ') && (oldch <= 'z') && (cnt > 1)) {
           putchar(oldch);
           *(buf++)=oldch;
           --cnt;
