@@ -1,23 +1,22 @@
 #include <vdp.h>
 #include <kscan.h>
+#include <string.h>
 
 // read from keyboard - limits to maxlen chars
+// Coleco uses '*' for return
 // no autorepeat :)
 void gets(char *buf, int maxlen) {
-  char oldch;
+  int oldch;
   int cnt = maxlen;
-  
-  oldch = 255;
   
   while (cnt) {
     vsetchar(nTextPos, 30);  // cursor
-    while (kscan(5) == oldch) {  // wait for key, allow interrupts
-      VDP_INT_ENABLE;
-      VDP_INT_DISABLE;
-    }
-    oldch = KSCAN_KEY;
+    oldch = getchar();
     switch (oldch) {
       case '\r':
+#ifdef COLECO
+      case '*':
+#endif
         cnt = 0;
         *buf = '\0';
         vsetchar(nTextPos, ' ');

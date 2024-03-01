@@ -54,6 +54,7 @@ OBJECT_LIST=\
   rs232raw_writebyte.$(EXT) \
   speech.$(EXT) \
   str_atoi.$(EXT)      \
+  str_getchar.$(EXT)   \
   str_gets.$(EXT)      \
   str_int2str.$(EXT)   \
   str_uint2hex.$(EXT)  \

@@ -1,3 +1,6 @@
+// TODO: add the rle unpack function for Convert9918a images
+// TODO: the crt0 needs to include 4 more bytes so that the return from main() works on any page
+
 // VDP header for the TI-99/4A and Coleco by Tursi aka Mike Brent
 // 9/20/2023
 // This code and library released into the Public Domain
@@ -5,6 +8,12 @@
 
 #ifndef VDP_H
 #define VDP_H
+
+#ifndef COLECO
+#ifndef TI99
+#error Make sure to define either COLECO (for Coleco or SMS or MSX) or TI99
+#endif
+#endif
 
 // TODO: we can break out the various subsystems (hardware, text, bitmap, etc)
 
@@ -418,7 +427,7 @@ unsigned char vdpwaitvint(void);
 // All characters are emitted except \r and \n which is handled for scrn_scroll and next line.
 // It works in both 32x24 and 40x24 modes. Tracking of the cursor is thus 
 // automatic in this function, and it pulls in scrn_scroll.
-unsigned char putchar(unsigned char x);
+int putchar(int x);
 #define vdpputchar putchar
 
 // vdpprintf - writes a string with limited formatting. Only supports a very small subset

@@ -43,7 +43,10 @@ char *int2str(int x);
 // Not thread safe, don't use from interrupt handlers.
 char* uint2hex(unsigned int x);
 
-// reads a string from the keyboard - pulls in KSCAN. Uses keyboard mode 5.
+// waits for a character from the keyboard - pulls in KSCAN. Uses keyboard mode 5.
+int getchar();
+
+// reads a string from the keyboard - pulls in gets
 // Displays a solid cursor. The only edit key supported is Fctn-S. Stops
 // at maxlen, returned string is zero-terminated. Needs KSCAN, VDP, etc.
 void gets(char *buf, int maxlen);

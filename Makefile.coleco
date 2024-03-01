@@ -4,7 +4,8 @@
 CC = "D:/work/coleco/sdcc20230715/bin/sdcc"
 AS = "D:/work/coleco/sdcc20230715/bin/sdasz80"
 AR = "D:/work/coleco/sdcc20230715/bin/sdar"
-CFLAGS = -mz80 -c -DCOLECO "-I../include" "-I.." --std-sdcc99 --less-pedantic --vc -DENABLEFX --opt-code-speed --fsigned-char
+# I had to look through the SOURCE CODE to find nostdlibcall - prevent replacing printf and strcpy
+CFLAGS = -mz80 -c -DCOLECO "-I../include" "-I.." --std-sdcc99 --less-pedantic --nostdlibcall --vc -DENABLEFX --opt-code-speed --fsigned-char
 AFLAGS = -plosgff
 RM = cmd //c del
 

@@ -4,7 +4,7 @@
 // This is valid for all but 64-column and the color text modes
 // This method is not exposed in vdp.h so people stop using it directly
 void vsetchar_base(int pAddr, unsigned char ch) {
-	VDP_SET_ADDRESS_WRITE(pAddr);
+	VDP_SET_ADDRESS_WRITE(pAddr+gImage);
 	VDPWD=ch;
 }
 
