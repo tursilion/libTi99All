@@ -2,6 +2,8 @@
 // This code and library released into the Public Domain
 // You can copy this file and use it at will ;)
 
+// TODO: go to the beginning of email and port in the Coleco Adam fixes from there
+
 #include "kscan.h"
 
 #ifdef TI99

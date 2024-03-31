@@ -42,8 +42,9 @@ OBJECT_LIST_EA5=\
 NAME=libti99.a
 
 # Note: no-function-cse prevents gcc from preferring registers for bl calls
+# TODO: as of GCC patches 1.30, peephole2 contains a code-breaking bug so must kill peephole2 to be safe
 C_FLAGS=\
-  -Os -std=c99 -DTI99 -s --save-temp -I../ -fno-builtin -fno-function-cse
+  -Os -std=c99 -DTI99 -s --save-temp -I../ -fno-peephole2 -fno-builtin -fno-function-cse
 
 include ../Makefile.sources
 

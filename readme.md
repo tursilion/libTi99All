@@ -4,9 +4,19 @@ This library is released by Tursi aka Mike Brent for TI-99/4A coding via GCC. It
 
 ** TI-99/4A **
 This code is intended to be used with the version 1.30 patches to GCC 4.4.0 as described in this thread on AtariAge:
+
 https://forums.atariage.com/topic/164295-gcc-for-the-ti/page/45/#comments
+
 And found at this repository:
 https://github.com/mburkley/tms9900-gcc
+
+Recommended build switches are: -Os -fno-builtin -fno-function-cse -fno-peephole2
+
+-Os - optimize for size (or -O0) produces the fastest code as well in most cases on the 9900
+-fno-builtin - prevents replacing calls to library functions with simpler ones that may not exist in libti99
+-fno-function-cse - prevents some very inefficient function call semantics that help only in very limited cases
+-fno-peephole2 - turns off peepholes which contain a code-breaking bug in the 1.30 patches (peep-movhi-cmphi)
+
 
 ** ColecoVision, SMS, [MSX, GB ? maybe?] **
 This code is tested with SDCC dated 20230715

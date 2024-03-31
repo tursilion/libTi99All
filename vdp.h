@@ -95,7 +95,7 @@ __endasm;
 inline void VDP_SET_ADDRESS(unsigned int x)     { __asm__  volatile ( "swpb %0\n\tmovb %0,@>8c02\n\tswpb %0\n\tmovb %0,@>8c02" : : "r"(x) : "cc"); }
 
 // Set VDP address for write (adds 0x4000 bit)
-inline void VDP_SET_ADDRESS_WRITE(unsigned int x) { __asm__  volatile ( "swpb %0\n\tmovb %0,@>8c02\n\tswpb %0\n\tori %0,>4000\n\tmovb %0,@>8c02\n\tandi %0,>3fff" : : "r"(x) : "cc"); }
+inline void VDP_SET_ADDRESS_WRITE(unsigned int x) { __asm__  volatile ( "mov %0,r0\n\tswpb r0\n\tmovb r0,@>8c02\n\tswpb r0\n\tori r0,>4000\n\tmovb r0,@>8c02" : : "r"(x) : "cc"); }
 
 #else
 // Set VDP address for read (no bit added)

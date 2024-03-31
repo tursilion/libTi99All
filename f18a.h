@@ -31,6 +31,9 @@ void loadpal_f18a(const unsigned int *ptr, unsigned char first, unsigned char cn
 // start executing TMS9900 GPU code from VDP address adr
 void startgpu_f18a(unsigned int adr);
 
+// stop the GPU - may take a few cycles but likely faster than the host CPU
+void stopgpu_f18a();
+
 // extra F18A registers
 #define F18A_REG_SIT2           (unsigned char)0x0A	    // SIT2 - this value times >0400
 #define F18A_REG_CT2            (unsigned char)0x0B     // CT2 - this value times >0040

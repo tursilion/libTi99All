@@ -2,6 +2,9 @@
 #include <kscan.h>
 #include <string.h>
 
+// TODO: the response time on this is terrible, you can barely type.
+// getchar might have to be less fussy about releases and just look for change.
+
 // read from keyboard - limits to maxlen chars
 // Coleco uses '*' for return
 // no autorepeat :)

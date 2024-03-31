@@ -25,6 +25,7 @@ OBJECT_LIST=\
   f18a_lock.$(EXT)		\
   f18a_reset.$(EXT)		\
   f18a_startgpu.$(EXT)	\
+  f18a_stopgpu.$(EXT)	\
   f18a_unlock.$(EXT)		\
   grom_readdata.$(EXT)	\
   grom_writedata.$(EXT)	\

@@ -16,8 +16,9 @@ unsigned char detect_f18a() {
     // program, instead of mucking around with status bits.
     unsigned int val;
 
-    reset_f18a();
-    unlock_f18a();
+    stopgpu_f18a();     // in case it's unlocked and running
+    reset_f18a();       // to get back to baseline if unlocked and running
+    unlock_f18a();      // unlock it for real
     
     // copy the GPU program to 0x3f00
     vdpmemcpy(0x3f00, GPUTEST, 10);
