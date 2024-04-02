@@ -85,8 +85,9 @@ volatile __sfr __at 0x52 AY_DATA_READ;
 // All SID access is WRITE-ONLY, you can not read back from the SID Blaster.
 
 // Map in the SID chip by setting a low CRU. NEVER call this if a DSR is active, both devices
-// will be listening at the same time. (It may work, but it's a bad idea.)
-#define MAP_SID_BLASTER __asm__ volatile( "clr  r12\n\tsbo >24" : : : "r12","cc" )
+// will be listening at the same time. (It may work, but it's a bad idea.). The bit set here
+// is just part of the keyboard select.
+#define MAP_SID_BLASTER __asm__ volatile( "clr  r12\n\tsbo 18" : : : "r12","cc" )
 
 // SID channel control:
 // FREQLO - Frequency low byte. On the SID Blaster the SID is clocked at 1MHz which is slower than

@@ -451,6 +451,9 @@
     <ClCompile Include="checkreset.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="f18a_stopgpu.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="crt0_coleco.assembly">

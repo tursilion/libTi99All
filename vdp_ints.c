@@ -64,7 +64,7 @@ void my_nmi() {
 	// if it fired, so we will do the same here and not reset it.
 }
 
-// called automatically by crt0.S (not in TI version)
+// called automatically by crt0.S
 void vdpinit() {
 	volatile unsigned int x;
 	
@@ -144,6 +144,10 @@ void vdpinit() {
 	SIDBLASTER_CR1 = SIDBLASTER_CR_TEST;
 	SIDBLASTER_CR2 = SIDBLASTER_CR_TEST;
 	SIDBLASTER_CR3 = SIDBLASTER_CR_TEST;
+
+    // reset interrupts on the CRU - note this also DISABLES peripherial interrupts (CRU bit 1)
+    // only VDP interrupts are enabled. If you need peripherals, you need to set 1 to CRU bit 1
+    __asm__ volatile("li r12,>2\n\tli r1,>0002\n\tldcr r1,15" : : : "r12","r1","cc");
 
     // zero variables
     VDP_INT_HOOK = (void (*)())0;

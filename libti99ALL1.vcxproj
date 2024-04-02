@@ -185,6 +185,7 @@
     <ClCompile Include="f18a_lock.c" />
     <ClCompile Include="f18a_reset.c" />
     <ClCompile Include="f18a_startgpu.c" />
+    <ClCompile Include="f18a_stopgpu.c" />
     <ClCompile Include="f18a_unlock.c" />
     <ClCompile Include="grom_readdata.c" />
     <ClCompile Include="grom_writedata.c" />
