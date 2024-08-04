@@ -5,6 +5,7 @@
 
 // sets the specified line format, use the RS232_CTRL_xxx bits
 void rs232_setcontrol(int card, int uart, int control) {
+#ifdef TI99
     int rawCRU = rs232raw_getuart(card, uart);
 
 	// Note: the reset is supposed to set the bits for loading:
@@ -15,7 +16,6 @@ void rs232_setcontrol(int card, int uart, int control) {
 	// potential new devices that also emulate a 9902, we'll just
 	// be very selective and not make assumptions!
 
-#ifdef TI99
     __asm__  volatile (
         "  mov %0,r12\n"	// get the rawcru address
         "  sbo 31\n"		// reset
@@ -38,6 +38,9 @@ void rs232_setcontrol(int card, int uart, int control) {
     );
 #endif
 #ifdef COLECO
+    (void)control;
+#endif
+#ifdef GBA
     (void)control;
 #endif
 

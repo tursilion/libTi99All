@@ -1,5 +1,6 @@
 // VDP code for the TI-99/4A by Tursi
 // You can copy this file and use it at will if it's useful
+// NOTE: this is the only mode the GBA code supports!
 
 #include "vdp.h"
 

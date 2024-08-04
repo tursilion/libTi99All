@@ -124,7 +124,7 @@ int cprintf(const char *fmt, ...) {
                        i = va_arg(argp, int);
                        vdp_bigbuf[0]=i;
                        vdp_bigbuf[1]='\0';
-                       cnt += fmt_print(vdp_bigbuf, 0, width, left, precis, 0);
+                       cnt += fmt_print((char*)vdp_bigbuf, 0, width, left, precis, 0);
                        done = 1;
                        break;
 
@@ -132,16 +132,16 @@ int cprintf(const char *fmt, ...) {
                     case 'd':   // decimal
                         i = va_arg(argp, int);
                         s = int2str(i);
-                        strcpy(vdp_bigbuf, s);
-                        cnt += fmt_print(vdp_bigbuf, zero, width, left, precis, plus);
+                        strcpy((char*)vdp_bigbuf, s);
+                        cnt += fmt_print((char*)vdp_bigbuf, zero, width, left, precis, plus);
                         done = 1;
                         break;
 
                     case 'u':   // unsigned decimal
                         u = va_arg(argp, unsigned int);
                         s = uint2str(u);
-                        strcpy(vdp_bigbuf, s);
-                        cnt += fmt_print(vdp_bigbuf, zero, width, left, precis, plus);
+                        strcpy((char*)vdp_bigbuf, s);
+                        cnt += fmt_print((char*)vdp_bigbuf, zero, width, left, precis, plus);
                         done = 1;
                         break;
 
@@ -173,8 +173,7 @@ int cprintf(const char *fmt, ...) {
                         if (!zero) {
                             // remove leading zeros
                             while (vdp_bigbuf[0]=='0') {
-                                // my memcpy is safe in this direction only...
-                                memcpy(&vdp_bigbuf[0], &vdp_bigbuf[1], 4);  // includes NUL
+                                memmove(&vdp_bigbuf[0], &vdp_bigbuf[1], 4);  // includes NUL
                             }
                             if (vdp_bigbuf[0] == '\0') {
                                 vdp_bigbuf[0]='0';
@@ -189,7 +188,7 @@ int cprintf(const char *fmt, ...) {
                                 }
                             }
                         }
-                        cnt += fmt_print(vdp_bigbuf, 0, width, left, precis, 0);
+                        cnt += fmt_print((char*)vdp_bigbuf, 0, width, left, precis, 0);
                         done = 1;
                         break;
 
@@ -211,15 +210,14 @@ int cprintf(const char *fmt, ...) {
                         if (!zero) {
                             // remove leading zeros
                             while (vdp_bigbuf[0]=='0') {
-                                // my memcpy is safe in this direction only...
-                                memcpy(&vdp_bigbuf[0], &vdp_bigbuf[1], 6);  // includes NUL
+                                memmove(&vdp_bigbuf[0], &vdp_bigbuf[1], 6);  // includes NUL
                             }
                             if (vdp_bigbuf[0] == '\0') {
                                 vdp_bigbuf[0]='0';
                                 vdp_bigbuf[1]='\0';
                             }
                         }
-                        cnt += fmt_print(vdp_bigbuf, 0, width, left, precis, 0);
+                        cnt += fmt_print((char*)vdp_bigbuf, 0, width, left, precis, 0);
                         done = 1;
                         break;
 

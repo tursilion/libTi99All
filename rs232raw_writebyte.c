@@ -21,4 +21,8 @@ void rs232raw_writebyte(int rawCRU, int ch) {
     (void)rawCRU;
 	SERIAL_IO=ch;
 #endif
+#ifdef GBA
+    (void)rawCRU;
+	SERIAL_IO=ch;
+#endif
 }

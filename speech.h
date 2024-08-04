@@ -20,6 +20,13 @@
 #define SPCHWT	  *((volatile unsigned char*)0)
 #define SAFE_PAD_READ
 #endif
+#ifdef GBA
+// this is of limited value. Maybe we can port an emulation in the future
+// but for now, all stubbed out
+#define SPCHRD    *((volatile unsigned char*)0)
+#define SPCHWT	  *((volatile unsigned char*)0)
+#define SAFE_PAD_READ
+#endif
 
 #define SPCH_CMD_RESET 0x70
 #define SPCH_CMD_EXT 0x60
@@ -37,6 +44,12 @@ struct __attribute__((__packed__)) LpcPlaybackCtx {
 };
 #endif
 #ifdef COLECO
+struct LpcPlaybackCtx {
+    char* addr;
+    int remaining;
+};
+#endif
+#ifdef GBA
 struct LpcPlaybackCtx {
     char* addr;
     int remaining;

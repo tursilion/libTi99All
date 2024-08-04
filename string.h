@@ -28,6 +28,9 @@ int memcmp(const void *s1, const void *s2, int n);
 // copy a block of memory from src to dest, of cnt bytes. Returns dest.
 void *memcpy(void *dest, const void *src, int cnt);
 
+// copy a block of memory from src to dest, of cnt bytes. Overlap safe. Returns dest.
+void *memmove(void *dest, const void *src, int cnt);
+
 // set a block of memory at dest to src, of cnt bytes. Returns dest.
 void *memset(void *dest, int src, int cnt);
 

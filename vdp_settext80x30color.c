@@ -1,7 +1,9 @@
 #include "vdp.h"
 #include "f18a.h"
+#include "string.h"
 
 // TODO: text modes should not rely on conio support if possible...
+extern unsigned int conio_scrnCol; // conio_bgcolor.c
 
 #if 0
 static void gpu_scroll(void)
@@ -33,7 +35,7 @@ static void gpu_scroll(void)
 "	mov r0,*r1+\n"
 "	dec r2\n"
 "	jne loop1a\n"
-// move 23 rows of colors up
+// move 29 rows of colors up
 "	li r0,0x1800+80\n"
 "	li r1,0x1800\n"
 "	li r2,80*29/2\n"
@@ -50,6 +52,7 @@ static void gpu_scroll(void)
 }
 #endif
 
+#ifndef GBA
 static const unsigned char gpu_scroll80x30[] = {
     // this is the assembled code of the above routine
     0x02,0x00,0x3F,0x16,0x02,0x01,0x40,0x00,
@@ -64,11 +67,8 @@ static const unsigned char gpu_scroll80x30[] = {
     0x10,0xE6
 };
 
-extern unsigned int conio_scrnCol; // conio_bgcolor.c
-
 static void fast_scrn_scroll_80color() {
-    // similar to the slow_scrn_scroll, but uses a larger fixed
-    // buffer for far more speed
+    // uses the GPU for fastest scroll
     const int line = nTextEnd - nTextRow + 1;
 
     // use GPU code for fastest scrolling
@@ -78,19 +78,35 @@ static void fast_scrn_scroll_80color() {
     while (VDPST & 0x80);     // wait for GPU status to be idle
     VDP_SET_REGISTER(0x0f,0); // status register to read = SR0
 
-    extern unsigned int conio_scrnCol; // conio_bgcolor.c
     vdpmemset(nTextRow + gColor, conio_scrnCol, line);  // clear the last line
 
     return;
 }
+#endif
+#ifdef GBA
+extern unsigned char vdp_ram[16384] DATA_IN_EWRAM;
+static void fast_scrn_scroll_80color() {
+    // GBA easily scrolls the whole screen
+
+    // text from 80 to 0, 29*80 bytes
+    memmove(&vdp_ram[0], &vdp_ram[0x80], 29*80);
+    // clear the bottom line with spaces
+    memset(&vdp_ram[29*80], ' ', 80);
+
+    // color from 0x1800+80 to 0x1800, 29*80 bytes
+    memmove(&vdp_ram[0x1800+80], &vdp_ram[0x1800], 29*80);
+    // set color externally
+    memset(&vdp_ram[0x1800+29*80], conio_scrnCol, 80);
+}
+#endif
 
 static void vdpchar80col(int pAddr, unsigned char ch) {
 	VDP_SET_ADDRESS_WRITE(pAddr);
-	VDPWD=ch;
+	VDPWD(ch);
         
     // for 80 column color we also write a color byte (TODO: remove CONIO dependence)
     VDP_SET_ADDRESS_WRITE(pAddr-gImage+gColor);
-    VDPWD=conio_scrnCol;
+    VDPWD(conio_scrnCol);
 }
 
 void set_text80x30_color(void)
@@ -132,9 +148,11 @@ unsigned char set_text80x30_color_raw() {
     vdpmemset(gSprite, 0xd0, 128);
     vdpmemset(gColor, conio_scrnCol, nTextEnd+1);	// clear the color table
 
+#ifndef GBA
     // load GPU scroll function
     vdpmemcpy(0x3f00, (unsigned char*)gpu_scroll80x30, sizeof(gpu_scroll80x30));
 	startgpu_f18a(0x3f00);
+#endif
 
     return unblank;
 }

@@ -1,0 +1,87 @@
+# path to gcc arm and other files - they are not all pd so simpler to not include them
+GCCPATH=d:/work/devkitPro/devkitARM/bin
+GBASPEC=$(GCCPATH)/../arm-none-eabi/lib/gba.specs
+GBALINK=$(GCCPATH)/../arm-none-eabi/lib/gba_cart.ld
+GBACRT=$(GCCPATH)/../arm-none-eabi/lib/gba_crt0.o
+
+# path to VgmComp2 (needed on GBA for sound emulation)
+VGMCOMP2=d:/work/ti/vgmcomp2/Players/libgbavgm2
+
+# gba specific
+GBAFIX=$(GCCPATH)/../../tools/bin/gbafix.exe
+
+# Full paths to the executables used
+GAS=$(GCCPATH)/arm-none-eabi-as.exe
+LD=$(GCCPATH)/arm-none-eabi-ld.exe
+CC=$(GCCPATH)/arm-none-eabi-gcc.exe
+AR=$(GCCPATH)/arm-none-eabi-ar.exe
+OBJCOPY=$(GCCPATH)/arm-none-eabi-objcopy.exe
+
+C_FLAGS=\
+  -g -Wall -O2 -Xlinker -Map=output.map\
+		-mcpu=arm7tdmi -mtune=arm7tdmi -fsigned-char \
+		-save-temps -funroll-loops -fno-builtin \
+		-fsigned-char -DBUILD_GBA \
+		-DPRINTF_DISABLE_SUPPORT_FLOAT -DPRINTF_DISABLE_SUPPORT_EXPONENTIAL \
+		-DPRINTF_DISABLE_SUPPORT_LONG_LONG -DPRINTF_DISABLE_SUPPORT_PTRDIFF_T \
+		-DUSE_SN_PSG -DGBA -I../ -I$(VGMCOMP2) -I$(VGMCOMP2)/../CPlayer \
+		-mthumb -mthumb-interwork -fno-delete-null-pointer-checks
+
+RM = cmd //c del
+
+LDFLAGS	= -g -mthumb -mthumb-interwork -Wl,-Map,$(notdir $*.map) -L. -L$(VGMCOMP2)/build -Wl,--wrap=main
+LIBS = -l:libti99_gba.a -l:libgbavgm2.a
+
+# extension on output files
+EXT=o
+
+# output file
+NAME=libti99_gba.a
+
+include ../Makefile.sources
+
+# these files are not included as GCC has better ones
+#  str_memcmp.$(EXT)    
+#  str_memcpy.$(EXT)    
+#  str_memmove.$(EXT)    
+#  str_memset.$(EXT)    
+#  str_strcmp.$(EXT)	
+#  str_strcpy.$(EXT)  
+#  str_strlen.$(EXT)	
+#  str_strncpy.$(EXT)
+
+# this one I need to figure out how to override...
+#  vdp_puts.$(EXT)
+
+OBJECT_LIST+=vdp_puts.$(EXT)
+OBJECT_LIST+=gba_intwrap.$(EXT)
+
+# Recipe to compile the library
+all: library example.gba test.gba
+
+library: $(OBJECT_LIST)
+	$(RM) testlib.$(EXT) testlib.asm
+	$(AR) -rcs $(NAME) $(OBJECT_LIST)
+	
+test.gba: test.elf
+	$(OBJCOPY) -O binary $< $@
+	$(GBAFIX) $@
+	
+test.elf: library testlib.$(EXT) $(GBACRT)
+	$(CC) $(LDFLAGS) testlib.$(EXT) -specs=$(GBASPEC) $(LIBS) -o test.elf
+
+example.gba: example.elf
+	$(OBJCOPY) -O binary $< $@
+	$(GBAFIX) $@
+
+example.elf: library example.$(EXT) $(GBACRT)
+	$(CC) $(LDFLAGS) example.$(EXT) -specs=$(GBASPEC) $(LIBS) -o example.elf
+
+# Recipe to compile all assembly files
+%.o: ../%.assembly
+	$(GAS) -g -mthumb -mthumb-interwork $< -o $@
+
+# Recipe to compile all C files
+%.o: ../%.c
+	$(CC) -c $< $(C_FLAGS) $(INCLUDES) -o $@
+

@@ -8,7 +8,6 @@
 int printf(char *str, ...) {
   char *p;
   char *s;
-  char *orig;
   unsigned int u;
   char ch;
   int w,x;
@@ -16,7 +15,6 @@ int printf(char *str, ...) {
   va_start(ap, str);
   
   p = str;
-  orig = p;
   while (*p) {
     w = 0;
     if (*p != '%') {

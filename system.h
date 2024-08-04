@@ -21,6 +21,14 @@ void halt();
 void exit();
 #endif
 
+#ifdef GBA
+// Halt still freezes and waits, but only the reset button gets you out
+void halt();
+
+// Exit restarts the cartridge
+void exit();
+#endif
+
 // return true if quit/reset is pressed
 // if you have F18A in your system, call reset_f18a()
 // then use exit() to reboot

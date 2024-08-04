@@ -5,7 +5,7 @@
 // This method is not exposed in vdp.h so people stop using it directly
 void vsetchar_base(int pAddr, unsigned char ch) {
 	VDP_SET_ADDRESS_WRITE(pAddr+gImage);
-	VDPWD=ch;
+	VDPWD(ch);
 }
 
 void (*vsetchar)(int pAddr, unsigned char ch) = vsetchar_base;

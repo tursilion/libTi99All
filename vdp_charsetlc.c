@@ -32,5 +32,11 @@ void charsetlc() {
 	vdpmemcpy(gPattern+0x100, COLECO_FONT, 64*8);	// the rest of the character set (Coleco font isn't shifted like TI's)
 #endif
 
+#ifdef GBA
+    // TODO: the GBA doesn't apparently have a ROM font, we need to provide it
+    // for now I'll be very evil and copy the LC font in, but that leaves out all the numbers and punctuation
+    vdpmemcpy(gPattern+0x200, TrueLowerCase, sizeof(TrueLowerCase));
+#endif
+
 	vdpmemset(gPattern+(30*8), 0xfc, 8);	// cursor
 }

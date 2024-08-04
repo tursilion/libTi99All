@@ -16,10 +16,10 @@ void bm_putc(int x, int y, unsigned char alphanum) {
   bm_placetile(x, y, fontPattern);
 }
 
-void bm_puts(int x, int y, unsigned char* str) {
-  unsigned char* cursor = str;
+void bm_puts(int x, int y, char* str) {
+  char* cursor = str;
   while(*cursor != 0) {
-    bm_putc(x++, y, *cursor++);
+    bm_putc(x++, y, (unsigned)(*cursor++));
   }
 }
 

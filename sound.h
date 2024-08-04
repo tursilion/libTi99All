@@ -25,6 +25,13 @@ volatile __sfr __at 0x06 SOUND;
 volatile __sfr __at 0xff SOUND;
 #endif
 #endif
+#ifdef GBA
+// again, need to change a memory write to a function call
+// this /requires/ libgbavgm2 as that contains the sound chip emulation
+#include <GBASNPlay.h>
+#define SOUNDCHIP
+#define SOUND(x) snsim(x)
+#endif
 
 // Command nibbles
 #define TONE1_FREQ	0x80
@@ -37,7 +44,7 @@ volatile __sfr __at 0xff SOUND;
 #define NOISE_VOL	0xF0
 
 // mute all channels
-inline void MUTE_SOUND()					{ SOUND=TONE1_VOL|0x0f; SOUND=TONE2_VOL|0x0f; SOUND=TONE3_VOL|0x0f; SOUND=NOISE_VOL|0x0f; }
+inline void MUTE_SOUND()					{ SOUND(TONE1_VOL|0x0f); SOUND(TONE2_VOL|0x0f); SOUND(TONE3_VOL|0x0f); SOUND(NOISE_VOL|0x0f); }
 
 #ifdef COLECO
 #ifndef SMS

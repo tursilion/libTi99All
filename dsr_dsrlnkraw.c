@@ -9,6 +9,8 @@
 
 #define DSR_NAME_LEN	*((volatile unsigned int*)0x8354)
 
+// This returns an error (non-zero) only if the lookup fails 
+// - a DSR will return error codes in the PAB Status byte
 unsigned char __attribute__((noinline)) dsrlnkraw(unsigned int vdp) {
 	// modified version of the e/a DSRLNK, for data >8 (DSR) only
 	// this one does not modify data in low memory expansion so "boot tracking" there may not work.
@@ -93,15 +95,19 @@ unsigned char __attribute__((noinline)) dsrlnkraw(unsigned int vdp) {
 	"       bl   *r9                ; link\n"
 	"       jmp  a233a              ; check next entry on the same card -- most dsrs will skip this \n"
 	"       sbz  0                  ; card off\n"
-	"		li r0,>8300				; load register for restore\n"
+	"       clr  r12                ; clear tmp error flag\n"
+	"clnup  li r0,>8300				; load register for restore\n"
 	"		mov @0x8314,r1			; get r10 for source\n"
 	"rslp1	mov *r1+,*r0+			; copy register\n"
 	"		ci r0,>8322\n"
 	"		jne rslp1\n"
 	"a2388  lwpi 0x8300             ; restore workspace\n"
 	"		ai r10,34				; restore stack\n"
-	"axxx   seto %0                 ; set error flag\n"
-    "       jmp a2388\n"
+	"       jmp alldn\n"
+	"axxx   seto r12                ; set tmp error flag\n"
+	"       jmp clnup               ; go back and restore\n"
+	"alldn  mov @>83f8,%0           ; get the error flag\n"
+	
 		: "=r" (ret)
 		: "i" (buf)
 	);
@@ -119,6 +125,16 @@ unsigned char __attribute__((noinline)) dsrlnkraw(unsigned int vdp) {
 
 #ifdef COLECO
 // no equivalent at this time - maybe Adam someday?
+
+unsigned char dsrlnkraw(unsigned int vdp) {
+    (void)vdp;
+    return 1;   // return failed
+}
+
+#endif
+
+#ifdef GBA
+// no equivalent
 
 unsigned char dsrlnkraw(unsigned int vdp) {
     (void)vdp;

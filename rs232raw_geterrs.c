@@ -22,4 +22,8 @@ int rs232raw_geterrs(int rawCRU) {
     (void)rawCRU;
 	return 0;
 #endif
+#ifdef GBA
+    (void)rawCRU;
+	return 0;
+#endif
 }

@@ -29,7 +29,7 @@ unsigned char vdpwaitvint() {
 	// wait for a vertical interrupt to occur (enables interrupts - first call may not wait)
 	// to avoid a race on the return condition, we reproduce VDP_INT_ENABLE here
 
-	// check if we missed one first
+	// check if we missed one first - the only reason we break it out, again, is for 'ret'
 	if (vdpLimi&0x80) {
         vdpLimi = 0;
 		my_nmi(); 
@@ -54,6 +54,54 @@ unsigned char vdpwaitvint() {
 				// color change so users can tell if something is wrong and it's not just running slow
 				//VDP_SET_REGISTER(7,3);
 				VDP_STATUS_MIRROR = VDPST;
+				break;
+			}
+		} 
+
+        // turn the interrupt flag back off
+        VDP_INT_DISABLE; 
+	}
+
+	// remember the new value
+	gSaveIntCnt=VDP_INT_COUNTER; 
+
+	// back to caller
+	return ret;
+}
+#endif
+
+#ifdef GBA
+#include <tursigb.h>
+
+unsigned char vdpwaitvint() {
+	unsigned char ret = 0;
+
+	// wait for a vertical interrupt to occur (enables interrupts - first call may not wait)
+	// to avoid a race on the return condition, we reproduce VDP_INT_ENABLE here
+
+	// check if we missed one first - the only reason we break it out, again, is for 'ret'
+	if (REG_IF&INT_VBLANK) {
+        VDP_INT_DISABLE;
+		InterruptProcess();
+		ret = 1;
+	}
+	
+	// wait for the interrupt to run (if we missed it, it ran already and this won't wait)
+	if (!ret) {
+        // set the enable flag
+        VDP_INT_ENABLE;
+	
+		// this countdown should be unnecessary. But if the user has
+		// messed with the interrupt flags or status register, or
+		// just a simple emulator bug like Classic99 seems to have,
+		// then continue anyway rather than hanging. This is not calibrated.
+		unsigned int cnt = 4096;
+		while (VDP_INT_COUNTER == gSaveIntCnt) { 
+			if (--cnt == 0) {
+				// we're stuck - clear the VDP and exit
+				// TODO: maybe we should make a debug version of this that includes the screen
+				// color change so users can tell if something is wrong and it's not just running slow
+				//VDP_SET_REGISTER(7,3);
 				break;
 			}
 		} 

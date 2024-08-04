@@ -69,10 +69,10 @@ void vdpinit() {
 	volatile unsigned int x;
 	
 	// shut off the sound generator - if the cart skips the BIOS screen, this is needed.
-	SOUND = 0x9f;
-	SOUND = 0xbf;
-	SOUND = 0xdf;
-	SOUND = 0xff;
+	SOUND(0x9f);
+	SOUND(0xbf);
+	SOUND(0xdf);
+	SOUND(0xff);
 	
 	// also silence and reset the AY sound chip in case it's present (if not present these
 	// port writes should go nowhere)
@@ -130,10 +130,10 @@ const unsigned char REG9938Init[8] = {
 
 void vdpinit() {
 	// shut off the sound generator
-	SOUND = 0x9f;
-	SOUND = 0xbf;
-	SOUND = 0xdf;
-	SOUND = 0xff;
+	SOUND(0x9f);
+	SOUND(0xbf);
+	SOUND(0xdf);
+	SOUND(0xff);
 	
 	// also silence and reset the SID if present (if not present nothing will be mapped when we write)
 	// we write the keyboard select to guarantee the SID blaster is mapped in
@@ -178,4 +178,158 @@ void setUserIntHook(void (*hookfn)()) {
 void clearUserIntHook() {
 	VDP_INT_HOOK = 0;
 }
+#endif
+
+#ifdef GBA
+#include <tursigb.h>
+#include <GBASNPlay.h>
+#include "string.h"
+#include "f18a.h"
+
+// GBA specific init code so that the vblank counts like the TI interrupt
+// it also provides the user interrupt hook
+// no other TI functionality is simulated (automotion, automusic, quit)
+// but if needed, this is where it goes
+
+// storage for VDP status byte
+volatile unsigned char VDP_STATUS_MIRROR = 0;
+
+// address of user interrupt function (vblank)
+static void (*userint)() = 0;
+
+// address of user interrupt function (anything else) - argument is REG_IF flags
+static void (*otherint)(unsigned int) = 0;
+
+// interrupt counter
+volatile unsigned char VDP_INT_COUNTER = 0;
+
+// used by vdpwaitvint - make certain it's reset
+extern unsigned char gSaveIntCnt;
+
+// May be called from true interrupt or from VDP_INTERRUPT_ENABLE, depending on
+// the flag setting when the true interrupt fires.
+// CRT0 expects it to be called InterruptProcess
+void InterruptProcess() {
+    unsigned int intType = REG_IF;
+
+    // master disable ints
+    REG_IME = 0;
+
+    if (intType & INT_VBLANK) {
+        VDP_CLEAR_VBLANK;           // release the VDP - we could instantly trigger again, but the interrupt is disabled
+	    VDP_INT_COUNTER++;			// count up the frames
+
+        // ints off, so it won't retrigger in the
+	    // user code, even if it's slow.
+    	if (0 != userint) userint();
+    } 
+    if (intType & INT_TIMER2) {
+        // feed the audio fifos
+        snupdateaudio();
+    }
+    if (intType & (~(INT_VBLANK|INT_TIMER2))) {
+        // for all interrupts that are not vblank or timer2
+        if (0 != otherint) otherint(intType);
+    }
+
+    // clear and acknowledge all interrupts
+    *(volatile unsigned short *)0x3007FF8 |= intType;   // To BIOS
+    REG_IF = intType;   // To Hardware
+
+	// the TI interrupt would normally exit with the ints disabled
+	// if it fired, so we will do the same here and not reset vblank
+    // But everything else needs to be back on
+    REG_IME = 1;
+}
+
+void gbavidinit() {
+    // set up for mode 4, eventually we'll add scaling to fit the whole screen
+    // but for now we'll deal with cropping once the draw is done
+    // mode 4 is 240x160x8 bit, and there are two pages so we can page flip
+    // No sprites, we're going to draw everything. Otherwise we can't really scale it.
+    REG_DISPCNT = MODE4 | BG2_ENABLE;
+    REG_BG2CNT = COLORS_256;
+    memset((char*)BG_RAM_BASE, 0, 240*160);
+    reset_f18a();   // mostly to get the palette loaded
+}
+
+extern void intrwrap();
+void gbainit() {
+    // master interrupts off
+    REG_IME = 0;
+
+    // setup vblank and SN emulator
+    INT_VECTOR = intrwrap; // assembly wrapper for interrupt handler
+    REG_DISPSTAT = VBLANK_IRQ;
+    REG_IE = INT_TIMER2;     // TIMER2 triggers an audio reload
+    
+    // set up the GBA sound hardware - uses TIMER1 for frequency
+    gbasninit();
+    
+    // set up the video to 8-bit color mode, we'll be emulating the F18A's 64 colors
+    gbavidinit();
+
+    // master interrupt enable
+    REG_IME = 1;
+}
+
+// called automatically by crt0 code
+// TODO: it's not automatic on gba cause I don't have crt0 source, so I fake it with wrap
+void vdpinit() {
+    // init the gba basic hardware
+    gbainit();
+	
+	// shut off the emulated sound generator
+	SOUND(0x9f);
+	SOUND(0xbf);
+	SOUND(0xdf);
+	SOUND(0xff);
+
+    // zero variables
+    VDP_STATUS_MIRROR = 0;
+    
+    userint = (void (*)())0;
+    otherint = (void (*)(unsigned int))0;
+    VDP_INT_COUNTER = 1;
+    gSaveIntCnt = 0;
+
+	// interrupts off
+    VDP_INT_DISABLE;
+
+    // reset the system and accomodate known alternate VDPs
+    // First, reset then lock the F18A if any - this also turns off the screen
+    reset_f18a();
+    lock_f18a();
+
+    // init status and clear any pending interrupt
+    VDP_STATUS_MIRROR = VDPST();
+}
+
+// make sure to link with --wrap=main
+extern void __real_main();
+void __wrap_main() {
+    vdpinit();
+    __real_main();
+}
+
+// NOT atomic! Do NOT call with interrupts enabled!
+void setUserIntHook(void (*hookfn)()) {
+	userint = hookfn;
+}
+
+// NOT atomic! Do NOT call with interrupts enabled!
+void clearUserIntHook() {
+	userint = 0;
+}
+
+// NOT atomic! Do NOT call with interrupts enabled!
+void setOtherIntHook(void (*hookfn)(unsigned int)) {
+	otherint = hookfn;
+}
+
+// NOT atomic! Do NOT call with interrupts enabled!
+void clearOtherIntHook() {
+	otherint = 0;
+}
+
 #endif

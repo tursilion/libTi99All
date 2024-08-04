@@ -1,8 +1,8 @@
 // TODO: add the rle unpack function for Convert9918a images
-// TODO: the crt0 needs to include 4 more bytes so that the return from main() works on any page
+// TODO: the crt0 needs to include 4 more bytes so that the return from main() works on any page (What did I mean here?)
 
 // VDP header for the TI-99/4A and Coleco by Tursi aka Mike Brent
-// 9/20/2023
+// 8/3/2024
 // This code and library released into the Public Domain
 // You can copy this file and use it at will ;)
 
@@ -11,8 +11,16 @@
 
 #ifndef COLECO
 #ifndef TI99
+#ifndef GBA
+// GBA is an unofficial target with a big gotcha - ints are suddenly 32-bit. So all pointer math MAY be wrong!
+// Be careful about types.
 #error Make sure to define either COLECO (for Coleco or SMS or MSX) or TI99
 #endif
+#endif
+#endif
+
+#ifdef GBA
+#include "tursigb.h"
 #endif
 
 // TODO: we can break out the various subsystems (hardware, text, bitmap, etc)
@@ -23,26 +31,46 @@
 #ifdef TI99
 
 // Read Data
-#define VDPRD	*((volatile unsigned char*)0x8800)
+#define VDPRD()	*((volatile unsigned char*)0x8800)
 // Read Status
-#define VDPST	*((volatile unsigned char*)0x8802)
+#define VDPST()	*((volatile unsigned char*)0x8802)
 // Write Address/Register
-#define VDPWA	*((volatile unsigned char*)0x8C02)
+#define VDPWA(x)	*((volatile unsigned char*)0x8C02)=(x)
 // Write Data
-#define VDPWD	*((volatile unsigned char*)0x8C00)
+#define VDPWD(x)	*((volatile unsigned char*)0x8C00)=(x)
 
 #endif
 #ifdef COLECO
 // SMS uses the same ports
 // Read Data
-volatile __sfr __at 0xbe VDPRD;
+volatile __sfr __at 0xbe pVDPRD;
 // Read Status
-volatile __sfr __at 0xbf VDPST;
+volatile __sfr __at 0xbf pVDPST;
 // Write Address/Register
-volatile __sfr __at 0xbf VDPWA;
+volatile __sfr __at 0xbf pVDPWA;
 // Write Data
-volatile __sfr __at 0xbe VDPWD;
+volatile __sfr __at 0xbe pVDPWD;
+#define VDPRD() pVDPRD
+#define VDPST() pVDPST
+#define VDPWA(x) pVDPWA=(x)
+#define VDPWD(x) pVDPWD=(x)
 #endif
+
+#ifdef GBA
+// these have to call out to functions
+extern unsigned char gbaVDPRD();
+extern unsigned char gbaVDPST();
+extern void gbaVDPWA(unsigned char x);
+extern void gbaVDPWD(unsigned char x);
+
+#define VDPRD() gbaVDPRD()
+#define VDPST() gbaVDPST()
+#define VDPWA(x) gbaVDPWA(x)
+#define VDPWD(x) gbaVDPWD(x)
+
+extern volatile unsigned char vdp_status;        // for vertical blank only, set by interrupt
+#endif
+
 
 //*********************
 // Inline VDP helpers
@@ -79,6 +107,10 @@ __endasm;
 #endif
 }
 #endif
+#ifdef GBA
+// no delays needed
+inline void VDP_SAFE_DELAY() {	}
+#endif
 
 // TODO: need some hardware testing to understand the VDP limits
 // Can you write the address register full speed? Is it /only/ VRAM access that needs the delay?
@@ -99,14 +131,14 @@ inline void VDP_SET_ADDRESS_WRITE(unsigned int x) { __asm__  volatile ( "mov %0,
 
 #else
 // Set VDP address for read (no bit added)
-inline void VDP_SET_ADDRESS(unsigned int x)						{	VDPWA=((x)&0xff); VDPWA=((x)>>8);			}
+inline void VDP_SET_ADDRESS(unsigned int x)						{	VDPWA( ((x)&0xff) ); VDPWA( ((x)>>8) );			}
 
 // Set VDP address for write (adds 0x4000 bit)
-inline void VDP_SET_ADDRESS_WRITE(unsigned int x)					{	VDPWA=((x)&0xff); VDPWA=(((x|0x4000)>>8));	}
+inline void VDP_SET_ADDRESS_WRITE(unsigned int x)					{	VDPWA( ((x)&0xff) ); VDPWA( (((x|0x4000)>>8)) );	}
 #endif
 
 // Set VDP write-only register 'r' to value 'v'
-inline void VDP_SET_REGISTER(unsigned char r, unsigned char v)	{	VDPWA=(v); VDPWA=(0x80|(r));				}
+inline void VDP_SET_REGISTER(unsigned char r, unsigned char v)	{	VDPWA(v); VDPWA(0x80|(r));				}
 
 // get a screen offset for 32x24 graphics mode
 inline int VDP_SCREEN_POS(unsigned int r, unsigned int c)			{	return (((r)<<5)+(c));						}
@@ -168,11 +200,19 @@ extern volatile unsigned char VDP_STATUS_MIRROR;
 // Has no meaning on Coleco.
 #define VDP_INT_CTRL			*((volatile unsigned char*)0)
 
-// If using KSCAN, you must put a copy of VDP register 1 (returned by the 'set' functions)
-// at this address, otherwise the first time a key is pressed, the value will be overwritten.
-// The console uses this to undo the screen timeout blanking. (not needed on Coleco)
-#define FIX_KSCAN(x)
+#endif
 
+#ifdef GBA
+// Interrupt counter - incremented each interrupt
+// WARNING: NEVER WRITE TO THIS VALUE. READ ONLY.
+extern volatile unsigned char VDP_INT_COUNTER;
+
+// Copy of the VDP status byte. No reset if you read this.
+extern volatile unsigned char VDP_STATUS_MIRROR;
+
+// This flag byte allows you to turn parts of the console interrupt handler on and off
+// Has no meaning on GBA.
+#define VDP_INT_CTRL			*((volatile unsigned char*)0)
 #endif
 
 // These values are flags for the interrupt control 
@@ -191,9 +231,9 @@ extern volatile unsigned char VDP_STATUS_MIRROR;
 // wait for a vblank (interrupts disabled - will work unreliably if enabled)
 // call vdpwaitvint() instead if you want to keep running the console interrupt
 // DO NOT USE the non-CRU version - this will miss interrupts.
-//#define VDP_WAIT_VBLANK  		while (!(VDPST & VDP_ST_INT)) { }
+//#define VDP_WAIT_VBLANK  		while (!(VDPST() & VDP_ST_INT)) { }
 #define VDP_WAIT_VBLANK_CRU	  __asm__ volatile ( "clr r12\nvdp%=:\n\ttb 2\n\tjeq vdp%=" : : : "r12","cc" );
-#define VDP_CLEAR_VBLANK { VDP_INT_DISABLE; VDP_STATUS_MIRROR = VDPST; }
+#define VDP_CLEAR_VBLANK { VDP_INT_DISABLE; VDP_STATUS_MIRROR = VDPST(); }
 
 // we enable interrupts via the CPU instruction, not the VDP itself, because it's faster
 // Note that on the TI interrupts DISABLED is the default state
@@ -212,7 +252,7 @@ extern volatile unsigned char VDP_STATUS_MIRROR;
 extern volatile unsigned char vdpLimi;
 #define VDP_WAIT_VBLANK_CRU	  while ((vdpLimi&0x80) == 0) { }
 
-#define VDP_CLEAR_VBLANK { vdpLimi = 0; VDP_STATUS_MIRROR = VDPST; }    // has to force to 0 to clear any pending unprocessed int
+#define VDP_CLEAR_VBLANK { vdpLimi = 0; VDP_STATUS_MIRROR = VDPST(); }    // has to force to 0 to clear any pending unprocessed int
 
 // we enable interrupts via a mask byte, as Coleco ints are NMI
 // Note that the enable therefore needs to check a flag!
@@ -232,6 +272,32 @@ extern volatile unsigned char vdpLimi;
 // If using KSCAN, you must put a copy of VDP register 1 (returned by the 'set' functions)
 // at this address, otherwise the first time a key is pressed, the value will be overwritten.
 // The console uses this to undo the screen timeout blanking. (not needed on Coleco)
+#define FIX_KSCAN(x)
+	
+#endif
+#ifdef GBA
+// wait for a vblank 
+// there's no CRU on the GBA, of course... but for compatibility..
+// note this spin is hard on the battery... then when I tried putting the CPU to sleep
+// in Cool Herders it didn't seem to help battery life at all.
+#define VDP_WAIT_VBLANK_CRU	  while ((VDPST() & 1)==0) { }
+
+// clear any pending interrupt
+#define VDP_CLEAR_VBLANK        { VDP_STATUS_MIRROR = VDPST(); }
+
+// interrupts on and off in hardware - it will handle pending interrupts just fine
+#define VDP_INT_ENABLE			{ REG_IE |= INT_VBLANK; }
+#define VDP_INT_DISABLE			{ REG_IE &= ~INT_VBLANK; }
+	
+// this might have no value... we'll see
+// If using KSCAN, you must put a copy of VDP register 1 (returned by the 'set' functions)
+// at this address, otherwise the first time a key is pressed, the value will be overwritten.
+// The console uses this to undo the screen timeout blanking. Not needed on GBA.
+#define VDP_REG1_KSCAN_MIRROR	*((volatile unsigned char*)0)
+
+// If using KSCAN, you must put a copy of VDP register 1 (returned by the 'set' functions)
+// at this address, otherwise the first time a key is pressed, the value will be overwritten.
+// The console uses this to undo the screen timeout blanking. (not needed on GBA)
 #define FIX_KSCAN(x)
 	
 #endif
@@ -541,7 +607,15 @@ void gplvdp(int vect, int adr, int cnt);
 //void vdpinit();	called automatically, don't use
 void setUserIntHook(void (*hookfn)(void));
 void clearUserIntHook(void);
+
+#ifdef GBA
+// Hook for non-vblank interrupts - argument is a copy of REG_IF
+void setOtherIntHook(void (*hookfn)(unsigned int));
+void clearOtherIntHook();
+void InterruptProcess();
+#else
 void my_nmi(void);
+#endif
 
 // bm_setforeground - specify foreground color to use when drawing
 void bm_setforeground(int c);
@@ -597,7 +671,7 @@ void bm_putc(int c, int r, unsigned char alphanum);
 //    this provides no scrolling, or bounds limiting.
 // Inputs : c - character column  0:31
 //          r - character row  0:23
-void bm_puts(int c, int r, unsigned char* str);
+void bm_puts(int c, int r, char* str);
 
 // bm_placetile - draw a 8x8 pattern at the given tile.
 // Inputs : c - character column  0:31

@@ -33,4 +33,9 @@ void rs232_setbps(int card, int uart, int bps) {
     (void)uart;
     (void)bps;
 #endif
+#ifdef GBA
+    (void)card;
+    (void)uart;
+    (void)bps;
+#endif
 }

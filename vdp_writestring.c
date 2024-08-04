@@ -20,6 +20,6 @@ void writestring(unsigned char row, unsigned char col, char *pStr) {
 
     // write the string to the tiles - note no attributes, use conio
 	while (*pStr) {
-		VDPWD = *(pStr++);
+		VDPWD( *(pStr++) );
 	}
 }

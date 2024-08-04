@@ -39,21 +39,32 @@ all:
 	make -C buildsms wipefolder
 	cd ..
 
+.phonye cleangba:
+	-mkdir buildgba
+	cp Makefile.stub buildgba/Makefile
+	make -C buildgba wipefolder
+	cd ..
+
 # Recipe to clean all compiled objects
-.phonye clean: cleanti cleancoleco cleansms
+.phonyf clean: cleanti cleancoleco cleansms cleangba
 	@echo Done
 
-.phonyf ti:
+.phonyg ti:
 	-mkdir buildti
 	cp Makefile.stub buildti/Makefile
 	make -C buildti -f ../Makefile.ti99 all
 	
-.phonyg coleco:
+.phonyh coleco:
 	-mkdir buildcoleco
 	cp Makefile.stub buildti/Makefile
 	make -C buildcoleco -f ../Makefile.coleco all
 	
-.phonyh sms:
+.phonyi sms:
 	-mkdir buildsms
 	cp Makefile.stub buildti/Makefile
 	make -C buildsms -f ../Makefile.mastersys all
+
+.phonyj gba:
+	-mkdir buildgba
+	cp Makefile.stub buildgba/Makefile
+	make -C buildgba -f ../Makefile.gba all

@@ -15,10 +15,10 @@ void bm_clearhlinefast(unsigned int x0, unsigned int y0, unsigned int x1) {
 	// do first byte
 	if (x0&0x07) {
 		VDP_SET_ADDRESS(addr);
-		unsigned char bits = VDPRD;
+		unsigned char bits = VDPRD();
 		bits &= masks[x0&0x07];
 		VDP_SET_ADDRESS_WRITE(addr);
-		VDPWD = bits;
+		VDPWD(bits);
 		addr+=8;
 		x0 = (x0&0xf8) + 8;
 	}
@@ -27,7 +27,7 @@ void bm_clearhlinefast(unsigned int x0, unsigned int y0, unsigned int x1) {
 	int range = x1-x0+1;
 	while (range >= 8) {
 		VDP_SET_ADDRESS_WRITE(addr);
-		VDPWD = 0;
+		VDPWD(0);
 		addr += 8;
 		range -= 8;
 	}
@@ -35,9 +35,9 @@ void bm_clearhlinefast(unsigned int x0, unsigned int y0, unsigned int x1) {
 	// do last byte
 	if (range) {
 		VDP_SET_ADDRESS(addr);
-		unsigned char bits = VDPRD;
+		unsigned char bits = VDPRD();
 		bits &= ~masks[range];
 		VDP_SET_ADDRESS_WRITE(addr);
-		VDPWD = bits;
+		VDPWD(bits);
 	}	
 }

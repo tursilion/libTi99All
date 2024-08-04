@@ -52,5 +52,5 @@ void files(unsigned char count) {
 		if (dsrbase >= 0x2000) break;
 	}
 #endif
-// no coleco equivalent
+// no coleco or GBA equivalent
 }

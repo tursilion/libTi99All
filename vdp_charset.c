@@ -19,3 +19,11 @@ void charset() {
 	vdpmemset(gPattern+(30*8), 0xfc, 8);	// cursor
 }
 #endif
+
+#ifdef GBA
+void charset() {
+    // TODO: the GBA doesn't apparently have a ROM font, we need to provide it
+    // for now I'll be very evil and copy the LC font in, but that leaves out all the numbers and punctuation
+    charsetlc();
+}
+#endif

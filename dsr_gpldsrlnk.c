@@ -49,5 +49,5 @@ void __attribute__((noinline)) gpldsrlnk(unsigned int vdp) {
 	// >0010 and parse it as per http://nouspikel.group.shef.ac.uk/ti99/gplcall.htm
 
 
-
+    // TODO: clearly incomplete
 }

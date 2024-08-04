@@ -1,8 +1,11 @@
-// Fast keyboard scan for the TI-99/4A by Tursi aka Mike Brent
+// Fast joystick scan for the TI-99/4A by Tursi aka Mike Brent
 // This code and library released into the Public Domain
 // You can copy this file and use it at will ;)
 
 // TODO: go to the beginning of email and port in the Coleco Adam fixes from there
+
+// TODO: implement a new controller interface that returns joystick and buttons more
+// like a modern platform as bitflags, rather than the limited TI interface
 
 #include "kscan.h"
 
@@ -109,4 +112,40 @@ void joystfast(unsigned char unit) {
 }
 
 #endif
+#endif
+
+#ifdef GBA
+#include <tursigb.h>
+
+// Address to read back the detected key. 0xFF if no key was pressed.
+volatile unsigned char KSCAN_KEY;
+// Address to read back the joystick X axis (scan modes 1 and 2 only)
+volatile unsigned char KSCAN_JOYY;
+// Address to read back the joystick Y axis (scan modes 1 and 2 only)
+volatile unsigned char KSCAN_JOYX;
+// Address to check the status byte. KSCAN_MASK is set if a key was pressed
+volatile unsigned char KSCAN_STATUS;
+
+void joystfast(unsigned char unit) {
+	if (unit == KSCAN_MODE_LEFT) {
+    	unsigned short key = REG_KEYINPUT;
+
+		KSCAN_JOYX = 0;
+		KSCAN_JOYY = 0;
+
+		// active low bits
+		if ((key&BTN_LEFT) == 0) {
+			KSCAN_JOYX = JOY_LEFT;
+		}
+		if ((key&BTN_DOWN) == 0) {
+			KSCAN_JOYY = JOY_DOWN;
+		}
+		if ((key&BTN_RIGHT) == 0) {
+			KSCAN_JOYX = JOY_RIGHT;
+		}
+		if ((key&BTN_UP) == 0) {
+			KSCAN_JOYY = JOY_UP;
+		}
+	}
+}
 #endif

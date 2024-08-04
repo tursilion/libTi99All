@@ -13,4 +13,7 @@ void rs232raw_activateCard(int card) {
 #ifdef COLECO
     (void)card;
 #endif
+#ifdef GBA
+    (void)card;
+#endif
 }

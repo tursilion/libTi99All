@@ -4,7 +4,7 @@
 // DSR interface code for the TI-99/4A by Tursi
 // You can copy this file and use it at will ;)
 
-// *** WARNING *** This code may NOT work on hardware yet.
+// *** WARNING *** This code may NOT work on hardware yet. (I think it's tested though)
 
 #define DSR_FILES_COUNT	*((volatile unsigned char*)0x834C)
 #define DSR_LEN_COUNT	*((volatile unsigned int*)0x8354)
@@ -60,9 +60,14 @@
 
 // PAB struct
 #ifdef TI99
-struct __attribute__((__packed__)) PAB {
+// WARNING: gcc port has bugs when packed is declared - have to assume alignment is okay
+//struct __attribute__((__packed__)) PAB {
+struct PAB {
 #endif
 #ifdef COLECO
+struct PAB {
+#endif
+#ifdef GBA
 struct PAB {
 #endif
 	unsigned char OpCode;			// see DSR_xxx list above

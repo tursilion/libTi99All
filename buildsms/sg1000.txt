@@ -1,0 +1,5 @@
+Info on SG-1000 interface:
+https://github.com/siriokds/SC-3000-Keyboard-support/blob/main/SG-1000_SC-3000_essentials.asm
+
+SG-1000 arcade:
+https://segaretro.org/SG-1000-based_arcade_hardware

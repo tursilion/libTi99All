@@ -5,6 +5,6 @@
 void vdpwriteinc(int pAddr, unsigned char nStart, int cnt) {
 	VDP_SET_ADDRESS_WRITE(pAddr);
 	while (cnt--) {
-		VDPWD=nStart++;
+		VDPWD(nStart++);
 	}
 }

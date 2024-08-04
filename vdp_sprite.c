@@ -3,14 +3,11 @@
 void sprite(unsigned char n, unsigned char ch, unsigned char col, unsigned char r, unsigned char c) {
 	unsigned int adr=gSprite+(n<<2);
 	VDP_SET_ADDRESS_WRITE(adr);
-	VDPWD=r;
+	VDPWD(r);
 	VDP_SAFE_DELAY();
-//__asm NOP __endasm;
-	VDPWD=c;
+	VDPWD(c);
 	VDP_SAFE_DELAY();
-//__asm NOP __endasm;
-	VDPWD=ch;
+	VDPWD(ch);
 	VDP_SAFE_DELAY();
-//__asm NOP __endasm;
-	VDPWD=col;
+	VDPWD(col);
 }

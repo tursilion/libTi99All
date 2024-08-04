@@ -12,7 +12,8 @@
 #ifdef TI99
 // By columns, then rows. 8 Rows per column. No shift states
 const unsigned char keymap[] = {
-		61,32,13,255,1,2,3,255,
+		//61,32,13,255,1,2,3,255,   1,2,3 are fctn,shift,ctrl - we'll ignore them for now
+		61,32,13,255,255,255,255,255,
 		'.','L','O','9','2','S','W','X',
 		',','K','I','8','3','D','E','C',
 		'M','J','U','7','4','F','R','V',
@@ -73,6 +74,10 @@ void kscanfast(unsigned char mode) {
 				}
 				// found one
 				KSCAN_KEY = keymap[(col>>5)+cnt];
+				if (KSCAN_KEY == 255) {
+                    shift>>=1;
+                    continue;
+                }
 				return;
 			}
 		}
@@ -170,4 +175,44 @@ void kscanfast(unsigned char mode) {
 }
 
 #endif
+#endif
+
+#ifdef GBA
+
+#include <tursigb.h>
+
+// NOTE: keys are A, B, L, R, Select and Start
+// Returning both A and B are regular fire (18)
+// Select as backspace (8) and start as enter (13)
+// L and R can be N and Y, I guess!
+
+// For GBA, there is only ever 1 controller. All modes except '2' read it, '2' reads nothing.
+void kscanfast(unsigned char mode) {
+	unsigned short key;
+
+    if (mode == KSCAN_MODE_RIGHT) {
+        KSCAN_KEY = 0xff;
+        return;
+    }
+
+    // active low
+    // TODO: this only allows one button return at a time - clearly not adequate
+    key = REG_KEYINPUT;
+
+    // A or B = fire
+    if ((key&(BTN_A|BTN_B)) != (BTN_A|BTN_B)) {
+        KSCAN_KEY = JOY_FIRE;
+    } else if ((key&BTN_SELECT) == 0) {
+        KSCAN_KEY = 8;  // backspace
+    } else if ((key&BTN_START) == 0) {
+        KSCAN_KEY = 13; // enter
+    } else if ((key&BTN_L) == 0) {
+        KSCAN_KEY = 'N';
+    } else if ((key&BTN_R) == 0) {
+        KSCAN_KEY = 'Y';
+    } else {
+        KSCAN_KEY = 0xff;
+    }
+}
+
 #endif

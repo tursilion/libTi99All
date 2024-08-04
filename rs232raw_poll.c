@@ -18,4 +18,8 @@ int rs232raw_poll(int rawCRU) {
     (void)rawCRU;
 	return 0;
 #endif
+#ifdef GBA
+    (void)rawCRU;
+	return 0;
+#endif
 }

@@ -152,3 +152,12 @@ void speech_continue(struct LpcPlaybackCtx* ctx) { (void)ctx; }
 void speech_wait() { }
 #endif
 
+#ifdef GBA
+void speech_reset() { }
+int detect_speech() { return 0; }
+void say_vocab(int phrase_addr) { (void)phrase_addr; }
+void say_data(const char* addr, int len) { (void)addr; (void)len; }
+void speech_start(struct LpcPlaybackCtx* ctx) { (void)ctx; }
+void speech_continue(struct LpcPlaybackCtx* ctx) { (void)ctx; }
+void speech_wait() { }
+#endif

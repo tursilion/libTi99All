@@ -22,6 +22,11 @@ void bm_consolefont() {
 	#define COLECO_FONT (unsigned char*)0x15A3
 	gBmFont = COLECO_FONT;
 #endif
+#ifdef GBA
+    // TODO this is to get the character set in RAM for bitmap mode
+    // But we aren't supporting bitmap mode anyway
+    gBmFont = (unsigned char*)0;
+#endif
 }
 
 

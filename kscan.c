@@ -113,3 +113,31 @@ unsigned char kscan(unsigned char mode) {
 
 #endif
 #endif
+
+#ifdef GBA
+#include <tursigb.h>
+
+// fire buttons are all the same for the moment. Note that 2 and 3 read
+// via the keypad, but 1 has a dedicated bit and could be overlapped
+
+// this is pretty much the same as kscanfast but it returns a value and sets status
+// it also reads the joysticks, though I'm not sure why...
+
+// For GBA, all modes except 2 read the only controller, and 2 reads nothing
+unsigned char kscan(unsigned char mode) {
+	kscanfast(mode);
+    
+	if (mode == KSCAN_MODE_LEFT) {
+        joystfast(mode);
+	}
+
+	if (KSCAN_KEY != 0xff) {
+		KSCAN_STATUS |= KSCAN_MASK;
+	} else {
+		KSCAN_STATUS = 0;
+	}
+
+	return KSCAN_KEY;
+}
+
+#endif

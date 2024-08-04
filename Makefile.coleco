@@ -20,6 +20,7 @@ include ../Makefile.sources
 # these files are not included as SDCC has better ones
 #  str_memcmp.$(EXT)    
 #  str_memcpy.$(EXT)    
+#  str_memmove.$(EXT)    
 #  str_memset.$(EXT)    
 #  str_strcmp.$(EXT)	
 #  str_strcpy.$(EXT)  

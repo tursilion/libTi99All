@@ -27,6 +27,7 @@ OBJECT_LIST_TIASM=\
 OBJECT_LIST_CRT=\
   str_memcmp.$(EXT)	\
   str_memcpy.$(EXT) \
+  str_memmove.$(EXT) \
   str_memset.$(EXT) \
   str_strcmp.$(EXT)	\
   str_strcpy.$(EXT) \

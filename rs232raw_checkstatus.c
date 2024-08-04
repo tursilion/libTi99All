@@ -26,4 +26,8 @@ int rs232raw_checkstatus(int rawCRU) {
     (void)rawCRU;
 	return 0;
 #endif
+#ifdef GBA
+    (void)rawCRU;
+	return 0;
+#endif
 }

@@ -8,8 +8,8 @@ void faster_hexprint(unsigned char x) {
     // and a handful of instructions.
     __asm__ volatile ( "movb %0,@>8c00\n\tswpb %0\n\tmovb %0,@>8c00\n\tswpb %0" : : "r"(dat) : "cc");
 #else
-	VDPWD = dat>>8;
+	VDPWD( dat>>8 );
 	VDP_SAFE_DELAY();
-	VDPWD = dat&0xff;
+	VDPWD( dat&0xff );
 #endif
 }

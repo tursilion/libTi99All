@@ -25,6 +25,8 @@
  // larger bankswitch sizes. Then the Coleco port is more handy too.
  // But this will work.
 
+// TODO: bring in the gzip compression from Cool Herders instead
+
 #ifndef PUFF16K_H
 #define PUFF16K_H
 
@@ -52,5 +54,9 @@ int puff16k(unsigned char *dest,          /* pointer to destination pointer */
 #define puff16k puff
 #endif
 
+#ifdef GBA
+// no need to do anything special on GBA for 16k
+#define puff16k puff
+#endif
 
 #endif /* PUFF16K_H */

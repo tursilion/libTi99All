@@ -3,6 +3,7 @@
 #include <vdp.h>
 #include <f18a.h>
 
+#ifndef GBA
 const unsigned char GPUTEST[] = {
 	0x02,0x00,0x12,0x34,    //		LI R0,>1234
 	0xC8,0x00,0x3F,0x10,    //		MOV R0,@>3F10
@@ -43,3 +44,12 @@ unsigned char detect_f18a() {
         return 0;
     }
 }
+#endif
+
+#ifdef GBA
+// even though we return true, we do NOT implement the GPU.
+// CPU emulation is above my current interest...
+unsigned char detect_f18a() {
+    return 1;
+}
+#endif

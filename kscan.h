@@ -43,6 +43,24 @@ extern volatile unsigned char KSCAN_JOYX;
 extern volatile unsigned char KSCAN_STATUS;
 #endif
 
+#ifdef GBA
+// Address to set the scan mode (see KSCAN_MODE_xxx defines) (meaningless on GBA)
+#define KSCAN_MODE	*((volatile unsigned char*)0)
+
+// Address to read back the detected key. 0xFF if no key was pressed.
+extern volatile unsigned char KSCAN_KEY;
+
+// Address to read back the joystick X axis (scan modes 1 and 2 only)
+extern volatile unsigned char KSCAN_JOYY;
+
+// Address to read back the joystick Y axis (scan modes 1 and 2 only)
+extern volatile unsigned char KSCAN_JOYX;
+
+// Address to check the status byte. KSCAN_MASK is set if a key was pressed
+extern volatile unsigned char KSCAN_STATUS;
+#endif
+
+
 #define KSCAN_MASK	0x20
 
 //*********************

@@ -15,26 +15,26 @@ unsigned char dsrlnk(struct PAB *pab, unsigned int vdp) {
 	vdpmemcpy(vdp, (const unsigned char*)pab, 9);
 	// assumes vdpmemcpy leaves the VDP address in the right place!
 	if (pab->NameLength == 0) {
-		x = strlen(pab->pName);
+		x = strlen((char*)pab->pName);
 	} else {
 		x= pab->NameLength;
 	}
-	VDPWD = x;
+	VDPWD(x);
 
 	// and the filename itself - note we assume 'x' is valid!
 	unsigned char *p = pab->pName;
 	while (x--) {
-		VDPWD = *(p++);
+		VDPWD(*(p++));
 	}
 
 	// now we can call it
 	if (dsrlnkraw(vdp)) {
-        unsigned char ret = vdpreadchar(vdp+1);
-        if (ret == 0) {
-            return DSR_ERR_DSRNOTFOUND;
-        } else {
-            return GET_ERROR(ret);
-        }
+        return DSR_ERR_DSRNOTFOUND;
+    }
+    unsigned char ret = vdpreadchar(vdp+1);
+    ret = GET_ERROR(ret);
+    if (ret != 0) {
+        return ret;
     }
 
 	// all good, presumably

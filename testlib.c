@@ -6,6 +6,8 @@
 #include "speech.h"
 #include "f18a.h"
 
+extern void gbaRender();
+
 unsigned char helloworldraw[] = {
   0xF3,0x48,0xCD,0xC9 ,0xC9 ,0x57 ,0x70 ,0xF6 ,0xF7 
   ,0x0D ,0x08 ,0x72 ,0x0D ,0x0E ,0x76 ,0x75 ,0x51 
@@ -78,6 +80,7 @@ void testprintf() {
     cprintf("\n");
 
     cputs("Press any key press any key Press any key press any key Press any key press any key...");
+gbaRender();
     cgetc();
 }
 
@@ -89,6 +92,7 @@ void testColorText() {
     textcolor(COLOR_WHITE);
     bgcolor(COLOR_DKBLUE);
     cprintf("\npress any key\n");
+gbaRender();
     cgetc();
 }
 
@@ -254,7 +258,6 @@ void test_speech() {
     }
 }
 
-
 int main() {
 	int f18 = 0;
 	
@@ -265,6 +268,7 @@ int main() {
     bgcolor(COLOR_DKBLUE);
     clrscr();
 	puts("Include F18A tests? (Y/N)");
+gbaRender();
 	for(;;) {
 		kscan(KSCAN_MODE_BASIC);
 		if ((KSCAN_KEY == 'Y')||(KSCAN_KEY=='N')||(KSCAN_KEY=='1')||(KSCAN_KEY=='0')) break;
@@ -294,6 +298,7 @@ int main() {
     putstring("\nsizeof(float):");
     hexprint(sizeof(float));
     putstring("\n");
+gbaRender();
 
 #if 0
     // puff currently eats a lot of RAM and isn't good for Coleco
@@ -328,14 +333,17 @@ int main() {
     cclear(5);
     cclearxy(2, 15, 10);
 
+gbaRender();
     while (!kbhit());
     cgetc();
 
     clrscr();
     cprintf("press keys: ");
+gbaRender();
     for (int idx = 0; idx < 10; idx++) {
         unsigned char x = cgetc();
         cputc(x);
+gbaRender();
     }
 
     clrscr();
@@ -348,6 +356,7 @@ int main() {
         chlinexy(idx, idx, 10);
         cvlinexy(idx, idx, 10);
     }
+gbaRender();
 
     cursor(0);
     cgetc();
@@ -395,12 +404,14 @@ int main() {
         cputcxy(idx, 23-idx, '*');
         cputcxy(38-idx, 23-idx, '*');   // avoid last screen position or we'll scroll
     }
+gbaRender();
     cgetc();
 
     clrscr();
     for (int idx = 0; idx < 5; ++idx) {
         cputsxy(idx * 2, idx, "Hello!");
     }
+gbaRender();
     cgetc();
 
     for (int idx = 11; idx < 16; ++idx) {
@@ -408,11 +419,13 @@ int main() {
         while (!kbhit());
         while (kbhit()) cgetc();
     }
+gbaRender();
     cgetc();
 
     test_speech();
     
     printf("** DONE **\n");
+gbaRender();
 	halt();
 
 	return 0;

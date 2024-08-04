@@ -1,6 +1,7 @@
 #include "vdp.h"
 
 // TODO: text modes should not rely on conio support if possible...
+extern unsigned int conio_scrnCol; // conio_bgcolor.c
 
 int text64_scroll = 0;
 
@@ -96,7 +97,6 @@ void vdpchar64(int pAddr, unsigned char ch)
     buf[3] = (buf[3] & mask) | (*font++ & mask2);
     vdpmemcpy(offset, (unsigned char*) buf, 8);
 
-    extern unsigned int conio_scrnCol; // conio_bgcolor.c
     vdpmemset(offset - gPattern + gColor, conio_scrnCol, 8);
 }
 
@@ -105,12 +105,9 @@ extern unsigned char vdp_bigbuf[256];
 void fast_scrn_scroll64() {
     // similar to the slow_scrn_scroll, but uses a larger fixed
     // buffer for far more speed
-    const int line = nTextEnd - nTextRow + 1;
-
     extern unsigned int conio_scrnCol; // conio_bgcolor.c
     extern int text64_scroll;
-    unsigned char *buf = (unsigned char *)0x8320;
-    int i, src, dst, ch;
+    int src, dst, ch;
 
     src = (8*32 + text64_scroll) * 8; // source = first middle
     dst = (0*32 + text64_scroll) * 8; // dest = last top
@@ -172,7 +169,7 @@ unsigned char set_text64_raw(void) {
 	int i;
     VDP_SET_ADDRESS_WRITE(gImage);
 	for (i = 0; i < 32*24; i++) {
-        VDPWD = i;
+        VDPWD(i);
 	}
 
 	vdpmemset(gPattern, 0, 32*24*8);

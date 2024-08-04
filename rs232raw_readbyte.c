@@ -24,4 +24,8 @@ int rs232raw_readbyte(int rawCRU) {
     (void)rawCRU;
 	return SERIAL_IO;
 #endif
+#ifdef GBA
+    (void)rawCRU;
+	return 0;
+#endif
 }

@@ -6,5 +6,5 @@ unsigned char vdpreadchar(int pAddr) {
 #ifdef TI99
 	__asm("NOP");
 #endif
-	return VDPRD;
+	return VDPRD();
 }

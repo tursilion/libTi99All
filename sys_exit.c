@@ -13,3 +13,11 @@ void exit() {
 	hwreboot();
 }
 #endif
+
+#ifdef GBA
+void exit() {
+    // reboot the whole system including BIOS - TODO: find out how to start at the cart
+    static void (* const hwreboot)() = 0;
+    hwreboot();
+}
+#endif
