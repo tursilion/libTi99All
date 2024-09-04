@@ -58,10 +58,10 @@ volatile __sfr __at 0xbe pVDPWD;
 
 #ifdef GBA
 // these have to call out to functions
-extern unsigned char gbaVDPRD();
-extern unsigned char gbaVDPST();
-extern void gbaVDPWA(unsigned char x);
-extern void gbaVDPWD(unsigned char x);
+extern unsigned char CODE_IN_IWRAM gbaVDPRD();
+extern unsigned char CODE_IN_IWRAM gbaVDPST();
+extern void CODE_IN_IWRAM gbaVDPWA(unsigned char x);
+extern void CODE_IN_IWRAM gbaVDPWD(unsigned char x);
 
 #define VDPRD() gbaVDPRD()
 #define VDPST() gbaVDPST()
