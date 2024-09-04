@@ -282,7 +282,7 @@ extern volatile unsigned char vdpLimi;
 // in Cool Herders it didn't seem to help battery life at all.
 #define VDPSTCRU gbaVDPSTCRU
 extern unsigned char gbaVDPSTCRU();
-#define VDP_WAIT_VBLANK_CRU	  while ((VDPSTCRU() & VDP_ST_INT)==0) { }
+#define VDP_WAIT_VBLANK_CRU	  while ((VDPSTCRU() & VDP_ST_INT)==0) { } 
 
 // clear any pending interrupt
 #define VDP_CLEAR_VBLANK        { VDP_STATUS_MIRROR = VDPST(); }
@@ -301,6 +301,13 @@ extern unsigned char gbaVDPSTCRU();
 // at this address, otherwise the first time a key is pressed, the value will be overwritten.
 // The console uses this to undo the screen timeout blanking. (not needed on GBA)
 #define FIX_KSCAN(x)
+	
+// GBA auto-render calls gbaRender to draw the screen if VDP RAM is dirty when
+// calling gbaVDPST()
+extern void setGBAAutoRender(unsigned short mode);
+#define GBA_AUTORENDER_NONE 0
+#define GBA_AUTORENDER_FULL 1
+#define GBA_AUTORENDER_SCALE 2
 	
 #endif
 

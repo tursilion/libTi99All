@@ -23,8 +23,14 @@ unsigned int  vdp_addr;			// vdp address
 unsigned char vdp_prefetch;		// vdp prefetch byte
 unsigned char vdp_flipflop;		// vdp address flipflop
 volatile unsigned char vdp_status;        // for vertical blank only, set by interrupt
-static int    vdp_dirty = 0;
+static short vdp_dirty = 0;
+static short vdp_autorender = 0;
 void gbaRender();
+void gbaRenderScaled();
+
+void setGBAAutoRender(unsigned short mode) {
+    vdp_autorender = mode;
+}
 
 unsigned char CODE_IN_IWRAM gbaVDPRD() {
 	unsigned char ret = vdp_prefetch;
@@ -41,7 +47,15 @@ unsigned char CODE_IN_IWRAM gbaVDPST() {
 	vdp_flipflop = 0;
     REG_IF = INT_VBLANK;    // acknowledge interrupt to hardware
     *(volatile unsigned short *)0x3007FF8 |= INT_VBLANK;    // acknowledge to BIOS
-    if (vdp_dirty) gbaRender();
+    if ((vdp_dirty) && (vdp_autorender)) {
+        if (vdp_reg[VDP_REG_MODE1] & VDP_MODE1_UNBLANK) {
+            if (vdp_autorender == 1) {
+                gbaRender();
+            } else {
+                gbaRenderScaled();
+            }
+        }
+    }
     return ret;
 }
 // check interrupt without clearing it
@@ -57,10 +71,6 @@ void CODE_IN_IWRAM gbaVDPWA(unsigned char x) {
 			// register write
 			int reg = x & 0x3f;
 			vdp_reg[reg] = vdp_addr & 0xff;
-			if (reg == 1) {
-                // if enable bit is set, draw screen. This is a temp hack, it's too slow to be realtime
-                gbaRender();
-            }
 		}
 		if ((x & 0xc0) == 0) {
 			// prefetch
@@ -85,27 +95,108 @@ void CODE_IN_IWRAM gbaVDPWD(unsigned char x) {
 
 // render the TI screen on the GBA screen - this is deliberately very limited
 // ultimately the intent is to do some scaling
-#define GBA_SCALING
 extern unsigned char vdp_ram[16384] DATA_IN_EWRAM;
 extern unsigned char vdp_reg[64];
 void CODE_IN_IWRAM gbaRender() {
+    unsigned short tx,ty;   // calculated position on TI screen
+    unsigned short px,py;   // offset inside the cell
+    
+    if (vdp_reg[VDP_REG_MODE0] & VDP_MODE0_BITMAP) {
+        for (tx=0; tx<240; tx+=2) {
+            for (ty=0; ty<160; ty++) {
+                unsigned short sit = (ty/8)*32+(tx/8)+gImage;
+                unsigned short pat = (ty/64)*0x800+vdp_ram[sit]*8+gPattern;
+                
+                px=7-(tx%8);
+                py=ty%8;
+                
+                unsigned char p = vdp_ram[pat+py];
+                unsigned char mask = 1<<px;
+                unsigned int adr = BG_RAM_BASE + tx + ty*240;
+                unsigned short pixdat = 0;
+                unsigned short screen = vdp_reg[7]&0xf;
+                unsigned short color = vdp_ram[(ty/64)*0x800+vdp_ram[sit]*8+gColor+py];
+                
+                if (p&mask) {
+                    unsigned short fg = color>>4;
+                    if (fg == 0) fg = screen;
+                    pixdat = fg;
+                } else {
+                    unsigned short bg = color&0xf;
+                    if (bg == 0) bg = screen;
+                    pixdat = bg;
+                }
+
+                // second pixel
+                mask >>= 1;
+                if (p&mask) {
+                    unsigned short fg = color>>4;
+                    if (fg == 0) fg = screen;
+                    pixdat |= (fg<<8);
+                } else {
+                    unsigned short bg = color&0xf;
+                    if (bg == 0) bg = screen;
+                    pixdat |= (bg<<8);
+                }
+                
+                *((unsigned short*)adr) = pixdat;
+            }
+        }
+    } else {
+        for (tx=0; tx<240; tx+=2) {
+            for (ty=0; ty<160; ty++) {
+                unsigned short sit = (ty/8)*32+(tx/8)+gImage;
+                unsigned short pat = vdp_ram[sit]*8+gPattern;
+                
+                px=7-(tx%8);
+                py=ty%8;
+                
+                unsigned char p = vdp_ram[pat+py];
+                unsigned char mask = 1<<px;
+                unsigned int adr = BG_RAM_BASE + tx + ty*240;
+                unsigned short pixdat = 0;
+                unsigned short screen = vdp_reg[7]&0xf;
+                unsigned short color = vdp_ram[vdp_ram[sit]/8+gColor];
+                
+                if (p&mask) {
+                    unsigned short fg = color>>4;
+                    if (fg == 0) fg = screen;
+                    pixdat = fg;
+                } else {
+                    unsigned short bg = color&0xf;
+                    if (bg == 0) bg = screen;
+                    pixdat = bg;
+                }
+
+                // second pixel
+                mask >>= 1;
+                if (p&mask) {
+                    unsigned short fg = color>>4;
+                    if (fg == 0) fg = screen;
+                    pixdat |= (fg<<8);
+                } else {
+                    unsigned short bg = color&0xf;
+                    if (bg == 0) bg = screen;
+                    pixdat |= (bg<<8);
+                }
+                
+                *((unsigned short*)adr) = pixdat;
+            }
+        }
+     }
+    
+    vdp_dirty=0;
+}
+void CODE_IN_IWRAM gbaRenderScaled() {
     unsigned short x,y;     // position on GBA screen
     unsigned short tx,ty;   // calculated position on TI screen (for scaling)
     unsigned short px,py;   // offset inside the cell
     
     if (vdp_reg[VDP_REG_MODE0] & VDP_MODE0_BITMAP) {
         for (x=0; x<240; x+=2) {
-#ifdef GBA_SCALING
             tx=(x*273)>>8;
-#else   
-            tx=x;
-#endif
             for (y=0; y<160; y++) {
-#ifdef GBA_SCALING
                 ty=(y*307)>>8;
-#else   
-                ty=y;
-#endif
                 
                 unsigned short sit = (ty/8)*32+(tx/8)+gImage;
                 unsigned short pat = (ty/64)*0x800+vdp_ram[sit]*8+gPattern;
@@ -147,17 +238,9 @@ void CODE_IN_IWRAM gbaRender() {
         }
     } else {
         for (x=0; x<240; x+=2) {
-#ifdef GBA_SCALING
             tx=(x*273)>>8;
-#else   
-            tx=x;
-#endif
             for (y=0; y<160; y++) {
-#ifdef GBA_SCALING
                 ty=(y*307)>>8;
-#else   
-                ty=y;
-#endif
                 
                 unsigned short sit = (ty/8)*32+(tx/8)+gImage;
                 unsigned short pat = vdp_ram[sit]*8+gPattern;
