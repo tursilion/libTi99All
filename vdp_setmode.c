@@ -12,6 +12,7 @@ unsigned int gSprite = 0x0300;		// SAL, Register 5 * 0x80
 unsigned int gSpritePat = 0x0000;	// SDT, Register 6 * 0x800
 
 #ifdef GBA
+#include <vdp.h>
 #include <tursigb.h>
 
 // put the main VDP RAM in 256k external, otherwise it's half our available memory
@@ -22,6 +23,7 @@ unsigned int  vdp_addr;			// vdp address
 unsigned char vdp_prefetch;		// vdp prefetch byte
 unsigned char vdp_flipflop;		// vdp address flipflop
 volatile unsigned char vdp_status;        // for vertical blank only, set by interrupt
+void gbaRender();
 
 unsigned char gbaVDPRD() {
 	unsigned char ret = vdp_prefetch;
@@ -33,10 +35,17 @@ unsigned char gbaVDPRD() {
 }
 unsigned char gbaVDPST() {
     unsigned char ret = vdp_status;
+    if (REG_IF & INT_VBLANK) ret |= VDP_ST_INT;
     vdp_status = 0;
 	vdp_flipflop = 0;
     REG_IF = INT_VBLANK;    // acknowledge interrupt to hardware
     *(volatile unsigned short *)0x3007FF8 |= INT_VBLANK;    // acknowledge to BIOS
+    return ret;
+}
+// check interrupt without clearing it
+unsigned char gbaVDPSTCRU() {
+    unsigned char ret = vdp_status;
+    if (REG_IF & INT_VBLANK) ret |= VDP_ST_INT;
     return ret;
 }
 void gbaVDPWA(unsigned char x) {
@@ -46,6 +55,10 @@ void gbaVDPWA(unsigned char x) {
 			// register write
 			int reg = x & 0x3f;
 			vdp_reg[reg] = vdp_addr & 0xff;
+			if (reg == 1) {
+                // if enable bit is set, draw screen. This is a temp hack, it's too slow to be realtime
+                gbaRender();
+            }
 		}
 		if ((x & 0xc0) == 0) {
 			// prefetch

@@ -230,8 +230,7 @@ extern volatile unsigned char VDP_STATUS_MIRROR;
 #ifdef TI99
 // wait for a vblank (interrupts disabled - will work unreliably if enabled)
 // call vdpwaitvint() instead if you want to keep running the console interrupt
-// DO NOT USE the non-CRU version - this will miss interrupts.
-//#define VDP_WAIT_VBLANK  		while (!(VDPST() & VDP_ST_INT)) { }
+// TODO: VDPSTCRU to return true if bit is set
 #define VDP_WAIT_VBLANK_CRU	  __asm__ volatile ( "clr r12\nvdp%=:\n\ttb 2\n\tjeq vdp%=" : : : "r12","cc" );
 #define VDP_CLEAR_VBLANK { VDP_INT_DISABLE; VDP_STATUS_MIRROR = VDPST(); }
 
@@ -250,7 +249,8 @@ extern volatile unsigned char VDP_STATUS_MIRROR;
 // wait for a vblank (interrupts disabled - will work unreliably if enabled)
 // there's no CRU on the Coleco, of course... but for compatibility..
 extern volatile unsigned char vdpLimi;
-#define VDP_WAIT_VBLANK_CRU	  while ((vdpLimi&0x80) == 0) { }
+#define VDPSTCRU() (vdpLimi&0x80)
+#define VDP_WAIT_VBLANK_CRU	  while (VDPSTCRU == 0) { }
 
 #define VDP_CLEAR_VBLANK { vdpLimi = 0; VDP_STATUS_MIRROR = VDPST(); }    // has to force to 0 to clear any pending unprocessed int
 
@@ -280,7 +280,9 @@ extern volatile unsigned char vdpLimi;
 // there's no CRU on the GBA, of course... but for compatibility..
 // note this spin is hard on the battery... then when I tried putting the CPU to sleep
 // in Cool Herders it didn't seem to help battery life at all.
-#define VDP_WAIT_VBLANK_CRU	  while ((VDPST() & 1)==0) { }
+#define VDPSTCRU gbaVDPSTCRU
+extern unsigned char gbaVDPSTCRU();
+#define VDP_WAIT_VBLANK_CRU	  while ((VDPSTCRU() & VDP_ST_INT)==0) { }
 
 // clear any pending interrupt
 #define VDP_CLEAR_VBLANK        { VDP_STATUS_MIRROR = VDPST(); }
