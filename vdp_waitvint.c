@@ -91,20 +91,7 @@ unsigned char vdpwaitvint() {
         // set the enable flag
         VDP_INT_ENABLE;
 	
-		// this countdown should be unnecessary. But if the user has
-		// messed with the interrupt flags or status register, or
-		// just a simple emulator bug like Classic99 seems to have,
-		// then continue anyway rather than hanging. This is not calibrated.
-		unsigned int cnt = 4096;
-		while (VDP_INT_COUNTER == gSaveIntCnt) { 
-			if (--cnt == 0) {
-				// we're stuck - clear the VDP and exit
-				// TODO: maybe we should make a debug version of this that includes the screen
-				// color change so users can tell if something is wrong and it's not just running slow
-				//VDP_SET_REGISTER(7,3);
-				break;
-			}
-		} 
+		while (VDP_INT_COUNTER == gSaveIntCnt) {  }
 
         // turn the interrupt flag back off
         VDP_INT_DISABLE; 
