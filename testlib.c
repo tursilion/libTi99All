@@ -6,8 +6,6 @@
 #include "speech.h"
 #include "f18a.h"
 
-extern void gbaRender();
-
 unsigned char helloworldraw[] = {
   0xF3,0x48,0xCD,0xC9 ,0xC9 ,0x57 ,0x70 ,0xF6 ,0xF7 
   ,0x0D ,0x08 ,0x72 ,0x0D ,0x0E ,0x76 ,0x75 ,0x51 
@@ -80,7 +78,9 @@ void testprintf() {
     cprintf("\n");
 
     cputs("Press any key press any key Press any key press any key Press any key press any key...");
-gbaRender();
+#ifdef GBA
+    gbaRender();
+#endif
     cgetc();
 }
 
@@ -92,7 +92,9 @@ void testColorText() {
     textcolor(COLOR_WHITE);
     bgcolor(COLOR_DKBLUE);
     cprintf("\npress any key\n");
-gbaRender();
+#ifdef GBA
+    gbaRender();
+#endif
     cgetc();
 }
 
@@ -260,6 +262,10 @@ void test_speech() {
 
 int main() {
 	int f18 = 0;
+
+#ifdef GBA
+    setGBAAutoRender(GBA_AUTORENDER_FULL);
+#endif
 	
 	// TODO: Bug: If F18A is already unlocked, we'll get sprite garbage on screen. Lock F18A before starting.
 	set_text();
@@ -268,7 +274,9 @@ int main() {
     bgcolor(COLOR_DKBLUE);
     clrscr();
 	puts("Include F18A tests? (Y/N)");
-gbaRender();
+#ifdef GBA
+    gbaRender();
+#endif
 	for(;;) {
 		kscan(KSCAN_MODE_BASIC);
 		if ((KSCAN_KEY == 'Y')||(KSCAN_KEY=='N')||(KSCAN_KEY=='1')||(KSCAN_KEY=='0')) break;
@@ -298,7 +306,9 @@ gbaRender();
     putstring("\nsizeof(float):");
     hexprint(sizeof(float));
     putstring("\n");
-gbaRender();
+#ifdef GBA
+    gbaRender();
+#endif
 
 #if 0
     // puff currently eats a lot of RAM and isn't good for Coleco
@@ -333,17 +343,23 @@ gbaRender();
     cclear(5);
     cclearxy(2, 15, 10);
 
-gbaRender();
+#ifdef GBA
+    gbaRender();
+#endif
     while (!kbhit());
     cgetc();
 
     clrscr();
     cprintf("press keys: ");
-gbaRender();
+#ifdef GBA
+    gbaRender();
+#endif
     for (int idx = 0; idx < 10; idx++) {
         unsigned char x = cgetc();
         cputc(x);
-gbaRender();
+#ifdef GBA
+    gbaRender();
+#endif
     }
 
     clrscr();
@@ -356,7 +372,9 @@ gbaRender();
         chlinexy(idx, idx, 10);
         cvlinexy(idx, idx, 10);
     }
-gbaRender();
+#ifdef GBA
+    gbaRender();
+#endif
 
     cursor(0);
     cgetc();
@@ -404,14 +422,18 @@ gbaRender();
         cputcxy(idx, 23-idx, '*');
         cputcxy(38-idx, 23-idx, '*');   // avoid last screen position or we'll scroll
     }
-gbaRender();
+#ifdef GBA
+    gbaRender();
+#endif
     cgetc();
 
     clrscr();
     for (int idx = 0; idx < 5; ++idx) {
         cputsxy(idx * 2, idx, "Hello!");
     }
-gbaRender();
+#ifdef GBA
+    gbaRender();
+#endif
     cgetc();
 
     for (int idx = 11; idx < 16; ++idx) {
@@ -419,13 +441,17 @@ gbaRender();
         while (!kbhit());
         while (kbhit()) cgetc();
     }
-gbaRender();
+#ifdef GBA
+    gbaRender();
+#endif
     cgetc();
 
     test_speech();
     
     printf("** DONE **\n");
-gbaRender();
+#ifdef GBA
+    gbaRender();
+#endif
 	halt();
 
 	return 0;

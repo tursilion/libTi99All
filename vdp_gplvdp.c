@@ -22,9 +22,9 @@ void gplvdp(int vect, int adr, int cnt) {
 	VDP_SET_ADDRESS_WRITE(adr);	// VDP is now ready!
 
 	while (cnt--) {
-		VDPWD = 0;			// pad the top of the char with a space
+		VDPWD(0);			// pad the top of the char with a space
 		for (int idx=0; idx<7; idx++) {		// then copy 7 bytes
-			VDPWD = GROMRD;	// copy a byte (both sides autoincrement)
+			VDPWD(GROMRD);	// copy a byte (both sides autoincrement)
 		}
 	}
 #endif

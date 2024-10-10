@@ -1,6 +1,7 @@
 # List of compiled objects used in executable
 OBJECT_LIST=\
   conio_bgcolor.$(EXT)   \
+  conio_bordercolor.$(EXT)\
   conio_cclear.$(EXT)    \
   conio_cclearxy.$(EXT)  \
   conio_cgetc.$(EXT)     \
@@ -16,22 +17,29 @@ OBJECT_LIST=\
   conio_cvlinexy.$(EXT)  \
   conio_getvram.$(EXT)   \
   conio_kbhit.$(EXT)     \
+  conio_reverse.$(EXT)   \
   conio_screensize.$(EXT)\
+  conio_textcolor.$(EXT) \
+  conio_wherex.$(EXT)   \
+  conio_wherey.$(EXT)   \
   dsr_dsrlnk.$(EXT)		\
   dsr_dsrlnkraw.$(EXT)	\
   dsr_files.$(EXT)		\
-  f18a_detect.$(EXT)		\
+  f18a_detect.$(EXT)	\
   f18a_loadpal.$(EXT)	\
   f18a_lock.$(EXT)		\
   f18a_reset.$(EXT)		\
   f18a_startgpu.$(EXT)	\
   f18a_stopgpu.$(EXT)	\
-  f18a_unlock.$(EXT)		\
+  f18a_unlock.$(EXT)	\
   grom_readdata.$(EXT)	\
   grom_writedata.$(EXT)	\
+  grom_get_address.$(EXT) \
+  grom_set_address.$(EXT) \
   joystfast.$(EXT)		\
   kscan.$(EXT)			\
   kscanfast.$(EXT)		\
+  math_abs.$(EXT)    \
   math_sqrt.$(EXT)   \
   puff.$(EXT)        \
   puff16k.$(EXT)     \
@@ -53,7 +61,19 @@ OBJECT_LIST=\
   rs232raw_setPIOinput.$(EXT) \
   rs232raw_setPIOoutput.$(EXT) \
   rs232raw_writebyte.$(EXT) \
-  speech.$(EXT) \
+  sound_mutesound.$(EXT) \
+  speech_callsaferead.$(EXT)    \
+  speech_copysaferead.$(EXT)    \
+  speech_delayasm12.$(EXT)    \
+  speech_delayasm42.$(EXT)    \
+  speech_detectspeech.$(EXT)    \
+  speech_loadspeechaddr.$(EXT)    \
+  speech_saydata.$(EXT)    \
+  speech_sayvocab.$(EXT)    \
+  speech_speechcontinue.$(EXT)    \
+  speech_speechreset.$(EXT)    \
+  speech_speechstart.$(EXT)    \
+  speech_speechwait.$(EXT)    \
   str_atoi.$(EXT)      \
   str_getchar.$(EXT)   \
   str_gets.$(EXT)      \
@@ -97,12 +117,20 @@ OBJECT_LIST=\
   vdp_rawmemcpy.$(EXT)	\
   vdp_rawmemset.$(EXT)	\
   vdp_readchar.$(EXT)	\
+  vdp_safedelay.$(EXT)  \
   vdp_screenchar.$(EXT)	\
+  vdp_screenpos.$(EXT)  \
+  vdp_screentext.$(EXT)  \
+  vdp_screentext64.$(EXT)  \
+  vdp_screentext80.$(EXT)  \
   vdp_scrnscroll.$(EXT)	\
   vdp_setbitmap.$(EXT)	\
+  vdp_setaddress.$(EXT)  \
+  vdp_setaddresswrite.$(EXT)  \
   vdp_setgraphics.$(EXT)	\
   vdp_setmode.$(EXT)		\
   vdp_setmulticolor.$(EXT)	\
+  vdp_setregister.$(EXT)  \
   vdp_settext.$(EXT)		\
   vdp_settext64.$(EXT)		\
   vdp_settext80.$(EXT)		\

@@ -1,7 +1,7 @@
 // F18A - by Tursi - public domain
 
-#include <vdp.h>
-#include <f18a.h>
+#include "vdp.h"
+#include "f18a.h"
 
 // load an F18A palette from ptr (16-bit words, little endian)
 // data format is 12-bit 0RGB color.
@@ -16,8 +16,8 @@ void loadpal_f18a(const unsigned int *ptr, unsigned char first, unsigned char cn
         // and a handful of instructions. Even using pointers the C code is still 4 instructions long
         __asm__ volatile("movb *%0+,@>8C00\n\tmovb *%0+,@>8C00" : : "r"(ptr) : "cc");
 #else
-		VDPWD = ptr[0]>>8;
-		VDPWD = ptr[0]&0xff;
+		VDPWD(ptr[0]>>8);
+		VDPWD(ptr[0]&0xff);
 		ptr++;
 #endif
 	}

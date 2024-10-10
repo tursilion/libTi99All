@@ -8,7 +8,7 @@ void *memmove(void *dest, const void *src, int cnt) {
   
   if (d == s) {
     // nothing to do anyway
-    return;
+    return dest;
   }
   
   if ((d < s)||(s+cnt < d)) {

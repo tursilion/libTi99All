@@ -131,6 +131,10 @@ typedef     int                     bool;
 #define MAP_SIZE_2x1    0x4000
 #define MAP_SIZE_1x2    0x8000
 #define MAP_SIZE_2x2    0xC000
+#define MAP_SCALED_1x1    0x0000
+#define MAP_SCALED_2x2    0x4000
+#define MAP_SCALED_4x4    0x8000
+#define MAP_SCALED_8x8    0xC000
 
 #define TILE_MAP_BANK_SHIFT 8
 

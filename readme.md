@@ -17,8 +17,7 @@ Recommended build switches are: -Os -fno-builtin -fno-function-cse -fno-peephole
 -fno-function-cse - prevents some very inefficient function call semantics that help only in very limited cases
 -fno-peephole2 - turns off peepholes which contain a code-breaking bug in the 1.30 patches (peep-movhi-cmphi)
 
-
-** ColecoVision, SMS, [MSX, GB ? maybe?] **
+** ColecoVision, SMS, [MSX?] **
 This code is tested with SDCC dated 20230715
 
 Documentation is found in each of the .h files. The .h files are briefly described here:
@@ -56,6 +55,22 @@ SMS TestLib:
 
 ........
 
+** GBA **
+
+This code is tested with devkitarm's GCC 12.1.0 (devkitARM release 58)
+
+- this is never meant to be a first tier target, I'm just using it to help a porting effort
+- the testlib app is largely non-functional and makes a lot of noise due to not servicing the audio emulator, but some of it works!
+- you can use setGBAAutoRender() to render graphics or bitmap onto the GBA screen automatically when reading status
+- you can also use gbaRender() to force a draw. Note that the drawing takes many frames and will glitch audio
+- the SN sound chip is faithfully emulated as long as it's updated frequently enough
+- the GBA screen is smaller than the TMS9900 so bottom and right edge are clipped in the FULL render mode
+
+........
+
 For docs:
 
--remember to include -DTI99 (or appropriate for others) on your C command line
+- remember to include -DTI99 (or appropriate for others) on your C command line
+- inline rules follow https://gcc.gnu.org/onlinedocs/gcc/Inline.html - most calls should end up inlined most of the time
+- Note that where #define code is used, I have no sympathy for people who don't use braces in single-line conditionals.
+I have done enough late nights debugging such code and I'm not making accomodations for it in hobby work. ;) If you propose the while(0) solution, the most polite thing I will do is ignore you. It's a bad answer to a bad habit.

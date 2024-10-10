@@ -7,6 +7,10 @@ const unsigned char newDef[8] = { 0x3c,0x42,0xa5,0x81,0xa5,0x99,0x42,0x3c };
 
 int main(void)
 {
+#ifdef GBA
+    setGBAAutoRender(GBA_AUTORENDER_FULL);
+#endif
+
     set_graphics(VDP_SPR_16x16);                        // set video mode
     charsetlc();                                        // load character set with lowercase
     vdpmemset(gImage, 32, 768);                         // clear screen

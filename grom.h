@@ -40,12 +40,12 @@
 #ifdef TI99
 inline void GROM_SET_ADDRESS(unsigned int x) { __asm__ volatile ("movb %0,@>9c02\n\tswpb %0\n\tmovb %0,@>9c02\n\tswpb %0" : : "r"(x) : "cc"); }
 #else
-inline void GROM_SET_ADDRESS(unsigned int x)		{	GROMWA=((x)>>8); GROMWA=((x)&0xff);					}
+inline void GROM_SET_ADDRESS(unsigned int x)	{	GROMWA=((x)>>8); GROMWA=((x)&0xff);					}
 #endif
 
 // Get the current GROM address - this value will be one higher than expected due to internal prefetch.
 // Reading the address destroys it, so you must set the address again afterwards.
-inline unsigned int GROM_GET_ADDRESS()				{	unsigned int ret; ret=(GROMRA)<<8; ret|=GROMRA; return ret; }
+inline unsigned int GROM_GET_ADDRESS()   	{	unsigned int ret; ret=(GROMRA)<<8; ret|=GROMRA; return ret; }
 
 //*********************
 // More comprehensive GROM functions (multiple ports)

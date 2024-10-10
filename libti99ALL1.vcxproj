@@ -29,26 +29,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -159,6 +159,7 @@
   <ItemGroup>
     <ClCompile Include="checkreset.c" />
     <ClCompile Include="conio_bgcolor.c" />
+    <ClCompile Include="conio_bordercolor.c" />
     <ClCompile Include="conio_cclear.c" />
     <ClCompile Include="conio_cclearxy.c" />
     <ClCompile Include="conio_cgetc.c" />
@@ -174,7 +175,11 @@
     <ClCompile Include="conio_cvlinexy.c" />
     <ClCompile Include="conio_getvram.c" />
     <ClCompile Include="conio_kbhit.c" />
+    <ClCompile Include="conio_reverse.c" />
     <ClCompile Include="conio_screensize.c" />
+    <ClCompile Include="conio_textcolor.c" />
+    <ClCompile Include="conio_wherex.c" />
+    <ClCompile Include="conio_wherey.c" />
     <ClCompile Include="dsr_dsrlnk.c" />
     <ClCompile Include="dsr_dsrlnkraw.c" />
     <ClCompile Include="dsr_files.c" />
@@ -187,11 +192,14 @@
     <ClCompile Include="f18a_startgpu.c" />
     <ClCompile Include="f18a_stopgpu.c" />
     <ClCompile Include="f18a_unlock.c" />
+    <ClCompile Include="grom_get_address.c" />
     <ClCompile Include="grom_readdata.c" />
+    <ClCompile Include="grom_set_address.c" />
     <ClCompile Include="grom_writedata.c" />
     <ClCompile Include="joystfast.c" />
     <ClCompile Include="kscan.c" />
     <ClCompile Include="kscanfast.c" />
+    <ClCompile Include="math_abs.c" />
     <ClCompile Include="math_sqrt.c" />
     <ClCompile Include="puff.c" />
     <ClCompile Include="puff16k.c" />
@@ -213,12 +221,25 @@
     <ClCompile Include="rs232_setcontrol.c" />
     <ClCompile Include="rs232_writebyte.c" />
     <ClCompile Include="rs232_writePIO.c" />
-    <ClCompile Include="speech.c" />
+    <ClCompile Include="sound_mutesound.c" />
+    <ClCompile Include="speech_callsaferead.c" />
+    <ClCompile Include="speech_copysaferead.c" />
+    <ClCompile Include="speech_delayasm12.c" />
+    <ClCompile Include="speech_delayasm42.c" />
+    <ClCompile Include="speech_detectspeech.c" />
+    <ClCompile Include="speech_loadspeechaddr.c" />
+    <ClCompile Include="speech_saydata.c" />
+    <ClCompile Include="speech_sayvocab.c" />
+    <ClCompile Include="speech_speechcontinue.c" />
+    <ClCompile Include="speech_speechreset.c" />
+    <ClCompile Include="speech_speechstart.c" />
+    <ClCompile Include="speech_speechwait.c" />
     <ClCompile Include="str_atoi.c" />
     <ClCompile Include="str_gets.c" />
     <ClCompile Include="str_int2str.c" />
     <ClCompile Include="str_memcmp.c" />
     <ClCompile Include="str_memcpy.c" />
+    <ClCompile Include="str_memmove.c" />
     <ClCompile Include="str_memset.c" />
     <ClCompile Include="str_strcmp.c" />
     <ClCompile Include="str_strcpy.c" />
@@ -266,12 +287,20 @@
     <ClCompile Include="vdp_rawmemcpy.c" />
     <ClCompile Include="vdp_rawmemset.c" />
     <ClCompile Include="vdp_readchar.c" />
+    <ClCompile Include="vdp_safedelay.c" />
     <ClCompile Include="vdp_screenchar.c" />
+    <ClCompile Include="vdp_screenpos.c" />
+    <ClCompile Include="vdp_screentext.c" />
+    <ClCompile Include="vdp_screentext64.c" />
+    <ClCompile Include="vdp_screentext80.c" />
     <ClCompile Include="vdp_scrnscroll.c" />
+    <ClCompile Include="vdp_setaddress.c" />
+    <ClCompile Include="vdp_setaddresswrite.c" />
     <ClCompile Include="vdp_setbitmap.c" />
     <ClCompile Include="vdp_setgraphics.c" />
     <ClCompile Include="vdp_setmode.c" />
     <ClCompile Include="vdp_setmulticolor.c" />
+    <ClCompile Include="vdp_setregister.c" />
     <ClCompile Include="vdp_settext.c" />
     <ClCompile Include="vdp_settext64.c" />
     <ClCompile Include="vdp_settext80.c" />

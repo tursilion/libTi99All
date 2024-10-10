@@ -14,7 +14,7 @@
 unsigned char __attribute__((noinline)) dsrlnkraw(unsigned int vdp) {
 	// modified version of the e/a DSRLNK, for data >8 (DSR) only
 	// this one does not modify data in low memory expansion so "boot tracking" there may not work.
-	unsigned char *buf = (unsigned char*)0x8380;	// 8 bytes of memory for a name buffer (TODO: is this legal? Why did I choose this?)
+	unsigned char * const buf = (unsigned char*)0x8340;	// 8 bytes of memory for a name buffer
 	unsigned int status = vdp + 1;
 	unsigned int ret = 0;  // assume success
 
@@ -24,7 +24,7 @@ unsigned char __attribute__((noinline)) dsrlnkraw(unsigned int vdp) {
 	unsigned char size = vdpreadchar(vdp);
 	unsigned char cnt=0;
 	while (cnt < 8) {
-		buf[cnt] = VDPRD;	// still in the right place after the readchar above got the length
+		buf[cnt] = VDPRD();	// still in the right place after the readchar above got the length
 		if (buf[cnt] == '.') {
 			break;
 		}
@@ -33,7 +33,7 @@ unsigned char __attribute__((noinline)) dsrlnkraw(unsigned int vdp) {
 	if ((cnt == 0) || (cnt > 7)) {
 		// illegal device name length
 		VDP_SET_ADDRESS_WRITE(status);
-		VDPWD = DSR_ERR_FILEERROR;
+		VDPWD(DSR_ERR_FILEERROR);
 		return 1;
 	}
 	// save off the device name length (asm below uses it!)
@@ -51,6 +51,7 @@ unsigned char __attribute__((noinline)) dsrlnkraw(unsigned int vdp) {
 	// needs to be wrapped with LWPI....
 	__asm__ volatile (
 	"		ai r10,-34				; make stack room to save workspace & zero word\n"
+    "		mov %1,@>83ec           ; move buffer address to GPLWS R6\n"
 	"		lwpi 0x83e0				; get gplws\n"
 	"		li r0,0x8300			; source wp for backup\n"
 	"		mov @0x8314,r1			; get r10 for destination\n"
@@ -86,8 +87,7 @@ unsigned char __attribute__((noinline)) dsrlnkraw(unsigned int vdp) {
 	"       cb   r5,*r2+			; compare length to length in dsr\n"
 	"       jne  a233a              ; diff size: loop back for next\n"
 	"       srl  r5,8			    ; make length a word count\n"
-	"       li   r6,%1              ; name buffer pointer in r6\n"
-	"a235c  cb   *r6+,*r2+          ; check name\n"
+	"a235c  cb   *r6+,*r2+          ; check name - pointer in r6\n"
 	"       jne  a233a              ; diff name: loop back for next entry\n"
 	"       dec  r5					; count down length\n"
 	"       jne  a235c              ; not done yet: next char\n"
@@ -107,9 +107,9 @@ unsigned char __attribute__((noinline)) dsrlnkraw(unsigned int vdp) {
 	"axxx   seto r12                ; set tmp error flag\n"
 	"       jmp clnup               ; go back and restore\n"
 	"alldn  mov @>83f8,%0           ; get the error flag\n"
-	
-		: "=r" (ret)
-		: "i" (buf)
+
+        : "=r" (ret)
+		: "r" (buf)
 	);
 
     // this is a little awkward, but it makes for cleaner asm above

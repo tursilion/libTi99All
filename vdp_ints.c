@@ -108,7 +108,7 @@ void vdpinit() {
     reset_f18a();
     lock_f18a();
 
-    VDP_STATUS_MIRROR = VDPST;	// init and clear any pending interrupt
+    VDP_STATUS_MIRROR = VDPST();	// init and clear any pending interrupt
 }
 
 // NOT atomic! Do NOT call with interrupts enabled!
@@ -166,7 +166,7 @@ void vdpinit() {
     // NOTE: a stock 9918 will be very confused, but your first call should
     // be one of the set_xxx calls to init a display mode
 
-	VDP_STATUS_MIRROR = VDPST;	// init and clear any pending interrupt
+	VDP_STATUS_MIRROR = VDPST();	// init and clear any pending interrupt
 }
 	
 // NOT atomic! Do NOT call with interrupts enabled!

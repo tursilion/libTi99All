@@ -2,6 +2,10 @@
 #define _SPEECH_H 1
 
 #ifdef TI99
+// WARNING: This uses 12 bytes of scratchpad at >8320 for the speech synth read code
+
+typedef void (*read_func)();
+
 #define SPCHRD    *((volatile unsigned char*)0x9000)
 #define SPCHWT	  *((volatile unsigned char*)0x9400)
 
@@ -10,6 +14,20 @@
 #ifndef SAFE_READ_PAD
 #define SAFE_READ_PAD 0x8320
 #endif
+
+// READ_WITH_DELAY() will populate SPEECH_BYTE_BOX
+#define READ_WITH_DELAY ((read_func)(SAFE_READ_PAD+2))
+
+// code in scratchpad will read a byte to this address with appropriate
+// 'hands-off' period following
+#define SPEECH_BYTE_BOX *((volatile unsigned char*)(SAFE_READ_PAD))
+
+// internal functions for TI code
+unsigned char __attribute__((noinline)) call_safe_read();
+void copy_safe_read();
+void delay_asm_12();
+void delay_asm_42();
+void load_speech_addr(int phrase_addr);
 
 #endif
 #ifdef COLECO

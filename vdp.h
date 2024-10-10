@@ -308,6 +308,9 @@ extern void setGBAAutoRender(unsigned short mode);
 #define GBA_AUTORENDER_NONE 0
 #define GBA_AUTORENDER_FULL 1
 #define GBA_AUTORENDER_SCALE 2
+
+// force a manual redraw, not needed if you set autorender
+extern void gbaRender();
 	
 #endif
 

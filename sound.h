@@ -9,7 +9,7 @@
 
 #ifdef TI99
 #define SOUNDCHIP 0x8400
-#define SOUND		*((volatile unsigned char*)SOUNDCHIP)
+#define SOUND(x)		*((volatile unsigned char*)SOUNDCHIP)=(x)
 
 // base addresses for each chip in the FORTI card
 #define FORTI_CHIP1 0x841c
@@ -20,10 +20,11 @@
 #endif
 #ifdef COLECO
 #ifdef SMS
-volatile __sfr __at 0x06 SOUND;
+volatile __sfr __at 0x06 SOUNDCHIP;
 #else
-volatile __sfr __at 0xff SOUND;
+volatile __sfr __at 0xff SOUNDCHIP;
 #endif
+#define SOUND(x) SOUNDCHIP=(x)
 #endif
 #ifdef GBA
 // again, need to change a memory write to a function call
@@ -44,7 +45,7 @@ volatile __sfr __at 0xff SOUND;
 #define NOISE_VOL	0xF0
 
 // mute all channels
-inline void MUTE_SOUND()					{ SOUND(TONE1_VOL|0x0f); SOUND(TONE2_VOL|0x0f); SOUND(TONE3_VOL|0x0f); SOUND(NOISE_VOL|0x0f); }
+inline void MUTE_SOUND() { SOUND(TONE1_VOL|0x0f); SOUND(TONE2_VOL|0x0f); SOUND(TONE3_VOL|0x0f); SOUND(NOISE_VOL|0x0f); }
 
 #ifdef COLECO
 #ifndef SMS

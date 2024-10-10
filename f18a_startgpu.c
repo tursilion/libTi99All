@@ -10,9 +10,9 @@ void startgpu_f18a(unsigned int adr) {
 
     // load the passed address
     __asm__ volatile ("movb %0,@>8c02" : : "r"(adr) : "cc");
-    VDPWA = F18A_REG_GPUMSB|0x80;
+    VDPWA(F18A_REG_GPUMSB|0x80);
     __asm__ volatile ("swpb %0\n\tmovb %0,@>8c02\n\tswpb %0" : : "r"(adr) : "cc");
-    VDPWA = F18A_REG_GPULSB|0x80;
+    VDPWA(F18A_REG_GPULSB|0x80);
 #else
     VDP_SET_REGISTER(F18A_REG_GPUMSB, (adr>>8));     // write MSB to register 0x36
     VDP_SET_REGISTER(F18A_REG_GPULSB, (adr&0xff));   // write LSB to register 0x37 (causes start)

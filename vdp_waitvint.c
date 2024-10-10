@@ -53,7 +53,7 @@ unsigned char vdpwaitvint() {
 				// TODO: maybe we should make a debug version of this that includes the screen
 				// color change so users can tell if something is wrong and it's not just running slow
 				//VDP_SET_REGISTER(7,3);
-				VDP_STATUS_MIRROR = VDPST;
+				VDP_STATUS_MIRROR = VDPST();
 				break;
 			}
 		} 

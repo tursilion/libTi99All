@@ -35,8 +35,8 @@ unsigned char detect_f18a() {
     
     // note if it IS an F18A, that delays are not needed. If it's not, well, it won't be right anyway
     VDP_SET_ADDRESS(0x3f10);
-    val=(VDPRD)<<8;         // get MSB
-    val|=(VDPRD);           // get LSB
+    val=VDPRD()<<8;         // get MSB
+    val|=VDPRD();           // get LSB
     
     if (val == 0x1234) {
         return 1;

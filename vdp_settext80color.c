@@ -74,7 +74,7 @@ static void fast_scrn_scroll_80color() {
     VDP_SET_REGISTER(0x38,1); // trigger GPU code
 
     VDP_SET_REGISTER(0x0f,2); // status register to read = SR2
-    while (VDPST & 0x80);    // wait for GPU status to be idle
+    while (VDPST() & 0x80);   // wait for GPU status to be idle
     VDP_SET_REGISTER(0x0f,0); // status register to read = SR0
 
     extern unsigned int conio_scrnCol; // conio_bgcolor.c
