@@ -187,6 +187,7 @@ void kscanfast(unsigned char mode) {
 // L and R can be N and Y, I guess!
 
 // For GBA, there is only ever 1 controller. All modes except '2' read it, '2' reads nothing.
+// Currently mode 0 will split A and B, and 1 will return both as 'FIRE'
 void kscanfast(unsigned char mode) {
 	unsigned short key;
 
@@ -201,7 +202,15 @@ void kscanfast(unsigned char mode) {
 
     // A or B = fire
     if ((key&(BTN_A|BTN_B)) != (BTN_A|BTN_B)) {
-        KSCAN_KEY = JOY_FIRE;
+        if (mode == 0) {
+            if ((key&BTN_A) == 0) {
+                KSCAN_KEY = 'A';
+            } else if ((key&BTN_B) == 0) {
+                KSCAN_KEY = 'B';
+            }
+        } else {
+            KSCAN_KEY = JOY_FIRE;
+        }
     } else if ((key&BTN_SELECT) == 0) {
         KSCAN_KEY = 8;  // backspace
     } else if ((key&BTN_START) == 0) {

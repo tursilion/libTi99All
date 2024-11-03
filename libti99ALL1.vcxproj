@@ -322,6 +322,7 @@
     <None Include="crt0_sms.assembly" />
     <None Include="Makefile" />
     <None Include="Makefile.coleco" />
+    <None Include="Makefile.gba" />
     <None Include="Makefile.mastersys" />
     <None Include="Makefile.sources" />
     <None Include="Makefile.stub" />

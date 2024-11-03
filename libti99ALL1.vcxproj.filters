@@ -597,6 +597,7 @@
     <None Include="Makefile.stub" />
     <None Include="Makefile.ti99" />
     <None Include="Makefile.sources" />
+    <None Include="Makefile.gba" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="puff_README.txt">
