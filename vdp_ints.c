@@ -265,6 +265,7 @@ void gbainit() {
     
     // set up the GBA sound hardware - uses TIMER1 for frequency
     gbasninit();
+    MUTE_SOUND();
     
     // set up the video to 8-bit color mode, we'll be emulating the F18A's 64 colors
     gbavidinit();
