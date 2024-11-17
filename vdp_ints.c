@@ -219,16 +219,15 @@ void InterruptProcess() {
         VDP_CLEAR_VBLANK;           // release the VDP - we could instantly trigger again, but the interrupt is disabled
 	    VDP_INT_COUNTER++;			// count up the frames
 
+        // feed the audio fifos
+        snupdateaudio();
+
         // ints off, so it won't retrigger in the
 	    // user code, even if it's slow.
     	if (0 != userint) userint();
     } 
-    if (intType & INT_TIMER2) {
-        // feed the audio fifos
-        snupdateaudio();
-    }
-    if (intType & (~(INT_VBLANK|INT_TIMER2))) {
-        // for all interrupts that are not vblank or timer2
+    if (intType & (~(INT_VBLANK))) {
+        // for all interrupts that are not vblank
         if (0 != otherint) otherint(intType);
     }
 
@@ -261,7 +260,7 @@ void gbainit() {
     // setup vblank and SN emulator
     INT_VECTOR = intrwrap; // assembly wrapper for interrupt handler
     REG_DISPSTAT = VBLANK_IRQ;
-    REG_IE = INT_TIMER2;     // TIMER2 triggers an audio reload
+    REG_IE = INT_VCOUNT;     // VCOUNT triggers an audio reload
     
     // set up the GBA sound hardware - uses TIMER1 for frequency
     gbasninit();

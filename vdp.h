@@ -278,7 +278,7 @@ extern volatile unsigned char vdpLimi;
 #ifdef GBA
 // wait for a vblank 
 // there's no CRU on the GBA, of course... but for compatibility..
-// note this spin is hard on the battery... then when I tried putting the CPU to sleep
+// I thought this spin is hard on the battery... but when I tried putting the CPU to sleep
 // in Cool Herders it didn't seem to help battery life at all.
 #define VDPSTCRU gbaVDPSTCRU
 extern unsigned char gbaVDPSTCRU();
