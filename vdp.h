@@ -288,8 +288,8 @@ extern unsigned char gbaVDPSTCRU();
 #define VDP_CLEAR_VBLANK        { VDP_STATUS_MIRROR = VDPST(); }
 
 // interrupts on and off in hardware - it will handle pending interrupts just fine
-#define VDP_INT_ENABLE			{ REG_IE |= INT_VBLANK; }
-#define VDP_INT_DISABLE			{ REG_IE &= ~INT_VBLANK; }
+#define VDP_INT_ENABLE			{ REG_IE |= INT_VBLANK; REG_DISPSTAT |= VBLANK_IRQ;}
+#define VDP_INT_DISABLE			{ REG_IE &= ~INT_VBLANK; REG_DISPSTAT &= ~VBLANK_IRQ; }
 	
 // this might have no value... we'll see
 // If using KSCAN, you must put a copy of VDP register 1 (returned by the 'set' functions)
