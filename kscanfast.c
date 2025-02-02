@@ -200,7 +200,7 @@ void kscanfast(unsigned char mode) {
     // TODO: this only allows one button return at a time - clearly not adequate
     key = REG_KEYINPUT;
 
-    // A or B = fire
+    // A or B = fire in mode 1, and A or B in mode 0
     if ((key&(BTN_A|BTN_B)) != (BTN_A|BTN_B)) {
         if (mode == 0) {
             if ((key&BTN_A) == 0) {

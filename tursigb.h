@@ -286,6 +286,15 @@ typedef     int                     bool;
 #define REG_SOUNDCNT_H        *(volatile u16*)0x04000082
 #define REG_SOUNDCNT_X        *(volatile u32*)0x04000084       // master sound enable and sound 1-4 play status
 
+// timer counts for sound
+// These are default tick counts...
+#define FREQUENCY_44 (0xFFFF - 379)        // 44khz - works
+#define FREQUENCY_22 (0xFFFF - 759)        // 22khz - works
+#define FREQUENCY_16 (0xFFFF - 1048)       // 16khz - works
+#define FREQUENCY_11 (0xFFFF - 1521)       // 11khz - works
+#define FREQUENCY_8  (0xFFFF - 2047)       // 8khz  - works
+
+
 // flags
 #define SND_ENABLED           0x00000080
 #define SND_OUTPUT_RATIO_25   0x0000
@@ -458,3 +467,4 @@ void fastset(u32 pDest, u32 value, u32 nCount);
 void fastset16(u32 pDest, u16 value, u32 nCount);
 
 #endif
+
