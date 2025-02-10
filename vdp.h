@@ -288,6 +288,7 @@ extern unsigned char gbaVDPSTCRU();
 #define VDP_CLEAR_VBLANK        { VDP_STATUS_MIRROR = VDPST(); }
 
 // interrupts on and off in hardware - it will handle pending interrupts just fine
+// or does it? I'm not so sure about that...
 #define VDP_INT_ENABLE			{ REG_IE |= INT_VBLANK; REG_DISPSTAT |= VBLANK_IRQ;}
 #define VDP_INT_DISABLE			{ REG_IE &= ~INT_VBLANK; REG_DISPSTAT &= ~VBLANK_IRQ; }
 	

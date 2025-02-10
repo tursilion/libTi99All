@@ -66,6 +66,7 @@ typedef     int                     bool;
 #define BG_PALETTE  (0x5000000)
 #define SPR_PALETTE (0x5000200)
 #define BG_RAM_BASE (0x6000000)
+#define BG_RAM_PAGE2 (0x600A000)
 #define SPR_RAM_BASE (0x6010000)
 
 // Video control
