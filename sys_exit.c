@@ -16,8 +16,8 @@ void exit() {
 
 #ifdef GBA
 void exit() {
-    // reboot the whole system including BIOS - TODO: find out how to start at the cart
-    static void (* const hwreboot)() = 0;
+    // full software reboot vector (jump to start of ROM)
+    static void (* const hwreboot)()=(void (*const)())0x08000000;
     hwreboot();
 }
 #endif
