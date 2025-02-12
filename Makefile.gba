@@ -54,7 +54,7 @@ include ../Makefile.sources
 #  vdp_puts.$(EXT)
 
 OBJECT_LIST+=vdp_puts.$(EXT)
-OBJECT_LIST+=gba_intwrap.$(EXT)
+OBJECT_LIST+=gba_intwrap.$(EXT) gba_support.$(EXT)
 
 # Recipe to compile the library
 all: library example.gba test.gba
