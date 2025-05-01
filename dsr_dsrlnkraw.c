@@ -45,7 +45,7 @@ unsigned char __attribute__((noinline)) dsrlnkraw(unsigned int vdp) {
 	DSR_PAB_POINTER += cnt;
 	
 	// make sure the error byte is zeroed before we start
-	vdpchar(vdp+1, 0);
+	vdpchar(status, 0);
 
 	// TODO: we could rewrite the rest of this in C, just adding support for SBO, SBZ and the actual call which
 	// needs to be wrapped with LWPI....
