@@ -17,3 +17,6 @@ void load_speech_addr(int phrase_addr) {
 
 #ifdef GBA
 #endif
+
+#ifdef CLASSIC99
+#endif

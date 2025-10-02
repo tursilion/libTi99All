@@ -31,3 +31,7 @@ void say_data(const char* addr, int len) { (void)addr; (void)len; }
 #ifdef GBA
 void say_data(const char* addr, int len) { (void)addr; (void)len; }
 #endif
+
+#ifdef CLASSIC99
+void say_data(const char* addr, int len) { (void)addr; (void)len; }
+#endif

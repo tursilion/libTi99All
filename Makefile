@@ -1,5 +1,5 @@
 all:
-	echo Try make ti, make coleco, or make sms. Try make clean between them.
+	echo make [ti|coleco|sms|gba|classic99].
 
 # files to delete to clean
 .phonya wipefolder:
@@ -19,6 +19,7 @@ all:
 	-rm EXAMPL*
 	-rm *.rom
 	-rm *.sms
+	-rm *.obj
 
 # clean one folder
 .phonyb cleanti:
@@ -45,8 +46,14 @@ all:
 	make -C buildgba wipefolder
 	cd ..
 
+.phonyl cleanclassic99:
+	-mkdir buildclassic99
+	cp Makefile.stub buildclassic99/Makefile
+	make -C buildclassic99 wipefolder
+	cd ..
+
 # Recipe to clean all compiled objects
-.phonyf clean: cleanti cleancoleco cleansms cleangba
+.phonyf clean: cleanti cleancoleco cleansms cleangba cleanclassic99
 	@echo Done
 
 .phonyg ti:
@@ -68,3 +75,8 @@ all:
 	-mkdir buildgba
 	cp Makefile.stub buildgba/Makefile
 	make -C buildgba -f ../Makefile.gba all
+
+.phonyk classic99:
+	-mkdir buildclassic99
+	cp Makefile.stub buildclassic99/Makefile
+	make -C buildclassic99 -f ../Makefile.classic99 all

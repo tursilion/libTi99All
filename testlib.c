@@ -1,10 +1,10 @@
-#include "system.h"
 //#include "puff.h"
 #include "conio.h"
 #include "math.h"
 #include "kscan.h"
 #include "speech.h"
 #include "f18a.h"
+#include "system.h"
 
 unsigned char helloworldraw[] = {
   0xF3,0x48,0xCD,0xC9 ,0xC9 ,0x57 ,0x70 ,0xF6 ,0xF7 
@@ -98,6 +98,11 @@ void testColorText() {
     cgetc();
 }
 
+void waitNewKey() {
+    while (kbhit());
+    while (!kbhit());
+}
+
 void testBitmapMode() {
     bm_consolefont();
     set_bitmap(0);
@@ -114,7 +119,6 @@ void testBitmapMode() {
     bm_setforeground(0);
 
     bm_puts(0, 23, "Press any key...");
-    while(!kbhit());
     cgetc();
 
     bm_clearscreen();
@@ -137,7 +141,6 @@ void testBitmapMode() {
     }
 
     bm_puts(0, 23, "Press any key...");
-    while(!kbhit());
     cgetc();
     
     // draw a web
@@ -160,7 +163,6 @@ void testBitmapMode() {
 		x -= 6;
 	}
     bm_puts(0, 23, "Press any key...");
-    while(!kbhit());
     cgetc();
 
     bm_clearscreen();
@@ -180,7 +182,6 @@ void testBitmapMode() {
 		x -= 6;
 	}
     bm_puts(0, 23, "Press any key...");
-    while(!kbhit());
     cgetc();
 
     bm_puts(0,0, "Fastline test Erase...");
@@ -199,7 +200,6 @@ void testBitmapMode() {
 		x -= 6;
 	}
     bm_puts(0, 23, "Press any key...");
-    while(!kbhit());
     cgetc();
 
     bm_clearscreen();
@@ -219,7 +219,6 @@ void testBitmapMode() {
 		x -= 6;
 	}
     bm_puts(0, 23, "Press any key...");
-    while(!kbhit());
     cgetc();
 
     bm_clearscreen();
@@ -230,7 +229,6 @@ void testBitmapMode() {
 		if (x<127) ++x;
 	}
     bm_puts(0, 23, "Press any key...");
-    while(!kbhit());
     cgetc();
 
     bm_clearscreen();
@@ -247,7 +245,6 @@ void testBitmapMode() {
 	}
 
     bm_puts(0, 23, "Press any key...");
-    while(!kbhit());
     cgetc();
     set_text();
 }
@@ -457,4 +454,9 @@ int main() {
 	return 0;
 }
 
-
+#ifdef CLASSIC99
+// temporarily need to provide this to build
+unsigned char *getWebFile(const char *filename, int *outSize) {
+    return NULL;
+}
+#endif

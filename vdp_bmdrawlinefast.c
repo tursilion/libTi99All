@@ -27,4 +27,9 @@ void bm_drawlinefast(int x1, int y1, int x2, int y2, int mode) {
 	bm_drawline(x1,y1,x2,y2,mode);
 #endif
 
+#ifdef CLASSIC99
+// TODO: this is not only not faster, it does not handle XOR mode
+	bm_drawline(x1,y1,x2,y2,mode);
+#endif
+
 }

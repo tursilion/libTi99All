@@ -18,3 +18,6 @@ void delay_asm_42() {
 
 #ifdef GBA
 #endif
+
+#ifdef CLASSIC99
+#endif

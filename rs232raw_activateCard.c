@@ -16,4 +16,7 @@ void rs232raw_activateCard(int card) {
 #ifdef GBA
     (void)card;
 #endif
+#ifdef CLASSIC99
+    (void)card;
+#endif
 }

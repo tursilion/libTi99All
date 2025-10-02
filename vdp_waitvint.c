@@ -105,3 +105,13 @@ unsigned char vdpwaitvint() {
 }
 #endif
 
+#ifdef CLASSIC99
+#include <Windows.h>
+
+// we can't really tell, so just sleep
+// The problem is no real interrupt routine handling.
+unsigned char vdpwaitvint() {
+    Sleep(15);
+    return 0;
+}
+#endif

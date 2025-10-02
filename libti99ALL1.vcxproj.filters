@@ -106,9 +106,6 @@
     <ClCompile Include="testlib.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="checkreset.c">
-      <Filter>Source Files\system</Filter>
-    </ClCompile>
     <ClCompile Include="conio_bgcolor.c">
       <Filter>Source Files\conio</Filter>
     </ClCompile>
@@ -311,9 +308,6 @@
       <Filter>Source Files\string</Filter>
     </ClCompile>
     <ClCompile Include="str_uint2str.c">
-      <Filter>Source Files\string</Filter>
-    </ClCompile>
-    <ClCompile Include="sys_checkquit.c">
       <Filter>Source Files\string</Filter>
     </ClCompile>
     <ClCompile Include="sys_exit.c">
@@ -574,6 +568,12 @@
     <ClCompile Include="str_memmove.c">
       <Filter>Source Files\string</Filter>
     </ClCompile>
+    <ClCompile Include="gba_support.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sys_checkreset.c">
+      <Filter>Source Files\system</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="crt0_coleco.assembly">
@@ -598,6 +598,7 @@
     <None Include="Makefile.ti99" />
     <None Include="Makefile.sources" />
     <None Include="Makefile.gba" />
+    <None Include="Makefile.classic99" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="puff_README.txt">

@@ -10,6 +10,8 @@
 #include "kscan.h"
 
 #ifdef TI99
+// TODO: add a 99/4 keyboard scan with some kind of autodetect (whether once or every time)
+
 // By columns, then rows. 8 Rows per column. No shift states
 const unsigned char keymap[] = {
 		//61,32,13,255,1,2,3,255,   1,2,3 are fctn,shift,ctrl - we'll ignore them for now
@@ -224,4 +226,10 @@ void kscanfast(unsigned char mode) {
     }
 }
 
+#endif
+
+#ifdef CLASSIC99
+void kscanfast(unsigned char mode) {
+    kscan(mode);
+}
 #endif

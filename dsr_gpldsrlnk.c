@@ -5,6 +5,7 @@
 #include "vdp.h"
 
 // needs the whole GPL space - check for safe areas in the E/A manual
+#if 0
 
 void __attribute__((noinline)) gpldsrlnk(unsigned int vdp) {
 	unsigned char x;
@@ -51,3 +52,5 @@ void __attribute__((noinline)) gpldsrlnk(unsigned int vdp) {
 
     // TODO: clearly incomplete
 }
+
+#endif

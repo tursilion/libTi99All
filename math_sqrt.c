@@ -1,3 +1,4 @@
+#ifndef CLASSIC99
 // adapted from https://www.quora.com/How-do-I-write-a-program-for-finding-the-square-root-of-a-number-without-using-the-sqrt-function
 // adapted to remove floats, int only, rounding errors galore!
 int sqrt(int x) {
@@ -19,3 +20,4 @@ int sqrt(int x) {
   }
   return s;
 }
+#endif

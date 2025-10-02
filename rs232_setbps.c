@@ -3,6 +3,11 @@
 
 #include "rs232.h"
 
+#ifdef CLASSIC99
+unsigned char PIO_PORT;
+unsigned char SERIAL_IO;
+#endif
+
 // set the bitrate on the card and uart (sets both directions the same)
 void rs232_setbps(int card, int uart, int bps) {
 #ifdef TI99
@@ -38,4 +43,9 @@ void rs232_setbps(int card, int uart, int bps) {
     (void)uart;
     (void)bps;
 #endif
+#ifdef CLASSIC99
+    (void)card;
+    (void)uart;
+    (void)bps;
+#endif    
 }

@@ -18,3 +18,7 @@ void speech_wait() { }
 #ifdef GBA
 void speech_wait() { }
 #endif
+
+#ifdef CLASSIC99
+void speech_wait() { }
+#endif

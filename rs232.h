@@ -87,6 +87,11 @@ volatile __sfr __at 0x01 PIO_PORT;
 #define PIO_PORT *((unsigned char*)(0))
 #define SERIAL_IO *((unsigned char*)(0))
 #endif
+#ifdef CLASSIC99
+// no PIO port at the moment - maybe we could use it for the emulator debug console?
+extern unsigned char PIO_PORT;
+extern unsigned char SERIAL_IO;
+#endif
 
 // bitrates - 500,000 / bps - assumes 3MHz console and CLK4M is unset - 300-2400 are well tested
 #define RS232_BPS_300	1667

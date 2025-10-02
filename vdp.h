@@ -1,6 +1,9 @@
 // TODO: add the rle unpack function for Convert9918a images
 // TODO: the crt0 needs to include 4 more bytes so that the return from main() works on any page (What did I mean here?)
 
+// TODO: Need to rework the ifdefs a bit, it is getting a tad unwieldly. Break up the files, and probably stop making
+// SMS rely on COLECO.
+
 // VDP header for the TI-99/4A and Coleco by Tursi aka Mike Brent
 // 8/3/2024
 // This code and library released into the Public Domain
@@ -12,9 +15,11 @@
 #ifndef COLECO
 #ifndef TI99
 #ifndef GBA
+#ifndef CLASSIC99
 // GBA is an unofficial target with a big gotcha - ints are suddenly 32-bit. So all pointer math MAY be wrong!
 // Be careful about types.
-#error Make sure to define either COLECO (for Coleco or SMS or MSX) or TI99
+#error Make sure to define either COLECO (for Coleco or SMS) or TI99 or CLASSIC99
+#endif
 #endif
 #endif
 #endif
@@ -71,6 +76,33 @@ extern void CODE_IN_IWRAM gbaVDPWD(unsigned char x);
 extern volatile unsigned char vdp_status;        // for vertical blank only, set by interrupt
 #endif
 
+#ifdef CLASSIC99
+#include <Windows.h>
+
+// we need to rename ours cause we can't change the Windows library
+#define printf printf_ti
+#define puts puts_ti
+#define putchar putchar_ti
+
+// these have to call out to functions
+extern unsigned char c99VDPRD();
+extern unsigned char c99VDPST();
+extern void c99VDPWA(unsigned char x);
+extern void c99VDPWD(unsigned char x);
+
+unsigned char ReadByteFromClassic99(int cpu);
+void WriteByteToClassic99(int cpu, int val);
+void WriteWordToClassic99(int cpu, int val);
+void SetVDPToClassic99(int pAddr, int ch, int cnt);
+void ReadVDPBlockFromClassic99(int pAddr, unsigned char *pDest, int cnt);
+void WriteVDPBlockToClassic99(int pAddr, unsigned char *pSrc, int cnt);
+void c99SetVDPAddress(int pAddr);
+
+#define VDPRD() c99VDPRD()
+#define VDPST() c99VDPST()
+#define VDPWA(x) c99VDPWA(x)
+#define VDPWD(x) c99VDPWD(x)
+#endif
 
 //*********************
 // Inline VDP helpers
@@ -111,6 +143,10 @@ __endasm;
 // no delays needed
 inline void VDP_SAFE_DELAY() {	}
 #endif
+#ifdef CLASSIC99
+// no delays needed
+inline void VDP_SAFE_DELAY() {	}
+#endif
 
 // TODO: need some hardware testing to understand the VDP limits
 // Can you write the address register full speed? Is it /only/ VRAM access that needs the delay?
@@ -129,6 +165,12 @@ inline void VDP_SET_ADDRESS(unsigned int x)     { __asm__  volatile ( "swpb %0\n
 // Set VDP address for write (adds 0x4000 bit)
 inline void VDP_SET_ADDRESS_WRITE(unsigned int x) { __asm__  volatile ( "mov %0,r0\n\tswpb r0\n\tmovb r0,@>8c02\n\tswpb r0\n\tori r0,>4000\n\tmovb r0,@>8c02" : : "r"(x) : "cc"); }
 
+#elif defined(CLASSIC99)
+// Set VDP address for read (no bit added)
+inline void VDP_SET_ADDRESS(unsigned int x)			{	c99SetVDPAddress(x);	}
+
+// Set VDP address for write (adds 0x4000 bit)
+inline void VDP_SET_ADDRESS_WRITE(unsigned int x)	{	c99SetVDPAddress(x|0x4000);	}
 #else
 // Set VDP address for read (no bit added)
 inline void VDP_SET_ADDRESS(unsigned int x)						{	VDPWA( ((x)&0xff) ); VDPWA( ((x)>>8) );			}
@@ -213,6 +255,35 @@ extern volatile unsigned char VDP_STATUS_MIRROR;
 // This flag byte allows you to turn parts of the console interrupt handler on and off
 // Has no meaning on GBA.
 #define VDP_INT_CTRL			*((volatile unsigned char*)0)
+#endif
+#ifdef CLASSIC99
+// Interrupt counter - incremented each interrupt
+#define VDP_INT_COUNTER			ReadByteFromClassic99(0x8379)
+
+// Copy of the VDP status byte. If VDP interrupts are enabled, you should read
+// this value, instead of reading it directly from the VDP.
+#define VDP_STATUS_MIRROR		ReadByteFromClassic99(0x837b)
+
+// This flag byte allows you to turn parts of the console interrupt handler on and off
+// See the VDP_INT_CTRL_* defines below
+#define VDP_INT_CTRL			ReadByteFromClassic99(0x83c2)
+
+// Address of a user-defined function to call during the vertical interrupt handler,
+// set to 0x0000 if not using
+// can make it writable but not readable
+//#define VDP_INT_HOOK			*((volatile void**)0x83c4)
+#define VDP_INT_HOOK_SET(x)     WriteWordToClassic99(0x83c4, x)
+
+// If using KSCAN, you must put a copy of VDP register 1 (returned by the 'set' functions)
+// at this address, otherwise the first time a key is pressed, the value will be overwritten.
+// The console uses this to undo the screen timeout blanking.
+extern unsigned char VDP_REG1_KSCAN_MIRROR;
+
+// The console counts up the screen blank timeout here. You can reset it by writing 0,
+// or prevent it from ever triggering by writing an odd number. Each interrupt, it is
+// incremented by 2, and when the value reaches 0x0000, the screen will blank by setting
+// the blanking bit in VDP register 1. This value is reset on keypress in KSCAN.
+#define VDP_SCREEN_TIMEOUT_SET(x)	WriteWordToClassic99(0x83d6,x)
 #endif
 
 // These values are flags for the interrupt control 
@@ -312,7 +383,26 @@ extern void setGBAAutoRender(unsigned short mode);
 
 // force a manual redraw, not needed if you set autorender
 extern void gbaRender();
-	
+#endif
+
+#ifdef CLASSIC99
+// wait for a vblank (interrupts disabled - will work unreliably if enabled)
+// call vdpwaitvint() instead if you want to keep running the console interrupt
+// TODO: VDPSTCRU to return true if bit is set
+
+// no CRU access at the moment, so just delay
+#define VDP_WAIT_VBLANK_CRU	  Sleep(15);
+// We can't disable interrupts, hope for the best
+#define VDP_CLEAR_VBLANK    { WriteByteToClassic99(0x837b, VDPST()); }
+
+// We can't remotely control interrupts at the moment...
+#define VDP_INT_ENABLE			
+#define VDP_INT_DISABLE			
+
+// If using KSCAN, you must put a copy of VDP register 1 (returned by the 'set' functions)
+// at this address, otherwise the first time a key is pressed, the value will be overwritten.
+// The console uses this to undo the screen timeout blanking.
+#define FIX_KSCAN(x) VDP_REG1_KSCAN_MIRROR_SET(x);
 #endif
 
 #define VDP_INT_POLL {	\

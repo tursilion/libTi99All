@@ -1,7 +1,7 @@
 // F18A by Tursi - public domain
 
-#include <vdp.h>
-#include <f18a.h>
+#include "vdp.h"
+#include "f18a.h"
 
 // unlocks the f18a - does not test if successful
 void unlock_f18a() {

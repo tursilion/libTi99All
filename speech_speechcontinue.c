@@ -22,3 +22,7 @@ void speech_continue(struct LpcPlaybackCtx* ctx) { (void)ctx; }
 #ifdef GBA
 void speech_continue(struct LpcPlaybackCtx* ctx) { (void)ctx; }
 #endif
+
+#ifdef CLASSIC99
+void speech_continue(struct LpcPlaybackCtx* ctx) { (void)ctx; }
+#endif

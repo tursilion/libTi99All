@@ -141,3 +141,55 @@ unsigned char kscan(unsigned char mode) {
 }
 
 #endif
+
+#ifdef CLASSIC99
+#include <Windows.h>
+
+volatile unsigned char KSCAN_MODE;
+volatile unsigned char KSCAN_KEY;
+volatile unsigned char KSCAN_JOYY;
+volatile unsigned char KSCAN_JOYX;
+volatile unsigned char KSCAN_STATUS;
+
+unsigned char kscan(unsigned char mode) {
+	KSCAN_MODE = mode;
+    KSCAN_KEY = 0xff;
+    KSCAN_STATUS = 0;
+
+    if ((mode == KSCAN_MODE_LEFT) || (mode == KSCAN_MODE_RIGHT)) {
+        // fire button
+        if (GetAsyncKeyState(VK_TAB)&0x8000) {
+            KSCAN_KEY = JOY_FIRE;
+        }
+        return KSCAN_KEY;
+    }
+    // else assume basic keyboard
+    // going to be really weak and just do letters and numbers
+    for (int i = 'A'; i<='Z'; ++i) {
+        if (GetAsyncKeyState(i)&0x8000) {
+            KSCAN_KEY = i;
+            KSCAN_STATUS = KSCAN_MASK;
+            return KSCAN_KEY;
+        }
+    }
+    for (int i = '0'; i<='9'; ++i) {
+        if (GetAsyncKeyState(i)&0x8000) {
+            KSCAN_KEY = i;
+            KSCAN_STATUS = KSCAN_MASK;
+            return KSCAN_KEY;
+        }
+    }
+    if (GetAsyncKeyState(VK_SPACE)&0x8000) {
+        KSCAN_KEY = VK_SPACE;
+        KSCAN_STATUS = KSCAN_MASK;
+        return KSCAN_KEY;
+    }
+    if (GetAsyncKeyState(VK_RETURN)&0x8000) {
+        KSCAN_KEY = VK_RETURN;
+        KSCAN_STATUS = KSCAN_MASK;
+        return KSCAN_KEY;
+    }
+	return KSCAN_KEY;
+}
+
+#endif

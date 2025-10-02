@@ -1,6 +1,10 @@
 
 #include "vdp.h"
 
+#ifdef CLASSIC99
+extern const unsigned char CHARA1[];    // starts at 32
+#endif
+
 const unsigned char TrueLowerCase[] = {				// chars 96-122
 	 0x20,0x10,0x08,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x38,0x04,0x3C,0x44,0x3C,0x00,
 	 0x40,0x40,0x78,0x44,0x44,0x44,0x78,0x00,0x00,0x00,0x38,0x44,0x40,0x40,0x38,0x00,
@@ -36,6 +40,10 @@ void charsetlc() {
     // TODO: the GBA doesn't apparently have a ROM font, we need to provide it
     // for now I'll be very evil and copy the LC font in, but that leaves out all the numbers and punctuation
     vdpmemcpy(gPattern+0x200, TrueLowerCase, sizeof(TrueLowerCase));
+#endif
+
+#ifdef CLASSIC99
+    vdpmemcpy(gPattern+0x100, CHARA1, 95*8);      // full set
 #endif
 
 	vdpmemset(gPattern+(30*8), 0xfc, 8);	// cursor

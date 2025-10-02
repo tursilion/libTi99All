@@ -19,3 +19,7 @@ int detect_speech() { return 0; }
 #ifdef GBA
 int detect_speech() { return 0; }
 #endif
+
+#ifdef CLASSIC99
+int detect_speech() { return 0; }
+#endif

@@ -15,3 +15,7 @@ void speech_reset() { }
 #ifdef GBA
 void speech_reset() { }
 #endif
+
+#ifdef CLASSIC99
+void speech_reset() { }
+#endif

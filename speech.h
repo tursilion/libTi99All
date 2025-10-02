@@ -45,6 +45,13 @@ void load_speech_addr(int phrase_addr);
 #define SPCHWT	  *((volatile unsigned char*)0)
 #define SAFE_PAD_READ
 #endif
+#ifdef CLASSIC99
+// We actually need a little more since there are hardware requirements on the TI to support speech,
+// we can't "just" write to it. Look at this later, maybe
+extern unsigned char SPCHRD;
+extern unsigned char SPCHWT;
+#define SAFE_PAD_READ
+#endif
 
 #define SPCH_CMD_RESET 0x70
 #define SPCH_CMD_EXT 0x60
@@ -73,7 +80,12 @@ struct LpcPlaybackCtx {
     int remaining;
 };
 #endif
-
+#ifdef CLASSIC99
+struct LpcPlaybackCtx {
+    char* addr;
+    int remaining;
+};
+#endif
 
 /*
  * Issue the reset command to the speech synthesizer.

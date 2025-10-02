@@ -23,6 +23,10 @@ unsigned char cgetc() {
         return k;
     }
 
+    // if you are holding a key, that doesn't count
+    // we wait for release
+    while (kscan(5) != 255) { }
+
     do {
         if (conio_allowInts) {
             VDP_INT_POLL;

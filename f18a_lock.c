@@ -1,7 +1,7 @@
 // F18A - by Tursi - public domain
 
-#include <vdp.h>
-#include <f18a.h>
+#include "vdp.h"
+#include "f18a.h"
 
 // just lock the F18A (preserves all settings)
 void lock_f18a() {

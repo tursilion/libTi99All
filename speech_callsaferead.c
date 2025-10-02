@@ -13,3 +13,8 @@ unsigned char __attribute__((noinline)) call_safe_read() {
 
 #ifdef GBA
 #endif
+
+#ifdef CLASSIC99
+unsigned char SPCHRD;
+unsigned char SPCHWT;
+#endif

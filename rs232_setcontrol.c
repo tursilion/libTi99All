@@ -43,6 +43,9 @@ void rs232_setcontrol(int card, int uart, int control) {
 #ifdef GBA
     (void)control;
 #endif
+#ifdef CLASSIC99
+    (void)control;
+#endif
 
     rs232raw_deactivateCard(card);
 }

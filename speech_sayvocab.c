@@ -15,3 +15,7 @@ void say_vocab(int phrase_addr) { (void)phrase_addr; }
 #ifdef GBA
 void say_vocab(int phrase_addr) { (void)phrase_addr; }
 #endif
+
+#ifdef CLASSIC99
+void say_vocab(int phrase_addr) { (void)phrase_addr; }
+#endif

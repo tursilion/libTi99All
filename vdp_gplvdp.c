@@ -40,4 +40,11 @@ void gplvdp(int vect, int adr, int cnt) {
     (void)adr;
     (void)cnt;
 #endif
+// well, there is GROM on Classic99
+// but, it might not work too well - especially if not breakpointed
+#ifdef CLASSIC99
+    (void)vect;
+    (void)adr;
+    (void)cnt;
+#endif
 }

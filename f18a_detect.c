@@ -1,7 +1,7 @@
 // F18A - by Tursi - public domain
 
-#include <vdp.h>
-#include <f18a.h>
+#include "vdp.h"
+#include "f18a.h"
 
 #ifndef GBA
 const unsigned char GPUTEST[] = {

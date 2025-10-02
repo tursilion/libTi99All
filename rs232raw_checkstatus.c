@@ -30,4 +30,8 @@ int rs232raw_checkstatus(int rawCRU) {
     (void)rawCRU;
 	return 0;
 #endif
+#ifdef CLASSIC99
+    (void)rawCRU;
+	return 0;
+#endif
 }

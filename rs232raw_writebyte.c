@@ -25,4 +25,8 @@ void rs232raw_writebyte(int rawCRU, int ch) {
     (void)rawCRU;
 	SERIAL_IO=ch;
 #endif
+#ifdef CLASSIC99
+    (void)rawCRU;
+	SERIAL_IO=ch;
+#endif
 }

@@ -4,8 +4,9 @@
 #ifndef STRING_H
 #define STRING_H
 
+#ifndef CLASSIC99
 // strlen - returns the length of a zero terminated string
-int strlen(const char *s);
+unsigned int strlen(const char *s);
 
 // converts a string to an integer. No overflow detection, ignores
 // leading whitespace, and converts to the first non-digit character.
@@ -33,6 +34,7 @@ void *memmove(void *dest, const void *src, int cnt);
 
 // set a block of memory at dest to src, of cnt bytes. Returns dest.
 void *memset(void *dest, int src, int cnt);
+#endif
 
 // returns a pointer to a static string, a number converted as unsigned
 // Not thread safe, don't use from interrupt handlers.

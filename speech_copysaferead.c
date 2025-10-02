@@ -29,3 +29,6 @@ void copy_safe_read() {
 
 #ifdef GBA
 #endif
+
+#ifdef CLASSIC99
+#endif

@@ -59,4 +59,9 @@ int puff16k(unsigned char *dest,          /* pointer to destination pointer */
 #define puff16k puff
 #endif
 
+#ifdef CLASSIC99
+// no need to do anything special on Windows for 16k
+#define puff16k puff
+#endif
+
 #endif /* PUFF16K_H */

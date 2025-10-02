@@ -1,6 +1,10 @@
 // Sample app using conio to print hello.
 
+#ifdef CLASSIC99
+#include "./conio.h"
+#else
 #include <conio.h>
+#endif
 #include <vdp.h>
 
 const unsigned char newDef[8] = { 0x3c,0x42,0xa5,0x81,0xa5,0x99,0x42,0x3c };
@@ -20,7 +24,6 @@ int main(void)
     vdpmemcpy(gPattern+42*8, newDef, 8);                // redefine character 42
 
     gotoxy(2,2);										// set cursor position
-
     cprintf("Hello *");									// say hi
 
     while(1) {											// spin forever

@@ -10,6 +10,8 @@
 #include "kscan.h"
 
 #ifdef TI99
+// TODO: add a 99/4 joystick scan with some kind of autodetect (whether once or every time)
+// (they are just on different columns)
 
 void joystfast(unsigned char unit) {
 	unsigned int result;
@@ -148,4 +150,19 @@ void joystfast(unsigned char unit) {
 		}
 	}
 }
+#endif
+
+#ifdef CLASSIC99
+#include <Windows.h>
+
+void joystfast(unsigned char unit) {
+	KSCAN_JOYY = 0;
+	KSCAN_JOYX = 0;
+
+	if (GetAsyncKeyState(VK_LEFT) & 0x8000) KSCAN_JOYX = JOY_LEFT;
+	if (GetAsyncKeyState(VK_RIGHT) & 0x8000) KSCAN_JOYX = JOY_RIGHT;
+	if (GetAsyncKeyState(VK_DOWN) & 0x8000) KSCAN_JOYY = JOY_DOWN;
+	if (GetAsyncKeyState(VK_UP) & 0x8000) KSCAN_JOYY = JOY_UP;
+}
+
 #endif

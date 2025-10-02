@@ -33,6 +33,19 @@ volatile __sfr __at 0xff SOUNDCHIP;
 #define SOUNDCHIP
 #define SOUND(x) snsim(x)
 #endif
+#ifdef CLASSIC99
+#include "vdp.h"
+
+#define SOUNDCHIP 0x8400
+#define SOUND(x)		WriteByteToClassic99(SOUNDCHIP, x);
+
+// base addresses for each chip in the FORTI card
+//#define FORTI_CHIP1 0x841c
+//#define FORTI_CHIP2 0x841a
+//#define FORTI_CHIP3 0x8416
+//#define FORTI_CHIP4 0x840e
+//#define FORTI_CONSOLE 0x841e
+#endif
 
 // Command nibbles
 #define TONE1_FREQ	0x80

@@ -1,5 +1,8 @@
 // DSR interface code for the TI-99/4A by Tursi
 // You can copy this file and use it at will ;)
+#ifdef CLASSIC99
+#include <stdio.h>
+#endif
 
 #include "files.h"
 #include "vdp.h"
@@ -139,6 +142,305 @@ unsigned char dsrlnkraw(unsigned int vdp) {
 unsigned char dsrlnkraw(unsigned int vdp) {
     (void)vdp;
     return 1;   // return failed
+}
+
+#endif
+
+#ifdef CLASSIC99
+// SORRY, you have to provide GetWebFile yourself, since it needs to be C++ code, or comment it out
+// I guess we can keep the emulated CPU buffer here
+unsigned char CPU[65536];
+extern unsigned char *getWebFile(const char *filename, int *outSize);
+
+#if 0
+#include <WinSock2.h>
+#include <WS2tcpip.h>
+#include <windows.h>
+#include <winhttp.h>
+#include <atlstr.h>
+
+// get a file from the web and store in RAM
+// caller is responsible for freeing data
+// NULL on failure
+extern "C" unsigned char *getWebFile(const char *filename, int *outSize) {
+    // adapted from https://stackoverflow.com/questions/23038973/c-winhttp-get-response-header-and-body
+    DWORD dwSize;
+    DWORD dwDownloaded;
+    DWORD headerSize = 0;
+    BOOL  bResults = FALSE;
+    HINTERNET hSession;
+    HINTERNET hConnect;
+    HINTERNET hRequest;
+    wchar_t host[MAX_PATH];
+    wchar_t resource[MAX_PATH];
+    char tmpStr[MAX_PATH];
+    bool secure = false;
+    unsigned char *buf = NULL;
+    int outPos = 0;
+    *outSize = 0;
+
+    // Parse out pi.http[s] vs urix
+    //
+    // it's a URI request - if PI make sure it's http[s]
+    // TODO: not sure if multiple web files are allowed to
+    // be open! This code assumes only one...
+    CString url;
+    CString tst = filename.substr(0,3);
+
+    if (tst.CompareNoCase("PI.") == 0) {
+        if (filename.Mid(3, 4).CompareNoCase("http") != 0) {
+            debug_write("Can't load from '%s'!", filename);
+            return NULL;
+        }
+        url = filename.Mid(3);
+    } else {
+        debug_write("Can't load from '%s'?", filename);
+        return NULL;
+    }
+
+    // split up the path and make it wide
+    strncpy(tmpStr, url.GetString(), MAX_PATH);
+    tmpStr[MAX_PATH-1]='\0';
+
+    char *p = strchr(tmpStr, ':');
+    if (NULL == p) {
+        // okay, assume no http part
+        secure = false;
+        p = tmpStr;
+    } else if (p == tmpStr) {
+        // what is this nonsense?
+        secure = false;
+        ++p;
+    } else if ((*(p-1) == 'S')||(*(p-1) == 's')) {
+        // https:
+        secure = true;
+        ++p;
+    } else {
+        // probably http:, but not checking
+        // we shouldn't be called with other methods...
+        secure = false;
+        ++p;
+    }
+    while (*p == '/') ++p;
+    char *p2 = strchr(p, '/');
+    if (NULL != p2) {
+        *p2 = '\0';
+        ++p2;
+        _snwdebug_write(host, MAX_PATH, L"%S", p);
+        _snwdebug_write(resource, MAX_PATH, L"%S", p2);
+    } else {
+        _snwdebug_write(host, MAX_PATH, L"%S", p);
+        _snwdebug_write(resource, MAX_PATH, L"");
+    }
+
+    debug_write("Load URL is '%s' (Secure: %s)", url.GetString(), secure?"Yes":"No");
+
+    // CALL TIPI("PI.http://harmlesslion.com/tipi/PIANO1")
+
+    hSession = WinHttpOpen( L"Classic99TipiSim/1.0", WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0 );
+    if (NULL == hSession) {
+        debug_write("Failed to create web session, code %d", GetLastError());
+        return NULL;
+    }
+
+    hConnect = WinHttpConnect( hSession, host, secure ? INTERNET_DEFAULT_HTTPS_PORT : INTERNET_DEFAULT_HTTP_PORT, 0 );
+    if (NULL == hConnect) {
+        debug_write("Web connect request failed, code %d", GetLastError());
+        WinHttpCloseHandle(hSession);
+        return NULL;
+    }
+        
+    hRequest = WinHttpOpenRequest( hConnect, L"GET", resource, NULL, WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, secure ? WINHTTP_FLAG_SECURE : 0 );
+    if (NULL == hRequest) {
+        debug_write("Web open request failed, code %d", GetLastError());
+        WinHttpCloseHandle(hConnect);
+        WinHttpCloseHandle(hSession);
+        return NULL;
+    }
+
+    bResults = WinHttpSendRequest( hRequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0, NULL, 0, 0, 0 );
+    if (!bResults) {
+        debug_write("Web Send Request failed, code %d", GetLastError());
+        WinHttpCloseHandle(hRequest);
+        WinHttpCloseHandle(hConnect);
+        WinHttpCloseHandle(hSession);
+        return NULL;
+    }
+
+    bResults = WinHttpReceiveResponse( hRequest, NULL );
+    if (!bResults) {
+        debug_write("Web Receive failed, code %d", GetLastError());
+        WinHttpCloseHandle(hRequest);
+        WinHttpCloseHandle(hConnect);
+        WinHttpCloseHandle(hSession);
+        return NULL;
+    }
+
+    /* store headers...
+    bResults = WinHttpQueryHeaders(hRequest, WINHTTP_QUERY_RAW_HEADERS_CRLF, NULL, WINHTTP_NO_OUTPUT_BUFFER, &headerSize, WINHTTP_NO_HEADER_INDEX);
+    if ((!bResults) && (GetLastError() == ERROR_INSUFFICIENT_BUFFER))
+    {
+        responseHeader.resize(headerSize / sizeof(wchar_t));
+        if (responseHeader.empty())
+        {
+            bResults = TRUE;
+        }
+        else
+        {
+            bResults = WinHttpQueryHeaders(hRequest, WINHTTP_QUERY_RAW_HEADERS_CRLF, NULL, &responseHeader[0], &headerSize, WINHTTP_NO_HEADER_INDEX);
+            if( !bResults ) headerSize = 0;
+            responseHeader.resize(headerSize / sizeof(wchar_t));
+        }
+    }
+    */
+
+    // TODO: this needs optimizing...
+    do
+    {
+        // Check for available data.
+        dwSize = 0;
+        bResults = WinHttpQueryDataAvailable( hRequest, &dwSize );
+        if (!bResults) {
+            debug_write("Failed to query web data available, code %d", GetLastError());
+            WinHttpCloseHandle(hRequest);
+            WinHttpCloseHandle(hConnect);
+            WinHttpCloseHandle(hSession);
+            free(buf);
+            return NULL;
+        }
+
+        if (dwSize == 0) {
+            // all done
+            WinHttpCloseHandle(hRequest);
+            WinHttpCloseHandle(hConnect);
+            WinHttpCloseHandle(hSession);
+            return buf;
+        }
+
+        // grab what is so-far available
+        do
+        {
+            // Allocate space for the buffer.
+            if (outPos + (signed)dwSize > *outSize) {
+                buf = (unsigned char*)realloc(buf, outPos+dwSize);
+                *outSize = outPos+dwSize;
+                if (*outSize >= MAX_RAM_FILE) {
+                    debug_write("Web file exceeds max size (%dk) (Classic99 limit) - failing", MAX_RAM_FILE/1024);
+                    WinHttpCloseHandle(hRequest);
+                    WinHttpCloseHandle(hConnect);
+                    WinHttpCloseHandle(hSession);
+                    free(buf);
+                    return NULL;
+                }
+            }
+            // Read the data.
+            bResults = WinHttpReadData( hRequest, &buf[outPos], dwSize, &dwDownloaded );
+            if (!bResults) {
+                debug_write("Failed reading web data, code %d", GetLastError());
+                // is this not an error?
+                dwDownloaded = 0;
+            }
+
+            outPos += dwDownloaded;
+            dwSize -= dwDownloaded;
+
+            if (dwDownloaded == 0) {
+                break;
+            }
+        }
+        while (dwSize > 0);
+    }
+    while (true);
+}
+#endif
+
+extern void debug_write(char *s, ...);
+
+// since we need to open a file, we have to extract the PAB here
+// I need to support local files (will treat DSKx as a subfolder)
+// and remote files through PI.HTTP.
+// Even better, I want to support CPU buffers. However, for now,
+// I will only support the LOAD opcode.
+unsigned char dsrlnkraw(unsigned int vdp) {
+    // what's going to make this REALLY gross is I'm going to
+    // go ahead and READ THE PAB BACK FROM CLASSIC99. Yes.
+    // we assume it will fit in 128 bytes - this is just a hack. Sorry.
+    unsigned char pab[128];
+    unsigned char buf[16384];   // up to full range of VDP memory
+
+    // hack part 2 - just read it all - we assume PAB is in VDP but CPU doesn't have to be
+    vdpmemread(vdp, pab, sizeof(pab));
+
+    // now look at what we got
+    // remember that pName is NOT a pointer but the start of the string
+    struct PAB *pPab = (struct PAB*)pab;
+    if (pPab->OpCode != DSR_LOAD) {
+        vdpchar(vdp+1, DSR_ERR_ILLEGALOPCODE);
+        return 0;
+    }
+    vdpchar(vdp+1, DSR_ERR_NONE);   // for now...
+
+    // extract the filename - it starts at offset 10
+    char szStr[128];
+    int strPos = 0;
+    memset(szStr, 0, sizeof(szStr));
+    VDP_SET_ADDRESS(vdp+10);
+    for (int i=0; i<pPab->NameLength; ++pPab) {
+        szStr[strPos++] = VDPRD();
+    }
+    // So we have either DSK1.FILENAME or PI.HTTPS://URL/FILE
+    if (0 == memcmp(szStr, "DSK", 3)) {
+        // swap dots and slashes and treat it as a local path
+        for (int i=0; i<strPos; ++i) {
+            if (szStr[i] == '.') szStr[i]='\\';
+            else if ((szStr[i]=='/')||(szStr[i]=='\\')) szStr[i]='.';
+        }
+        // now we have DSK1\FILENAME
+        debug_write("open %s\n", szStr);
+        FILE *fp = fopen(szStr, "rb");
+        if (NULL == fp) {
+            vdpchar(vdp+1, DSR_ERR_FILEERROR);
+            return 0;
+        }
+        int nsiz = fread(buf, 1, sizeof(buf), fp);
+        fclose(fp);
+        if ((nsiz > pPab->CharCount) || ((pPab->VDPBuffer < 0x4000) && (pPab->CharCount+pPab->VDPBuffer > 0x4000))) {
+            // refuse to load
+            debug_write("File doesn't fit in PAB buffer or exceeds VDP\n");
+            vdpchar(vdp+1, DSR_ERR_MEMORYFULL);
+            return 0;
+        }
+        // else write to CPU or VDP ram based on address
+        if (pPab->VDPBuffer < 0x4000) {
+            debug_write("Copy file to VDP >%04X\n", pPab->VDPBuffer);
+            vdpmemcpy(pPab->VDPBuffer, buf, nsiz);
+        } else {
+            // it's a CPU write - so we can keep it locally
+            debug_write("Copy file to CPU >%04X\n", pPab->VDPBuffer);
+            memcpy(&CPU[pPab->VDPBuffer], buf, nsiz);
+        }
+    } else if (0 == memcmp(szStr, "PI.HTTP", 7)) {
+        // it's a URL request
+        // pName can be PI.HTTP://stuff (or HTTPS)
+        int outSize = 0;
+        debug_write("Try to fetch %s\n", szStr);
+        unsigned char *buf = getWebFile(szStr, &outSize);
+        if (NULL == buf) {
+            vdpchar(vdp+1, DSR_ERR_FILEERROR);
+            return 0;
+        }
+        // else write to CPU or VDP ram based on address
+        if (pPab->VDPBuffer < 0x4000) {
+            debug_write("Copy file to VDP >%04X\n", pPab->VDPBuffer);
+            vdpmemcpy(pPab->VDPBuffer, buf, outSize);
+        } else {
+            // it's a CPU write - so we can keep it locally
+            debug_write("Copy file to CPU >%04X\n", pPab->VDPBuffer);
+            memcpy(&CPU[pPab->VDPBuffer], buf, outSize);
+        }
+        free(buf);
+    }
+    return 0;
 }
 
 #endif

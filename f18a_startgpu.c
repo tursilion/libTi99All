@@ -1,7 +1,7 @@
 // F18A - by Tursi - public domain
 
-#include <vdp.h>
-#include <f18a.h>
+#include "vdp.h"
+#include "f18a.h"
 
 void startgpu_f18a(unsigned int adr) {
 #ifdef TI99

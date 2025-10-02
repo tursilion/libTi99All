@@ -27,3 +27,10 @@ void charset() {
     charsetlc();
 }
 #endif
+
+#ifdef CLASSIC99
+void charset() {
+    // We don't have an uppercase font, so just use charsetlc
+    charsetlc();
+}
+#endif

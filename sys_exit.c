@@ -1,4 +1,8 @@
 // exit reboots the system
+#ifdef CLASSIC99
+#include <stdlib.h>
+#endif
+#include "system.h"
 
 #ifdef TI99
 void exit() {
@@ -19,5 +23,12 @@ void exit() {
     // full software reboot vector (jump to start of ROM)
     static void (* const hwreboot)()=(void (*const)())0x08000000;
     hwreboot();
+}
+#endif
+
+#ifdef CLASSIC99
+void exit() {
+#undef exit
+    exit(0);
 }
 #endif
