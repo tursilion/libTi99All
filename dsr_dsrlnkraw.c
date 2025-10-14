@@ -411,6 +411,11 @@ unsigned char dsrlnkraw(unsigned int vdp) {
         }
         int nsiz = fread(buf, 1, sizeof(buf), fp);
         fclose(fp);
+        // Handle TIFILES header, if any
+        if (0 == memcmp(buf, "\x7TIFILES", 8)) {
+            nsiz -= 128;
+            memmove(buf, buf+128, nsiz);
+        }
         if ((nsiz > pPab->CharCount) || ((pPab->VDPBuffer < 0x4000) && (pPab->CharCount+pPab->VDPBuffer > 0x4000))) {
             // refuse to load
             debug_write("File doesn't fit in PAB buffer or exceeds VDP\n");
@@ -435,6 +440,11 @@ unsigned char dsrlnkraw(unsigned int vdp) {
         if (NULL == buf) {
             vdpchar(vdp+1, DSR_ERR_FILEERROR);
             return 0;
+        }
+        // Handle TIFILES header, if any
+        if (0 == memcmp(buf, "\x7TIFILES", 8)) {
+            memmove(buf, buf+128, outSize);
+            outSize -= 128;
         }
         if (outSize > pPab->RecordNumber) {
             free(buf);
