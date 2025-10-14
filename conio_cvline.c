@@ -5,7 +5,7 @@ void cvline(int len) {
     int end = conio_y+len;
     for (; conio_y<end; ++conio_y) {
         if (conio_y > 23) break;
-        vsetchar(conio_getvram(), '|');
+        vsetchar(getscreenoffset(conio_x, conio_y), '|');
     }
     gotoy(orig_conio_y);
 }

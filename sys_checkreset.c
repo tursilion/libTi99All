@@ -15,6 +15,16 @@ unsigned char check_reset() {
 }
 #endif
 
+#ifdef CLASSIC99
+#include <Windows.h>
+unsigned char check_reset() {
+    if ((GetAsyncKeyState(VK_CONTROL)&0x8000) && (GetAsyncKeyState(VK_OEM_PLUS)&0x8000)) {
+        return 1;
+    }
+    return 0;
+}
+#endif
+
 #ifdef COLECO
 
 // Coleco and SMS differ here

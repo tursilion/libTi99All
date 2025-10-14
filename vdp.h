@@ -393,6 +393,11 @@ extern void gbaRender();
 // wait for a vblank (interrupts disabled - will work unreliably if enabled)
 // call vdpwaitvint() instead if you want to keep running the console interrupt
 // TODO: VDPSTCRU to return true if bit is set
+#ifdef __cplusplus
+extern "C" __declspec(dllimport) void __stdcall Sleep(unsigned long);
+#else
+extern __declspec(dllimport) void __stdcall Sleep(unsigned long);
+#endif
 
 // no CRU access at the moment, so just delay
 #define VDP_WAIT_VBLANK_CRU	  Sleep(15);
@@ -571,10 +576,9 @@ void vdpwriteinc(int pAddr, unsigned char nStart, int cnt);
 void vdpchar(int pAddr, unsigned char ch);
 
 // vsetchar - write a text character to a text screen (mode independent)
-// inputs: VDP address (not offset), character to be written
-// Note: 64 column mode will work with an offset only
+// inputs: VDP offset into the screen, character to be written
 // WARNING: this is uninitialized until you call one of the setXXX graphics modes
-extern void (*vsetchar)(int pAddr, unsigned char ch);
+extern void (*vsetchar)(int pOffset, unsigned char ch);
 
 // vdpreadchar - read a character from VDP memory
 // Inputs: VDP address to read

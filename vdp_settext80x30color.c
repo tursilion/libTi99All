@@ -101,11 +101,11 @@ static void fast_scrn_scroll_80color() {
 #endif
 
 static void vdpchar80col(int pAddr, unsigned char ch) {
-	VDP_SET_ADDRESS_WRITE(pAddr);
+	VDP_SET_ADDRESS_WRITE(pAddr+gImage);
 	VDPWD(ch);
         
     // for 80 column color we also write a color byte (TODO: remove CONIO dependence)
-    VDP_SET_ADDRESS_WRITE(pAddr-gImage+gColor);
+    VDP_SET_ADDRESS_WRITE(pAddr+gColor);
     VDPWD(conio_scrnCol);
 }
 

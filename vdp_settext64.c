@@ -86,7 +86,6 @@ void vdpchar64(int pAddr, unsigned char ch)
     static unsigned int last_offset = 0xffff;
     unsigned int offset;
 
-    if (pAddr > 1536) pAddr-=gImage;    // don't include gImage
     offset = pAddr / 2 ; // byte offset
     offset = (offset & 0xff1f) + ((offset + text64_scroll) & 0x00e0);
     offset = offset * 8 + gPattern;

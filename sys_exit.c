@@ -1,6 +1,7 @@
 // exit reboots the system
 #ifdef CLASSIC99
 #include <stdlib.h>
+#include "vdp.h"
 #endif
 #include "system.h"
 
@@ -29,6 +30,16 @@ void exit() {
 #ifdef CLASSIC99
 void exit() {
 #undef exit
+    // reset the emulator. it should be running a spinloop at >a000
+    // first, write a BLWP @>0000
+    WriteWordToClassic99(0xa002, 0x0420);
+    WriteWordToClassic99(0xa002, 0x0000);
+    // clear the interrupt hook
+    WriteWordToClassic99(0x83c4, 0x0000);
+    // and release the infinite loop
+    WriteByteToClassic99(0xa001, 0x00);
+
+    // exit the app
     exit(0);
 }
 #endif

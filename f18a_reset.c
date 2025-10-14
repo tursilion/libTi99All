@@ -13,6 +13,7 @@ const unsigned int F18A_INITIAL[16] = {
 void reset_f18a() {
     // make sure the display is off and dark, then reset palette
     VDP_SET_REGISTER(VDP_REG_COL, 0);         // do this first to minimize the time for a flash
+    stopgpu_f18a();
     VDP_SET_REGISTER(VDP_REG_MODE1, VDP_MODE1_16K);
     loadpal_f18a(&F18A_INITIAL[0], 0, 16);
 
