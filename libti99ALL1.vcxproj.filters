@@ -574,6 +574,12 @@
     <ClCompile Include="sys_checkreset.c">
       <Filter>Source Files\system</Filter>
     </ClCompile>
+    <ClCompile Include="conio_cputwordwrap.c">
+      <Filter>Source Files\conio</Filter>
+    </ClCompile>
+    <ClCompile Include="str_tolower.c">
+      <Filter>Source Files\string</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="crt0_coleco.assembly">

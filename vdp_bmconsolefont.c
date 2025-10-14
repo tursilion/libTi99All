@@ -90,7 +90,7 @@ void bm_consolefont() {
     gBmFont = (unsigned char*)0;
 #endif
 #ifdef CLASSIC99
-    gBmFont = CHARA1;
+    gBmFont = (unsigned char*)CHARA1;
 #endif
 }
 

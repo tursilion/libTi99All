@@ -12,6 +12,10 @@
 #ifndef CONIO_H
 #define CONIO_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "vdp.h"
 #include <stdarg.h>
 
@@ -60,6 +64,11 @@ void cputs(const char *s);
 
 // print a string (knows control codes)
 void cputsxy(int xx, int yy, const char *s);
+
+// print a string with display-aware word wrap
+// No control codes, however, so CR/LF is ignored.
+// 'cnt' can be 0 for the full string, string is truncated if it's less than strlen
+void cputwordwrap(int x, int y, const char *pWork, int cnt);
 
 // enable/disable the cgetc cursor
 #define cursor(x) \
@@ -117,5 +126,9 @@ inline int wherex() { return conio_x; }
 
 // return the y position
 inline int wherey() { return conio_y; }
+
+#ifdef __cplusplus
+}   // extern C
+#endif
 
 #endif /* CONIO_H */

@@ -30,6 +30,10 @@
 #ifndef PUFF16K_H
 #define PUFF16K_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * See puff.c for purpose and usage.
  */
@@ -62,6 +66,10 @@ int puff16k(unsigned char *dest,          /* pointer to destination pointer */
 #ifdef CLASSIC99
 // no need to do anything special on Windows for 16k
 #define puff16k puff
+#endif
+
+#ifdef __cplusplus
+}   // extern C
 #endif
 
 #endif /* PUFF16K_H */

@@ -14,6 +14,10 @@
 #ifndef RS232_H
 #define RS232_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // CRU addresses
 // standard card
 #define RS232_CARD		(0x1300)	// base CRU for the card
@@ -211,5 +215,8 @@ int rs232raw_readbyte(int rawCRU);
 // 0x08 = frame error (line corruption or incorrect line format)
 int rs232raw_geterrs(int rawCRU);
 
+#ifdef __cplusplus
+}   // extern C
+#endif
 
 #endif /* RS232_H */

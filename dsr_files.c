@@ -4,7 +4,6 @@
 #include "files.h"
 
 #ifdef TI99
-
 unsigned int __attribute__((noinline)) searchdofiles(unsigned int base) {
 	unsigned int ret;
 
@@ -43,9 +42,8 @@ unsigned int __attribute__((noinline)) searchdofiles(unsigned int base) {
 #endif
 
 void files(unsigned char count) {
-	DSR_FILES_COUNT = count;
-
 #ifdef TI99
+    DSR_FILES_COUNT = count;
 	unsigned int dsrbase = 0x1000;
 	while (searchdofiles(dsrbase)) {
 		dsrbase+=0x100;

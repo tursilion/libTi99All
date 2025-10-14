@@ -12,6 +12,10 @@
 #ifndef VDP_H
 #define VDP_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef COLECO
 #ifndef TI99
 #ifndef GBA
@@ -77,7 +81,7 @@ extern volatile unsigned char vdp_status;        // for vertical blank only, set
 #endif
 
 #ifdef CLASSIC99
-#include <Windows.h>
+//#include <Windows.h>
 
 // we need to rename ours cause we can't change the Windows library
 #define printf printf_ti
@@ -826,5 +830,9 @@ extern unsigned char gSaveIntCnt;	// console interrupt count byte
 
 // 512 byte lookup table for converting a byte to two ASCII hex characters
 extern const unsigned int byte2hex[256];
+
+#ifdef __cplusplus
+}   // extern C
+#endif
 
 #endif /* VDP_H */

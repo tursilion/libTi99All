@@ -280,7 +280,6 @@ int main() {
 	}
 	if ((KSCAN_KEY == 'Y')||(KSCAN_KEY=='1')) f18=1;
 	
-
     testBitmapMode();
 
 	set_text();
@@ -453,10 +452,3 @@ int main() {
 
 	return 0;
 }
-
-#ifdef CLASSIC99
-// temporarily need to provide this to build
-unsigned char *getWebFile(const char *filename, int *outSize) {
-    return NULL;
-}
-#endif

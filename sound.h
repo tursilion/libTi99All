@@ -3,6 +3,10 @@
 #ifndef SOUND_H
 #define SOUND_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //*********************
 // direct sound chip access
 //*********************
@@ -214,5 +218,9 @@ volatile __sfr __at 0x52 AY_DATA_READ;
 
 #endif
 
+
+#ifdef __cplusplus
+}   // extern C
+#endif
 
 #endif /* SOUND_H */

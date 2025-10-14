@@ -1,14 +1,18 @@
 #ifndef FILES_H
 #define FILES_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // DSR interface code for the TI-99/4A by Tursi
 // You can copy this file and use it at will ;)
 
-// *** WARNING *** This code may NOT work on hardware yet. (I think it's tested though)
-
+#if defined(TI99)
 #define DSR_FILES_COUNT	*((volatile unsigned char*)0x834C)
 #define DSR_LEN_COUNT	*((volatile unsigned int*)0x8354)
 #define DSR_PAB_POINTER *((volatile unsigned int*)0x8356)
+#endif
 
 #define DSR_OPEN	0x00
 #define DSR_CLOSE	0x01
@@ -76,10 +80,10 @@ struct PAB {
 #endif
 	unsigned char OpCode;			// see DSR_xxx list above
 	unsigned char Status;			// file type and error code (DSR_ERR_xxx and DSR_TYPE_xxx)
-	unsigned int  VDPBuffer;		// address of the data buffer in VDP memory
+	unsigned short VDPBuffer;		// address of the data buffer in VDP memory
 	unsigned char RecordLength;	    // size of records. Not used for PROGRAM type. >00 on open means autodetect
 	unsigned char CharCount;		// number of bytes read or number of bytes to write
-	unsigned int  RecordNumber;		// record number for normal files, available bytes (LOAD or SAVE) for PROGRAM type
+	unsigned short RecordNumber;	// record number for normal files, available bytes (LOAD or SAVE) for PROGRAM type
 	unsigned char ScreenOffset;	    // Used in BASIC for screen BIAS. Also returns file status on Status call. (DSR_STATUS_xxx)
 	unsigned char NameLength;		// for this implementation only, set to zero to read the length from the string
 	unsigned char *pName;			// for this implementation only, must be a valid C String even if length is set
@@ -110,5 +114,9 @@ unsigned char dsrlnk(struct PAB *pab, unsigned int vdp);
 // Inputs: pointer to PAB in VDP
 // Returns 0 on success, or 1 on error. Read error code from PAB+1. If it's 0, the DSR was not found.
 unsigned char dsrlnkraw(unsigned int vdppab);
-	
+
+#ifdef __cplusplus
+}   // extern C
+#endif
+
 #endif /* FILES_H */

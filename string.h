@@ -4,7 +4,11 @@
 #ifndef STRING_H
 #define STRING_H
 
-#ifndef CLASSIC99
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+//#ifndef CLASSIC99
 // strlen - returns the length of a zero terminated string
 unsigned int strlen(const char *s);
 
@@ -34,7 +38,7 @@ void *memmove(void *dest, const void *src, int cnt);
 
 // set a block of memory at dest to src, of cnt bytes. Returns dest.
 void *memset(void *dest, int src, int cnt);
-#endif
+//#endif
 
 // returns a pointer to a static string, a number converted as unsigned
 // Not thread safe, don't use from interrupt handlers.
@@ -55,5 +59,12 @@ int getchar();
 // Displays a solid cursor. The only edit key supported is Fctn-S. Stops
 // at maxlen, returned string is zero-terminated. Needs KSCAN, VDP, etc.
 void gets(char *buf, int maxlen);
+
+// if a character is uppercase, return lowercase, else return character as is
+char tolower(char c);
+
+#ifdef __cplusplus
+}   // extern C
+#endif
 
 #endif /* STRING_H */

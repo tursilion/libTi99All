@@ -13,6 +13,7 @@ OBJECT_LIST=\
   conio_cputcxy.$(EXT)   \
   conio_cputs.$(EXT)     \
   conio_cputsxy.$(EXT)   \
+  conio_cputwordwrap.$(EXT) \
   conio_cvline.$(EXT)    \
   conio_cvlinexy.$(EXT)  \
   conio_getvram.$(EXT)   \
@@ -78,6 +79,7 @@ OBJECT_LIST=\
   str_getchar.$(EXT)   \
   str_gets.$(EXT)      \
   str_int2str.$(EXT)   \
+  str_tolower.$(EXT)   \
   str_uint2hex.$(EXT)  \
   str_uint2str.$(EXT)  \
   sys_checkreset.$(EXT)      \

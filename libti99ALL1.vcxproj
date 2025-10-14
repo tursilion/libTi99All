@@ -171,6 +171,7 @@
     <ClCompile Include="conio_cputcxy.c" />
     <ClCompile Include="conio_cputs.c" />
     <ClCompile Include="conio_cputsxy.c" />
+    <ClCompile Include="conio_cputwordwrap.c" />
     <ClCompile Include="conio_cvline.c" />
     <ClCompile Include="conio_cvlinexy.c" />
     <ClCompile Include="conio_getvram.c" />
@@ -252,6 +253,7 @@
     <ClCompile Include="str_strcpy.c" />
     <ClCompile Include="str_strlen.c" />
     <ClCompile Include="str_strncpy.c" />
+    <ClCompile Include="str_tolower.c" />
     <ClCompile Include="str_uint2hex.c" />
     <ClCompile Include="str_uint2str.c" />
     <ClCompile Include="sys_checkreset.c" />

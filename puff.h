@@ -27,6 +27,10 @@
 #ifndef PUFF_H
 #define PUFF_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * See puff.c for purpose and usage.
  */
@@ -38,5 +42,9 @@ int puff(unsigned char *dest,          /* pointer to destination pointer */
          unsigned int *destlen,        /* amount of output space */
          const unsigned char *source, /* pointer to source data pointer */
          unsigned int *sourcelen);     /* amount of input available */
+
+#ifdef __cplusplus
+}   // extern C
+#endif
 
 #endif /* PUFF_H */

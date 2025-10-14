@@ -5,6 +5,10 @@
 #ifndef F18A_H
 #define F18A_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "vdp.h"
 
 // all methods except detect_f18a() and unlock_f18a() require the F18A to be unlocked!
@@ -94,4 +98,9 @@ void stopgpu_f18a();
 #define F18A_GPUCFG_OP          (unsigned char)0x01     // when set, GPU starts when LSB written
 
 #define F18A_UNLOCK_VALUE       (unsigned char)0x1c     // value written twice to F18A_REG_UNLOCK to unlock F18A features
+
+#ifdef __cplusplus
+}   // extern C
+#endif
+
 #endif

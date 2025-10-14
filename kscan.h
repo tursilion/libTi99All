@@ -7,6 +7,10 @@
 #ifndef KSCAN_H
 #define KSCAN_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef TI99
 
 // Address to set the scan mode (see KSCAN_MODE_xxx defines)
@@ -120,5 +124,9 @@ void kscanfast(unsigned char mode);
 // read a joystick directly. 'unit' is either 1 or 2 for the joystick desired
 // returns data in KSCAN_JOYY and KSCAN_JOYX
 void joystfast(unsigned char unit);
+
+#ifdef __cplusplus
+}   // extern C
+#endif
 
 #endif /* KSCAN_H */

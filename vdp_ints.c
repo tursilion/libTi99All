@@ -361,17 +361,16 @@ const unsigned char REG9938Init[8] = {
 
 void debug_write(char *s, ...)
 {
-#if 0
-    // I need to figure out what libs these need
 	char buf[1024];
 
 	_vsnprintf(buf, 1023, s, (char*)((&s)+1));
 	buf[1023]='\0';
+    int n=strlen(buf);
+    if (buf[n-1] == '\n') buf[n-1]='\0';
 
 	// let all lines reach the external debugger
 	OutputDebugString(buf);
 	OutputDebugString("\n");
-#endif
 }
 
 void vdpinit() {
@@ -498,8 +497,8 @@ static unsigned int HandleTransaction(unsigned char *buffer, int cnt) {
         return 1;
     }
     
-    debug_write("Sent %d bytes to 127.0.0.1:0x9900\n", result);
-    debug_write("Waiting for response...\n");
+    //debug_write("Sent %d bytes to 127.0.0.1:0x9900\n", result);
+    //debug_write("Waiting for response...\n");
 
     /* Receive response packet */
     recv_addr_len = sizeof(recv_addr);
@@ -512,10 +511,10 @@ static unsigned int HandleTransaction(unsigned char *buffer, int cnt) {
         debug_write("recvfrom() failed: %d\n", WSAGetLastError());
         return 1;
     } else {
-        debug_write("Received %d bytes from %s:%d\n", 
-               bytes_received,
-               inet_ntoa(recv_addr.sin_addr),
-               ntohs(recv_addr.sin_port));
+        //debug_write("Received %d bytes from %s:%d\n", 
+        //       bytes_received,
+        //       inet_ntoa(recv_addr.sin_addr),
+        //       ntohs(recv_addr.sin_port));
         return 0;
     }
 }
@@ -603,14 +602,17 @@ void getMapping() {
 
 void SetVDPToClassic99(int pAddr, int ch, int cnt) {
     memset(pVDP+pAddr, ch, cnt);
+    c99SetVDPAddress(pAddr+cnt-1);
 }
 
 void ReadVDPBlockFromClassic99(int pAddr, unsigned char *pDest, int cnt) {
     memcpy(pDest, pVDP+pAddr, cnt);
+    c99SetVDPAddress(pAddr+cnt-1);
 }
 
 void WriteVDPBlockToClassic99(int pAddr, unsigned char *pSrc, int cnt) {
     memcpy(pVDP+pAddr, pSrc, cnt);
+    c99SetVDPAddress(pAddr+cnt-1);
 }
 
 // some emulation for local address tracking

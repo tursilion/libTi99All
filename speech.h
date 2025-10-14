@@ -1,6 +1,10 @@
 #ifndef _SPEECH_H
 #define _SPEECH_H 1
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef TI99
 // WARNING: This uses 12 bytes of scratchpad at >8320 for the speech synth read code
 
@@ -504,5 +508,9 @@ void speech_wait();
 #define VOCAB_YOU_WIN 0x7DDB
 #define VOCAB_Z 0x7E99
 #define VOCAB_ZERO 0x13C3
+
+#ifdef __cplusplus
+}   // extern C
+#endif
 
 #endif

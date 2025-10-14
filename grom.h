@@ -4,6 +4,10 @@
 #ifndef GROM_H
 #define GROM_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //*********************
 // default GROM access port addresses (base 0)
 //*********************
@@ -62,5 +66,9 @@ unsigned char GromReadData(unsigned int address, unsigned char port);
 // Note that console GROMs and most cartridges will respond at all ports. The maximum port supported
 // by this library is 15. Assumes that writable GROM is available.
 void GromWriteData(unsigned int address, unsigned char port, unsigned char dat);
+
+#ifdef __cplusplus
+}   // extern C
+#endif
 
 #endif /* GROM_H */

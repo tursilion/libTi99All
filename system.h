@@ -1,6 +1,10 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef TI99
 // Halt function -- stops the program and waits for
 // the user to press QUIT (Fctn-=). Use this if you
@@ -43,5 +47,9 @@ void exit();
 // if you have F18A in your system, call reset_f18a()
 // then use exit() to reboot
 unsigned char check_reset();
+
+#ifdef __cplusplus
+}   // extern C
+#endif
 
 #endif /* SYSTEM_H */
