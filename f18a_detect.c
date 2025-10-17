@@ -32,6 +32,12 @@ unsigned char detect_f18a() {
     
     // honestly, this is overkill. It's likely done before we can execute the next instruction
     VDP_SAFE_DELAY();
+
+#ifdef CLASSIC99
+    // since the app is running on the PC, it's likely worlds faster than the F18A,
+    // so let's actually delay here
+    VDP_WAIT_VBLANK_CRU;
+#endif
     
     // note if it IS an F18A, that delays are not needed. If it's not, well, it won't be right anyway
     VDP_SET_ADDRESS(0x3f10);

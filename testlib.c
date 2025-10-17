@@ -282,7 +282,7 @@ int main() {
 	
     testBitmapMode();
 
-	set_text();
+ 	set_text();
 	clrscr();
 	charsetlc();
     textcolor(COLOR_WHITE);

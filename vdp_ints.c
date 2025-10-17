@@ -341,12 +341,12 @@ void clearOtherIntHook() {
 #endif
 
 #ifdef CLASSIC99
-// TODO: was suggested after the fact, but using mmap to directly access Classic99's
-// memory would be much faster and much less trouble than winsock... indeed we'd run
-// at the speed of Windows for the most part.
 
 // enable this define to enable shared VDP access, at least
 #define VDP_HAS_SHARED_MEMORY
+
+// enable this to not wait for replies when sending writes
+#define CLASSIC99_CASUAL_WRITES
 
 // we don't really get interrupts in this code - that'll make some
 // timing tricky, but we should be able to get enough to get a good idea
@@ -437,7 +437,7 @@ void clearUserIntHook() {
 unsigned int pendingVDP = -1;
 
 // Some support functions - simpler than GBA so just left here
-static unsigned int HandleTransaction(unsigned char *buffer, int cnt) {
+static unsigned int HandleTransaction(unsigned char *buffer, int cnt, BOOL write) {
     static int needInit = 1;
     static WSADATA wsaData = { 0 };
     static SOCKET sockfd = INVALID_SOCKET;
@@ -498,25 +498,47 @@ static unsigned int HandleTransaction(unsigned char *buffer, int cnt) {
     }
     
     //debug_write("Sent %d bytes to 127.0.0.1:0x9900\n", result);
+     
+#ifdef CLASSIC99_CASUAL_WRITES
+    if (write) return 0;
+#endif
+
     //debug_write("Waiting for response...\n");
 
     /* Receive response packet */
-    recv_addr_len = sizeof(recv_addr);
-    memset(buffer, 0, cnt);
+    for (;;) {
+        recv_addr_len = sizeof(recv_addr);
+        memset(buffer, 0, cnt);
     
-    bytes_received = recvfrom(sockfd, buffer, cnt, 0,
+        bytes_received = recvfrom(sockfd, buffer, cnt, 0,
                               (struct sockaddr *)&recv_addr, &recv_addr_len);
-    
-    if (bytes_received == SOCKET_ERROR) {
-        debug_write("recvfrom() failed: %d\n", WSAGetLastError());
-        return 1;
-    } else {
-        //debug_write("Received %d bytes from %s:%d\n", 
-        //       bytes_received,
-        //       inet_ntoa(recv_addr.sin_addr),
-        //       ntohs(recv_addr.sin_port));
-        return 0;
+#ifndef CLASSIC99_CASUAL_WRITES
+        break;
+#endif
+        if (bytes_received == SOCKET_ERROR) {
+            debug_write("recvfrom() failed: %d\n", WSAGetLastError());
+            return 1;
+        }
+
+        // check if this packet contains read data (skipping over any old write replies)
+        // hopefully we won't lose data, the windows buffers should be quite large
+        BOOL ok = FALSE;
+        for (int i=0; i<bytes_received; i+=8) {
+            // byte 0 MSB is set for writes and clear for reads.
+            // we have to check them all since for instance VDP address has two writes then a read
+            if ((buffer[i]&0x80) == 0) {
+                ok=TRUE;
+                break;
+            }
+        }
+        if (ok) break;
     }
+    
+    //debug_write("Received %d bytes from %s:%d\n", 
+    //       bytes_received,
+    //       inet_ntoa(recv_addr.sin_addr),
+    //       ntohs(recv_addr.sin_port));
+    return 0;
 }
 
 unsigned char ReadByteFromClassic99(int cpu) {
@@ -530,7 +552,7 @@ unsigned char ReadByteFromClassic99(int cpu) {
     buf[5] = (cpu)&0xff;
     buf[6] = 0;
     buf[7] = 0;
-    if (HandleTransaction(buf, 8)) {
+    if (HandleTransaction(buf, 8, FALSE)) {
         return 0xff;
     } else {
         // should be LSB
@@ -549,7 +571,7 @@ void WriteByteToClassic99(int cpu, int val) {
     buf[5] = (cpu)&0xff;
     buf[6] = 0;
     buf[7] = val&0xff;
-    HandleTransaction(buf, 8);
+    HandleTransaction(buf, 8, TRUE);
 }
 
 void WriteWordToClassic99(int cpu, int val) {
@@ -563,7 +585,7 @@ void WriteWordToClassic99(int cpu, int val) {
     buf[5] = (cpu)&0xff;
     buf[6] = (val>>8)&0xff;
     buf[7] = val&0xff;
-    HandleTransaction(buf, 8);
+    HandleTransaction(buf, 8, TRUE);
 }
 
 #ifdef VDP_HAS_SHARED_MEMORY
@@ -719,7 +741,7 @@ void SetVDPToClassic99(int pAddr, int ch, int cnt) {
             buf[off++] = 0;
             buf[off++] = ch&0xff;
         }
-        HandleTransaction(buf, off);
+        HandleTransaction(buf, off, TRUE);
         cnt -= mx;
         off = 0;
     }
@@ -766,7 +788,7 @@ void ReadVDPBlockFromClassic99(int pAddr, unsigned char *pDest, int cnt) {
             buf[off++] = 0;
             buf[off++] = 0;
         }
-        HandleTransaction(buf, off);
+        HandleTransaction(buf, off, FALSE);
         // success or failure, copy out the data
         for (int idx=0; idx<mx; ++idx) {
             *(pDest++) = buf[idx*8+23];
@@ -817,7 +839,7 @@ void WriteVDPBlockToClassic99(int pAddr, unsigned char *pSrc, int cnt) {
             buf[off++] = 0;
             buf[off++] = *(pSrc++);
         }
-        HandleTransaction(buf, off);
+        HandleTransaction(buf, off, TRUE);
         cnt -= mx;
         off = 0;
     }
@@ -827,8 +849,6 @@ void c99SetVDPAddress(int pAddr) {
     pendingVDP = pAddr;
 }
 
-// put the main VDP RAM in 256k external, otherwise it's half our available memory
-// we're way faster than coleco or TI, so it won't hurt our performance.
 unsigned char c99VDPRD() {
     if (pendingVDP == -1) {
         return ReadByteFromClassic99(0x8800);
@@ -865,7 +885,7 @@ unsigned char c99VDPRD() {
     buf[23] = 0;
 
     pendingVDP = -1;
-    if (HandleTransaction(buf, 24)) {
+    if (HandleTransaction(buf, 24, FALSE)) {
         return 0xff;
     } else {
         // should be LSB
@@ -909,7 +929,7 @@ void c99VDPWD(unsigned char x) {
     buf[23] = x&0xff;
 
     pendingVDP = -1;
-    HandleTransaction(buf, 24);
+    HandleTransaction(buf, 24, TRUE);
 }
 
 unsigned char c99VDPST() {
