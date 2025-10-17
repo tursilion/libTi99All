@@ -37,6 +37,9 @@ unsigned char detect_f18a() {
     // since the app is running on the PC, it's likely worlds faster than the F18A,
     // so let's actually delay here
     VDP_WAIT_VBLANK_CRU;
+    VDP_CLEAR_VBLANK;
+    VDP_WAIT_VBLANK_CRU;
+    VDP_CLEAR_VBLANK;
 #endif
     
     // note if it IS an F18A, that delays are not needed. If it's not, well, it won't be right anyway
