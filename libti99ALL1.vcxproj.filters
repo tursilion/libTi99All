@@ -580,6 +580,9 @@
     <ClCompile Include="str_tolower.c">
       <Filter>Source Files\string</Filter>
     </ClCompile>
+    <ClCompile Include="vdp_charsetreverse.c">
+      <Filter>Source Files\vdp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="crt0_coleco.assembly">

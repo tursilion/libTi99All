@@ -705,6 +705,10 @@ void charset(void);
 // memory (208 bytes). Not compatible with the 99/4, if it matters.
 void charsetlc(void);
 
+// charsetreverse - copies the characters from 0-127 to 128-255, and inverts their patterns
+// the conio print functions can use this by calling reverse(true)
+void charsetreverse(void);
+
 // gplvdp - copy data from a GPL function to VDP memory. 
 // Inputs: address of a GPL vector, VDP address to copy to, number of characters to copy
 // This is a very specialized function used by the charset() functions. It assumes a GPL 'B'

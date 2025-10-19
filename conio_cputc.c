@@ -16,7 +16,7 @@ void inc_row() {
 
 void cputc(int ch) {
     if (ch >= ' ') {
-        vsetchar(getscreenoffset(conio_x, conio_y), ch);
+        vsetchar(getscreenoffset(conio_x, conio_y), ch|conio_reverseMask);
         ++conio_x;
         if (conio_x > nTextEnd-nTextRow) {
             conio_x=0;

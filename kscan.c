@@ -156,6 +156,15 @@ unsigned char kscan(unsigned char mode) {
     KSCAN_KEY = 0xff;
     KSCAN_STATUS = 0;
 
+    // we're using async keys, but just to make it a little cleaner,
+    // make sure the active window starts with Classic99
+    HWND wnd = GetForegroundWindow();
+    if (NULL == wnd) return KSCAN_KEY;  // will be no key
+    char title[256];
+    title[0]='\0';
+    GetWindowText(wnd, title, sizeof(title));
+    if (memcmp(title, "Classic99", 9) != 0) return KSCAN_KEY;
+
     if ((mode == KSCAN_MODE_LEFT) || (mode == KSCAN_MODE_RIGHT)) {
         // fire button
         if (GetAsyncKeyState(VK_TAB)&0x8000) {

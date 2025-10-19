@@ -100,6 +100,7 @@ OBJECT_LIST=\
   vdp_char.$(EXT)		\
   vdp_charset.$(EXT)		\
   vdp_charsetlc.$(EXT)	\
+  vdp_charsetreverse.$(EXT)	\
   vdp_delsprite.$(EXT)	\
   vdp_fasterhexprint.$(EXT)	\
   vdp_fasthexprint.$(EXT)	\

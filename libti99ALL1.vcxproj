@@ -278,6 +278,7 @@
     <ClCompile Include="vdp_char.c" />
     <ClCompile Include="vdp_charset.c" />
     <ClCompile Include="vdp_charsetlc.c" />
+    <ClCompile Include="vdp_charsetreverse.c" />
     <ClCompile Include="vdp_delsprite.c" />
     <ClCompile Include="vdp_fasterhexprint.c" />
     <ClCompile Include="vdp_fasthexprint.c" />

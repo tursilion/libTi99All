@@ -21,6 +21,7 @@ extern "C" {
 
 // get a VRAM address to the cursor position based on the screen mode we're in
 extern int conio_x,conio_y;
+extern unsigned char conio_reverseMask;
 unsigned int conio_getvram();
 
 // bgcolor - sets the character background color in attribute-based text modes
@@ -108,7 +109,10 @@ do \
 // check for a key - simulates a 1-key buffer
 unsigned char kbhit();
 
-// reverses the text display - not supported but you could make your own character set
+// reverses the text display if true (by OR-ing 0x80)
+// returns the old value
+// If you want a charset set up for this, call charset_reverse() after your initial
+// charset() or charsetlc(), and it will copy to the high characters for you
 unsigned char reverse(unsigned char x);
 
 // returns the dimensions of the screen -- this is not valid until you have called set_graphics(), set_text() or set_text80() (80 for F18/9938 only)
@@ -117,9 +121,6 @@ void screensize(unsigned char *x, unsigned char *y);
 // changes the color of the text - works in TEXT mode only and changes ALL text on the screen
 // unless in text80color mode, or text64 mode, which allow separate color per character.
 unsigned int textcolor(unsigned int color);
-
-// printf with a format list
-int vcprintf(const char *fmt, va_list argp);
 
 // return the x position
 inline int wherex() { return conio_x; }

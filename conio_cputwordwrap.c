@@ -5,7 +5,7 @@
 // if zero, then the whole string is used - no control codes, direct to output function
 void cputwordwrap(int x, int y, const char *pWork, int cnt) {
     int width = 32;
-    // I do not like this, set width in a variable like everything else
+    // TODO: I do not like this, set width in a variable like everything else
 	if (nTextFlags&TEXT_WIDTH_40) {
         width=40;
 	} else if (nTextFlags&TEXT_WIDTH_80) {
@@ -23,7 +23,7 @@ void cputwordwrap(int x, int y, const char *pWork, int cnt) {
             // ignore leading spaces
             if (x > 0) {
                 gotoxy(x,y);
-                vsetchar(getscreenoffset(x, y), ' ');  // direct output
+                vsetchar(getscreenoffset(x, y), ' '|conio_reverseMask);  // direct output
                 x++;
                 if (x>=width) {
                     x=0;
@@ -56,7 +56,7 @@ void cputwordwrap(int x, int y, const char *pWork, int cnt) {
         // output the characters
         while (pos--) {
             gotoxy(x,y);
-            vsetchar(getscreenoffset(x, y), *(pWork++));  // direct output
+            vsetchar(getscreenoffset(x, y), (*(pWork++))|conio_reverseMask);  // direct output
             x++;
             if (*pWork == '\0') break;
             if (--cnt == 0) break;
