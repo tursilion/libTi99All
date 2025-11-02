@@ -305,6 +305,7 @@ extern unsigned char VDP_REG1_KSCAN_MIRROR;
 #ifdef TI99
 // wait for a vblank (interrupts disabled - will work unreliably if enabled)
 // call vdpwaitvint() instead if you want to keep running the console interrupt
+// IMPORTANT! The VDP interrupt ENABLE bit (VDPR1 bit 0x20) must be set, or the VDP won't send the interrupt to the CRU!
 // TODO: VDPSTCRU to return true if bit is set
 #define VDP_WAIT_VBLANK_CRU	  __asm__ volatile ( "clr r12\nvdp%=:\n\ttb 2\n\tjeq vdp%=" : : : "r12","cc" );
 #define VDP_CLEAR_VBLANK { VDP_INT_DISABLE; VDP_STATUS_MIRROR = VDPST(); }
@@ -323,6 +324,7 @@ extern unsigned char VDP_REG1_KSCAN_MIRROR;
 #ifdef COLECO
 // wait for a vblank (interrupts disabled - will work unreliably if enabled)
 // there's no CRU on the Coleco, of course... but for compatibility..
+// IMPORTANT! The VDP interrupt ENABLE bit (VDPR1 bit 0x20) must be set, or the VDP won't send the NMI to the CPU!
 extern volatile unsigned char vdpLimi;
 #define VDPSTCRU() (vdpLimi&0x80)
 #define VDP_WAIT_VBLANK_CRU	  while (VDPSTCRU == 0) { }
