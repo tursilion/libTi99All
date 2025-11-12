@@ -198,6 +198,16 @@ unsigned char kscan(unsigned char mode) {
         KSCAN_STATUS = KSCAN_MASK;
         return KSCAN_KEY;
     }
+    if (GetAsyncKeyState(VK_OEM_COMMA)&0x8000) {
+        KSCAN_KEY = ',';
+        KSCAN_STATUS = KSCAN_MASK;
+        return KSCAN_KEY;
+    }
+    if (GetAsyncKeyState(VK_OEM_PERIOD)&0x8000) {
+        KSCAN_KEY = '.';
+        KSCAN_STATUS = KSCAN_MASK;
+        return KSCAN_KEY;
+    }
 	return KSCAN_KEY;
 }
 

@@ -443,7 +443,7 @@ unsigned char dsrlnkraw(unsigned int vdp) {
         }
         // Handle TIFILES header, if any
         if (0 == memcmp(buf, "\x7TIFILES", 8)) {
-            memmove(buf, buf+128, outSize);
+            memmove(buf, buf+128, outSize-128);
             outSize -= 128;
         }
         if (outSize > pPab->RecordNumber) {
