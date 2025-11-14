@@ -9,6 +9,7 @@ OBJECT_LIST=\
   conio_chlinexy.$(EXT)  \
   conio_clrscr.$(EXT)    \
   conio_cprintf.$(EXT)   \
+  conio_cprintfmini.$(EXT)   \
   conio_cputc.$(EXT)     \
   conio_cputcxy.$(EXT)   \
   conio_cputs.$(EXT)     \

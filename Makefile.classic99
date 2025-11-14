@@ -1,0 +1,74 @@
+# Makefile for Windows using GNU Make and MSVC
+# Compiles libti99 for Windows using Visual Studio compiler
+
+# Use cmd.exe as shell to avoid MSYS2 shell interpretation issues
+#SHELL = cmd.exe
+
+# Visual Studio compiler and tools - run "fastervcvars 32s" for path
+CC = cl
+AR = lib
+RM = del /Q
+LINK = link
+
+# Compiler flags for MSVC
+# -c - compile only, don't link
+# -TC - treat all files as C source
+# -DCLASSIC99WIN - define CLASSIC99
+# -I - include directories
+# -std:c11 - use C11 standard
+# -O2 - optimize for speed
+# -W3 - warning level 3
+# -nologo - suppress copyright banner
+CFLAGS = -c -TC -DCLASSIC99 -I../include -I.. -std:c11 -O2 -W3 -nologo
+
+# Linker flags
+# -nologo - suppress copyright banner
+# -subsystem:console - console application
+LDFLAGS = -nologo -subsystem:console /ENTRY:"classic99_main"
+
+# Output library name
+NAME = libti99_classic99.lib
+
+# Example executable name
+EXAMPLE_EXE = example.exe
+TESTLIB_EXE = testlib.exe
+
+# File extension for object files in MSVC
+EXT = obj
+
+# Include the source file list
+# This sets OBJECT_LIST variable with .$(EXT) extensions
+include ../Makefile.sources
+
+# Default target
+all: library example test
+
+# Recipe to build the library from all object files
+library: $(OBJECT_LIST)
+	$(AR) -OUT:$(NAME) -nologo $(OBJECT_LIST)
+
+# Recipe to compile and link example.c with the library
+# First compile example.c to example.obj
+example.obj: ../example.c
+	$(CC) $(CFLAGS) -Fo$@ $<
+
+# Then link example.obj with the library to create example.exe
+example: library example.obj
+	$(LINK) $(LDFLAGS) -out:$(EXAMPLE_EXE) example.obj $(NAME)
+
+testlib.obj: ../testlib.c
+$(CC) $(CFLAGS) -Fo$@ $<
+
+test: library testlib.obj
+	$(LINK) $(LDFLAGS) -out:$(TESTLIB_EXE) testlib.obj $(NAME) user32.lib
+
+# Recipe to compile C files from parent directory
+# GNU make pattern rule for MSVC
+%.obj: ../%.c
+	$(CC) $(CFLAGS) -Fo$@ $<
+
+# Clean target to remove build artifacts
+clean:
+	-$(RM) *.obj $(NAME) 2>nul
+
+.PHONY: all library example clean
