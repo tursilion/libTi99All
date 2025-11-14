@@ -167,6 +167,7 @@
     <ClCompile Include="conio_chlinexy.c" />
     <ClCompile Include="conio_clrscr.c" />
     <ClCompile Include="conio_cprintf.c" />
+    <ClCompile Include="conio_cprintfmini.c" />
     <ClCompile Include="conio_cputc.c" />
     <ClCompile Include="conio_cputcxy.c" />
     <ClCompile Include="conio_cputs.c" />

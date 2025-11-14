@@ -1,3 +1,7 @@
+### THIS MAKEFILE DOES NOT WORK
+### USE VISUAL STUDIO AND THE SOLUTION FILE INSTEAD
+
+
 # Makefile for Windows using GNU Make and MSVC
 # Compiles libti99 for Windows using Visual Studio compiler
 

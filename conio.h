@@ -55,7 +55,7 @@ void clrscr();
 int cprintf(const char *fmt, ...);
 
 // print formatted text - no buffers, no formatting, only char, int, 4-digit 'x' and string
-int cprintfmini(const char *fmt, ...);
+void cprintfmini(const char *fmt, ...);
 
 // print a char (with control characters)
 void cputc(int ch);
