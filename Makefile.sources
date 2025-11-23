@@ -128,6 +128,7 @@ OBJECT_LIST=\
   vdp_screentext64.$(EXT)  \
   vdp_screentext80.$(EXT)  \
   vdp_scrnscroll.$(EXT)	\
+  vdp_scrnscrolldefault.$(EXT)	\
   vdp_setbitmap.$(EXT)	\
   vdp_setaddress.$(EXT)  \
   vdp_setaddresswrite.$(EXT)  \

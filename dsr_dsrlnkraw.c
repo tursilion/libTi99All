@@ -177,7 +177,7 @@ void makewide(wchar_t *pw, int max, char *p) {
 unsigned char *getWebFile(const char *filename, int *outSize) {
     // adapted from https://stackoverflow.com/questions/23038973/c-winhttp-get-response-header-and-body
 #define MAX_URL_LEN 2048
-#define MAX_RAM_FILE 8192
+#define MAX_RAM_FILE 16384
     DWORD dwSize;
     DWORD dwDownloaded;
     DWORD headerSize = 0;
@@ -315,7 +315,9 @@ unsigned char *getWebFile(const char *filename, int *outSize) {
             WinHttpCloseHandle(hRequest);
             WinHttpCloseHandle(hConnect);
             WinHttpCloseHandle(hSession);
-            free(buf);
+            if (buf != NULL) {
+                free(buf);
+            }
             return NULL;
         }
 
@@ -339,7 +341,9 @@ unsigned char *getWebFile(const char *filename, int *outSize) {
                     WinHttpCloseHandle(hRequest);
                     WinHttpCloseHandle(hConnect);
                     WinHttpCloseHandle(hSession);
-                    free(buf);
+                    if (buf != NULL) {
+                        free(buf);
+                    }
                     return NULL;
                 }
             }
@@ -455,6 +459,9 @@ unsigned char dsrlnkraw(unsigned int vdp) {
         // else write to CPU or VDP ram based on address
         if (pPab->VDPBuffer < 0x4000) {
             debug_write("Copy file to VDP >%04X\n", pPab->VDPBuffer);
+            if (pPab->VDPBuffer+outSize >= 0x4000) {
+                outSize = 0x4000-pPab->VDPBuffer;
+            }
             vdpmemcpy(pPab->VDPBuffer, buf, outSize);
         } else {
             // it's a CPU write - so we can keep it locally
