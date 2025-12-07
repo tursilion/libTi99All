@@ -2,7 +2,12 @@
 # ( Set in environment to override paths )
 TMS9900_DIR?=~/newtms9900-gcc/newgcc9900/bin
 ELF2EA5_DIR?=~/gcc9900/bin
-EA5_SPLIT_DIR?=~/gcc9900/bin
+
+# My new elf2ea5 in the Phoenix Wright code does not need split anymore
+# but if you need it, then go ahead and use this
+#EA5_SPLIT_DIR?=~/gcc9900/bin
+
+# for copying to Classic99
 CLASSIC99_DSK1?=/mnt/d/classic99/DSK1/
 
 # TI uses .$(EXT)
