@@ -6,6 +6,7 @@ ELF2EA5_DIR?=~/gcc9900/bin
 # My new elf2ea5 in the Phoenix Wright code does not need split anymore
 # but if you need it, then go ahead and use this
 #EA5_SPLIT_DIR?=~/gcc9900/bin
+EA5_SPLIT_DIR?=echo Dont need: 
 
 # for copying to Classic99
 CLASSIC99_DSK1?=/mnt/d/classic99/DSK1/
