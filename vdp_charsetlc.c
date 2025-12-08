@@ -29,7 +29,7 @@ void charsetlc() {
 
 #ifdef TI99
 	gplvdp(0x0018, gPattern+0x100-1, 64);	// the rest of the character set (-1 to shift it up to match lowercase)
-	vdpchar(gPattern+511, 0);               // to match the final unwritten byte
+	vdpchar(gPattern+767, 0);               // to match the final unwritten byte
 #endif
 
 #ifdef COLECO
