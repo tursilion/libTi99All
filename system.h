@@ -1,6 +1,8 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
+// TODO: make exit take a code - we don't use it, but more compatible with other source code
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -22,7 +22,7 @@ void scrn_scroll_default() {
 	// hacky, slow, but functional scroll that takes minimal memory
 	unsigned char x[4];		// 4 byte buffer to speed it up
 	int nLine = nTextEnd-nTextRow+1;    // size of one line
-	for (int adr=nLine+gImage; adr<nTextEnd+gImage; adr+=4) {
+	for (unsigned int adr=nLine+gImage; adr<nTextEnd+gImage; adr+=4) {
 		vdpmemread(adr, x, 4);
 		vdpmemcpy(adr-nLine, x, 4);
 	}
@@ -30,7 +30,7 @@ void scrn_scroll_default() {
 
     if (nTextFlags & TEXT_FLAG_HAS_ATTRIBUTES) {
 		// copy color attributes the same way
-		for (int adr=nLine+gColor; adr<nTextEnd+gColor; adr+=4) {
+		for (unsigned int adr=nLine+gColor; adr<nTextEnd+gColor; adr+=4) {
 			vdpmemread(adr, x, 4);
 			vdpmemcpy(adr-nLine, x, 4);
 		}

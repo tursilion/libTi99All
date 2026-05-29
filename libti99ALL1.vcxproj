@@ -308,6 +308,7 @@
     <ClCompile Include="vdp_screentext64.c" />
     <ClCompile Include="vdp_screentext80.c" />
     <ClCompile Include="vdp_scrnscroll.c" />
+    <ClCompile Include="vdp_scrnscrolldefault.c" />
     <ClCompile Include="vdp_setaddress.c" />
     <ClCompile Include="vdp_setaddresswrite.c" />
     <ClCompile Include="vdp_setbitmap.c" />

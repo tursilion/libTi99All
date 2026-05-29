@@ -260,6 +260,7 @@ extern volatile unsigned char VDP_STATUS_MIRROR;
 // Has no meaning on GBA.
 #define VDP_INT_CTRL			*((volatile unsigned char*)0)
 #endif
+
 #ifdef CLASSIC99
 // Interrupt counter - incremented each interrupt
 #define VDP_INT_COUNTER			ReadByteFromClassic99(0x8379)
@@ -406,9 +407,9 @@ extern __declspec(dllimport) void __stdcall Sleep(unsigned long);
 // We can't disable interrupts, hope for the best
 #define VDP_CLEAR_VBLANK    { WriteByteToClassic99(0x837b, VDPST()); }
 
-// We can't remotely control interrupts at the moment...
-#define VDP_INT_ENABLE			
-#define VDP_INT_DISABLE			
+// We do this by flagging the stub running on the TI, since the IP interface can't do it directly today
+#define VDP_INT_ENABLE      { WriteByteToClassic99(0xa100, 1); while (ReadByteFromClassic99(0xa100) != 0) { } }
+#define VDP_INT_DISABLE		{ WriteByteToClassic99(0xa100, 2); while (ReadByteFromClassic99(0xa100) != 0) { } }
 
 // If using KSCAN, you must put a copy of VDP register 1 (returned by the 'set' functions)
 // at this address, otherwise the first time a key is pressed, the value will be overwritten.
@@ -443,7 +444,7 @@ extern __declspec(dllimport) void __stdcall Sleep(unsigned long);
 // settings for mode register 0
 #define VDP_MODE0_BITMAP		(unsigned char)0x02		// set bitmap mode
 #define VDP_MODE0_EXTVID		(unsigned char)0x01		// enable external video (not connected on TI-99/4A)
-#define VDP_MODE0_80COL         (unsigned char)0x04     // enable 9938/F18A 80 column
+#define VDP_MODE0_80COL         (unsigned char)0x04        // enable 9938/F18A 80 column
 
 // settings for mode register 1
 #define VDP_MODE1_16K			(unsigned char)0x80		// set 16k mode (4k mode if cleared)
