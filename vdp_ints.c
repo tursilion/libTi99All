@@ -341,6 +341,7 @@ void clearOtherIntHook() {
 #endif
 
 #ifdef CLASSIC99
+#include "system.h"
 
 // enable this define to enable shared VDP access, at least
 #define VDP_HAS_SHARED_MEMORY
@@ -420,34 +421,43 @@ void classic99_main() {
 /*
    1            * basic runcode for libti99all doing Classic99 interface
    2            * with this we can enable/disable interrupts, in case it helps.
-   3            * enable: write byte 1 to 0xa100
-   4            * disable: write byte 2 to 0xa100
+   3            * enable ints: write byte 1 to 0xa100
+   4            * disable ints: write byte 2 to 0xa100
    5            * all else ignored
    6                aorg >A000
-   7  A000 04E0     clr @>83C4      * we came in via interrupt hook
-   7  A002 83C4  
-   8  A004 02E0     LWPI >8300      * C workspace
-   8  A006 8300  
-   9  A008 04C1     clr r1
-  10            LP0
-  11  A00A 04E0     clr @>A100      * our command address
-  11  A00C A100  
-  12            LP1
-  13  A00E D060     movb @>a100,r1
-  13  A010 A100  
-  14  A012 0281     ci r1,>0100
-  14  A014 0100  
-  15  A016 1603     jne n1
-  16  A018 0300     LIMI 2
-  16  A01A 0002  
-  17  A01C 10F6     jmp LP0
-  18            n1
-  19  A01E 0281     ci r1,>0200
-  19  A020 0200  
-  20  A022 16F5     jne LP1
-  21  A024 0300     LIMI 0
-  21  A026 0000  
-  22  A028 10F0     jmp LP0
+   8  A000 04E0     clr @>83C4      * we came in via interrupt hook
+   8  A002 83C4  
+   9  A004 02E0     LWPI >8300      * C workspace
+   9  A006 8300  
+  10  A008 04C1     clr r1
+  11            LP0
+  12  A00A 04E0     clr @>A100      * our command address
+  12  A00C A100  
+  13            LP1
+  14  A00E D060     movb @>a100,r1
+  14  A010 A100  
+  15  A012 0281     ci r1,>0100
+  15  A014 0100  
+  16  A016 1603     jne n1
+  17  A018 0300     LIMI 2
+  17  A01A 0002  
+  18  A01C 10F6     jmp LP0
+  19            n1
+  20  A01E 0281     ci r1,>0200
+  20  A020 0200  
+  21  A022 1603     jne n2
+  22  A024 0300     LIMI 0
+  22  A026 0000  
+  23  A028 10F0     jmp LP0
+  24            n2
+  25  A02A 0281     ci r1,>0300
+  25  A02C 0300  
+  26  A02E 16ED     jne LP0
+  27  A030 04E0     clr @>83c4
+  27  A032 83C4  
+  28  A034 0420     blwp @>0000
+  28  A036 0000  
+  29           
 */
     
     WriteWordToClassic99(0xA000, 0x04E0);
@@ -467,10 +477,18 @@ void classic99_main() {
     WriteWordToClassic99(0xA01C, 0x10F6);
     WriteWordToClassic99(0xA01E, 0x0281);
     WriteWordToClassic99(0xA020, 0x0200);
-    WriteWordToClassic99(0xA022, 0x16F5);
+    WriteWordToClassic99(0xA022, 0x1603);
     WriteWordToClassic99(0xA024, 0x0300);
     WriteWordToClassic99(0xA026, 0x0000);
     WriteWordToClassic99(0xA028, 0x10F0);
+    WriteWordToClassic99(0xA02A, 0x0281);
+    WriteWordToClassic99(0xA02C, 0x0300);
+    WriteWordToClassic99(0xA02E, 0x16ed);
+    WriteWordToClassic99(0xA030, 0x04e0);
+    WriteWordToClassic99(0xA032, 0x83c4);
+    WriteWordToClassic99(0xA034, 0x0420);
+    WriteWordToClassic99(0xA036, 0x0000);
+
     // force the interrupt hook to jump for us
     WriteWordToClassic99(0x83c4, 0xa000);
 

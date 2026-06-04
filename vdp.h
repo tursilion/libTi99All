@@ -82,6 +82,7 @@ extern volatile unsigned char vdp_status;        // for vertical blank only, set
 
 #ifdef CLASSIC99
 //#include <Windows.h>
+#include "system.h"
 
 // we need to rename ours cause we can't change the Windows library
 #define printf printf_ti
@@ -404,12 +405,12 @@ extern __declspec(dllimport) void __stdcall Sleep(unsigned long);
 
 // no CRU access at the moment, so just delay
 #define VDP_WAIT_VBLANK_CRU	  Sleep(15);
-// We can't disable interrupts, hope for the best
+// clear the hardware VDP status register
 #define VDP_CLEAR_VBLANK    { WriteByteToClassic99(0x837b, VDPST()); }
 
 // We do this by flagging the stub running on the TI, since the IP interface can't do it directly today
-#define VDP_INT_ENABLE      { WriteByteToClassic99(0xa100, 1); while (ReadByteFromClassic99(0xa100) != 0) { } }
-#define VDP_INT_DISABLE		{ WriteByteToClassic99(0xa100, 2); while (ReadByteFromClassic99(0xa100) != 0) { } }
+#define VDP_INT_ENABLE      { WriteByteToClassic99(STUB_ADDRESS, STUB_LIMI_2); while (ReadByteFromClassic99(STUB_ADDRESS) != 0) { } }
+#define VDP_INT_DISABLE		{ WriteByteToClassic99(STUB_ADDRESS, STUB_LIMI_0); while (ReadByteFromClassic99(STUB_ADDRESS) != 0) { } }
 
 // If using KSCAN, you must put a copy of VDP register 1 (returned by the 'set' functions)
 // at this address, otherwise the first time a key is pressed, the value will be overwritten.

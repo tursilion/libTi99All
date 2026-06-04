@@ -16,7 +16,7 @@ extern "C" {
 void halt() __attribute__ ((noreturn));
 
 // Exit function -- reboots the console.
-void exit() __attribute__ ((noreturn));
+void exit(int n) __attribute__ ((noreturn));
 #endif
 
 #ifdef COLECO
@@ -24,7 +24,7 @@ void exit() __attribute__ ((noreturn));
 void halt();
 
 // Exit restarts the cartridge
-void exit();
+void exit(int n);
 #endif
 
 #ifdef GBA
@@ -32,7 +32,7 @@ void exit();
 void halt();
 
 // Exit restarts the cartridge
-void exit();
+void exit(int n);
 #endif
 
 #ifdef CLASSIC99
@@ -40,10 +40,15 @@ void exit();
 void halt();
 
 // Exit restarts the cartridge
-#define exit exit_ti
-void exit();
-#endif
+void exit(int n);
 
+// Commands for the Classic99 debug stub
+#define STUB_ADDRESS 0xA100
+#define STUB_LIMI_2 1
+#define STUB_LIMI_0 2
+#define STUB_EXIT 3
+
+#endif
 
 // return true if quit/reset is pressed
 // if you have F18A in your system, call reset_f18a()

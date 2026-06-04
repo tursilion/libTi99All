@@ -94,13 +94,8 @@ void testColorText() {
     cprintf("\npress any key\n");
 #ifdef GBA
     gbaRender();
-#endif
+#endif 
     cgetc();
-}
-
-void waitNewKey() {
-    while (kbhit());
-    while (!kbhit());
 }
 
 void testBitmapMode() {
@@ -257,6 +252,103 @@ void test_speech() {
     }
 }
 
+void test_compiler() {
+    // test basic byte conversions
+    // volatile so results are not just calculated by the compiler
+    volatile signed char sc;
+    volatile unsigned char uc;
+    volatile signed int si;
+    volatile unsigned int ui;
+    
+    // probably should also check 32 bit ints and floats, but later...
+    clrscr();
+    cprintf("SChar, UChar, SInt, UInt\n\n");
+    cprintf("Positive values (127)\n");
+    sc=127;
+    uc=127;
+    si=127;
+    ui=127;
+    cprintf("%d %d %d %d\n\n", sc, uc, si, ui);
+    cprintf("Extension\n");
+    si = sc;
+    ui = uc;
+    cprintf("%d %d %d %d\n\n", sc, uc, si, ui);
+    cprintf("Truncation (0x1234 -> 52, 4660)\n");
+    si=0x1234;
+    ui=0x1234;
+    sc=si;
+    uc=ui;
+    cprintf("%d %d %d %d\n\n", sc, uc, si, ui);
+    cprintf("Negative values (-127 -> -127 129 -127 -127)\n");
+    sc=-127;
+    uc=-127;
+    si=-127;
+    ui=-127;
+    cprintf("%d %d %d %d\n\n", sc, uc, si, ui);
+    cprintf("Extension\n");
+    si = sc;
+    ui = uc;
+    cprintf("%d %d %d %d\n\n", sc, uc, si, ui);
+    cprintf("Truncation (-0x1234 -> -52, 204, -4660, -4660)\n");
+    si=-0x1234;
+    ui=-0x1234;
+    sc=si;
+    uc=ui;
+    cprintf("%d %d %d %d\n\n", sc, uc, si, ui);
+    cprintf("Press any key...");
+    cgetc();
+    cgetc();
+    clrscr();
+    sc = 5;
+    sc <<= 2;
+    cprintf("signed 8 bit 5<<2 = %d\n", sc);
+    sc = 24;
+    sc >>= 2;
+    cprintf("signed 8 bit 24>>2 = %d\n", sc);
+    sc = 24;
+    uc = 0x12;
+    sc >>= (uc&7);
+    cprintf("signed 8 bit 24>>((uc)0x12&7) = %d\n", sc);
+    sc = 5;
+    sc &= 4;
+    cprintf("signed 8 bit 5&4 = %d\n", sc);
+    sc = 5;
+    sc += 9;
+    cprintf("signed 8 bit 5+9 = %d\n", sc);
+    sc = 5;
+    sc -= 3;
+    cprintf("signed 8 bit 5-3 = %d\n", sc);
+    sc = -5;
+    sc += 10;
+    cprintf("signed 8 bit -5+10 = %d\n", sc);
+    uc = 5;
+    uc <<= 2;
+    cprintf("usigned 8 bit 5<<2 = %d\n", uc);
+    uc = 24;
+    uc >>= 2;
+    cprintf("usigned 8 bit 24>>2 = %d\n", uc);
+    uc = 24;
+    sc = 0x12;
+    uc >>= (sc&7);
+    cprintf("usigned 8 bit 24>>((sc)0x12&7) = %d\n", uc);
+    uc = 5;
+    uc &= 4;
+    cprintf("usigned 8 bit 5&4 = %d\n", uc);
+    uc = 5;
+    uc += 9;
+    cprintf("usigned 8 bit 5+9 = %d\n", uc);
+    uc = 5;
+    uc -= 3;
+    cprintf("usigned 8 bit 5-3 = %d\n", uc);
+    uc = 134;
+    uc += 5;
+    cprintf("unsigned 8 bit 134+5 = %d\n", uc);
+    cprintf("\nPress any key...");
+    cgetc();
+    cgetc();
+
+}
+
 int main() {
 	int f18 = 0;
 
@@ -280,6 +372,7 @@ int main() {
 	}
 	if ((KSCAN_KEY == 'Y')||(KSCAN_KEY=='1')) f18=1;
 	
+	test_compiler();
     testBitmapMode();
 
  	set_text();
