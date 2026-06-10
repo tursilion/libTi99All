@@ -3,21 +3,18 @@
 
 // needs to copy in the right direction to be overlap safe
 void *memmove(void *dest, const void *src, int cnt) {
-  char *d = (char*)dest;
-  char *s = (char*)src;
-  
-  if (d == s) {
-    // nothing to do anyway
-    return dest;
-  }
-  
-  if ((d < s)||(s+cnt < d)) {
-    // forward copy safe
-    while (cnt > 0) {
-        *(d++) = *(s++);
-        --cnt;
+    char *d = (char*)dest;
+    char *s = (char*)src;
+
+    if ((d == s) || (cnt == 0)) {
+        // nothing to do anyway
+        return dest;
     }
-  } else {
+
+    if ((d < s-1)||(s+cnt < d)) {
+        return memcpy(dest, src, cnt);
+    }
+
     // need to do a backward copy
     d+=cnt-1;
     s+=cnt-1;
@@ -25,6 +22,5 @@ void *memmove(void *dest, const void *src, int cnt) {
         *(d--) = *(s--);
         --cnt;
     }
-  }
-  return dest;
+    return dest;
 }

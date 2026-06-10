@@ -6,13 +6,13 @@
 #include "system.h"
 
 #ifdef TI99
-void exit(int n) {
+void lib99_exit(int n) {
   __asm__ volatile ("clr @>83c4\n\tBLWP @>0000");
 }
 #endif
 
 #ifdef COLECO
-void exit(int n) {
+void lib99_exit(int n) {
 	// reboots the cart but not the BIOS, address defined by the CRT0 in use
 	static void (* const hwreboot)()=0x802c;
 	hwreboot();
@@ -20,7 +20,7 @@ void exit(int n) {
 #endif
 
 #ifdef GBA
-void exit(int n) {
+void lib99_exit(int n) {
     // full software reboot vector (jump to start of ROM)
     static void (* const hwreboot)()=(void (*const)())0x08000000;
     hwreboot();
@@ -28,8 +28,7 @@ void exit(int n) {
 #endif
 
 #ifdef CLASSIC99
-void xexit(int n) {
-#undef exit
+void lib99_exit(int n) {
     // reset the emulator. it should be running a stub at >a000
     // and take in commands at >a100
     WriteByteToClassic99(STUB_ADDRESS, STUB_EXIT); 

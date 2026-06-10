@@ -1,7 +1,7 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
-// TODO: make exit take a code - we don't use it, but more compatible with other source code
+// We had to stop using exit() due to conflicts, use lib99_exit(int) now.
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,7 +16,7 @@ extern "C" {
 void halt() __attribute__ ((noreturn));
 
 // Exit function -- reboots the console.
-void exit(int n) __attribute__ ((noreturn));
+void lib99_exit(int n) __attribute__ ((noreturn));
 #endif
 
 #ifdef COLECO
@@ -24,23 +24,23 @@ void exit(int n) __attribute__ ((noreturn));
 void halt();
 
 // Exit restarts the cartridge
-void exit(int n);
+void lib99_exit(int n);
 #endif
 
 #ifdef GBA
 // Halt still freezes and waits, but only the reset button gets you out
-void halt();
+void halt()  __attribute__ ((noreturn));
 
 // Exit restarts the cartridge
-void exit(int n);
+void lib99_exit(int n)  __attribute__ ((noreturn));
 #endif
 
 #ifdef CLASSIC99
 // Halt still freezes and waits, but only the reset button gets you out
 void halt();
 
-// Exit restarts the cartridge
-void exit(int n);
+// Exit restarts the cartridge - still want the override here so Classic99 gets the message
+void lib99_exit(int n);
 
 // Commands for the Classic99 debug stub
 #define STUB_ADDRESS 0xA100
@@ -52,7 +52,7 @@ void exit(int n);
 
 // return true if quit/reset is pressed
 // if you have F18A in your system, call reset_f18a()
-// then use exit() to reboot
+// then use lib99_exit() to reboot
 unsigned char check_reset();
 
 #ifdef __cplusplus

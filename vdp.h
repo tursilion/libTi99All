@@ -409,8 +409,9 @@ extern __declspec(dllimport) void __stdcall Sleep(unsigned long);
 #define VDP_CLEAR_VBLANK    { WriteByteToClassic99(0x837b, VDPST()); }
 
 // We do this by flagging the stub running on the TI, since the IP interface can't do it directly today
-#define VDP_INT_ENABLE      { WriteByteToClassic99(STUB_ADDRESS, STUB_LIMI_2); while (ReadByteFromClassic99(STUB_ADDRESS) != 0) { } }
-#define VDP_INT_DISABLE		{ WriteByteToClassic99(STUB_ADDRESS, STUB_LIMI_0); while (ReadByteFromClassic99(STUB_ADDRESS) != 0) { } }
+extern int classic99InterruptState;
+#define VDP_INT_ENABLE      { classic99InterruptState = 1; WriteByteToClassic99(STUB_ADDRESS, STUB_LIMI_2); while (ReadByteFromClassic99(STUB_ADDRESS) != 0) { } }
+#define VDP_INT_DISABLE		{ classic99InterruptState = 0; WriteByteToClassic99(STUB_ADDRESS, STUB_LIMI_0); while (ReadByteFromClassic99(STUB_ADDRESS) != 0) { } }
 
 // If using KSCAN, you must put a copy of VDP register 1 (returned by the 'set' functions)
 // at this address, otherwise the first time a key is pressed, the value will be overwritten.

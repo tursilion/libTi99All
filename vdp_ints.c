@@ -355,6 +355,10 @@ void clearOtherIntHook() {
 // not used since we don't call KSCAN
 unsigned char VDP_REG1_KSCAN_MIRROR;
 
+// This can be used to debug interrupt on/off state if you need to, as long
+// as your program ONLY uses the VDP_INT_xxx macros to turn it on and off
+int classic99InterruptState = 0;
+
 // contains default init for 9938 regs 8-15 that make it more compatible
 const unsigned char REG9938Init[8] = {
     0x08,0x00,0x00,0x00,0x00,0x00,0x00,0x00
@@ -436,28 +440,28 @@ void classic99_main() {
   13            LP1
   14  A00E D060     movb @>a100,r1
   14  A010 A100  
-  15  A012 0281     ci r1,>0100
-  15  A014 0100  
-  16  A016 1603     jne n1
-  17  A018 0300     LIMI 2
-  17  A01A 0002  
-  18  A01C 10F6     jmp LP0
-  19            n1
-  20  A01E 0281     ci r1,>0200
-  20  A020 0200  
-  21  A022 1603     jne n2
-  22  A024 0300     LIMI 0
-  22  A026 0000  
-  23  A028 10F0     jmp LP0
-  24            n2
-  25  A02A 0281     ci r1,>0300
-  25  A02C 0300  
-  26  A02E 16ED     jne LP0
-  27  A030 04E0     clr @>83c4
-  27  A032 83C4  
-  28  A034 0420     blwp @>0000
-  28  A036 0000  
-  29           
+  15  A012 13FD     jeq LP1
+  16  A014 0281     ci r1,>0100
+  16  A016 0100  
+  17  A018 1603     jne n1
+  18  A01A 0300     LIMI 2
+  18  A01C 0002  
+  19  A01E 10F5     jmp LP0
+  20            n1
+  21  A020 0281     ci r1,>0200
+  21  A022 0200  
+  22  A024 1603     jne n2
+  23  A026 0300     LIMI 0
+  23  A028 0000  
+  24  A02A 10EF     jmp LP0
+  25            n2
+  26  A02C 0281     ci r1,>0300
+  26  A02E 0300  
+  27  A030 16EC     jne LP0
+  28  A032 04E0     clr @>83c4
+  28  A034 83C4  
+  29  A036 0420     blwp @>0000
+  29  A038 0000      
 */
     
     WriteWordToClassic99(0xA000, 0x04E0);
@@ -469,25 +473,26 @@ void classic99_main() {
     WriteWordToClassic99(0xA00C, 0xA100);
     WriteWordToClassic99(0xA00E, 0xD060);
     WriteWordToClassic99(0xA010, 0xA100);
-    WriteWordToClassic99(0xA012, 0x0281);
-    WriteWordToClassic99(0xA014, 0x0100);
-    WriteWordToClassic99(0xA016, 0x1603);
-    WriteWordToClassic99(0xA018, 0x0300);
-    WriteWordToClassic99(0xA01A, 0x0002);
-    WriteWordToClassic99(0xA01C, 0x10F6);
-    WriteWordToClassic99(0xA01E, 0x0281);
-    WriteWordToClassic99(0xA020, 0x0200);
-    WriteWordToClassic99(0xA022, 0x1603);
-    WriteWordToClassic99(0xA024, 0x0300);
-    WriteWordToClassic99(0xA026, 0x0000);
-    WriteWordToClassic99(0xA028, 0x10F0);
-    WriteWordToClassic99(0xA02A, 0x0281);
-    WriteWordToClassic99(0xA02C, 0x0300);
-    WriteWordToClassic99(0xA02E, 0x16ed);
-    WriteWordToClassic99(0xA030, 0x04e0);
-    WriteWordToClassic99(0xA032, 0x83c4);
-    WriteWordToClassic99(0xA034, 0x0420);
-    WriteWordToClassic99(0xA036, 0x0000);
+    WriteWordToClassic99(0xA012, 0x13FD);
+    WriteWordToClassic99(0xA014, 0x0281);
+    WriteWordToClassic99(0xA016, 0x0100);
+    WriteWordToClassic99(0xA018, 0x1603);
+    WriteWordToClassic99(0xA01A, 0x0300);
+    WriteWordToClassic99(0xA01C, 0x0002);
+    WriteWordToClassic99(0xA01E, 0x10F5);
+    WriteWordToClassic99(0xA020, 0x0281);
+    WriteWordToClassic99(0xA022, 0x0200);
+    WriteWordToClassic99(0xA024, 0x1603);
+    WriteWordToClassic99(0xA026, 0x0300);
+    WriteWordToClassic99(0xA028, 0x0000);
+    WriteWordToClassic99(0xA02A, 0x10EF);
+    WriteWordToClassic99(0xA02C, 0x0281);
+    WriteWordToClassic99(0xA02E, 0x0300);
+    WriteWordToClassic99(0xA030, 0x16ec);
+    WriteWordToClassic99(0xA032, 0x04e0);
+    WriteWordToClassic99(0xA034, 0x83c4);
+    WriteWordToClassic99(0xA036, 0x0420);
+    WriteWordToClassic99(0xA038, 0x0000);
 
     // force the interrupt hook to jump for us
     WriteWordToClassic99(0x83c4, 0xa000);
@@ -681,7 +686,7 @@ void getMapping() {
 
         while (hMapVDP == NULL) {
             // give up
-            exit(1);
+            exit(1);    // no point calling lib99_exit here
         }
     }
 
@@ -694,7 +699,7 @@ void getMapping() {
 
     if (pVDP == NULL) {
         // give up
-        exit(1);
+        exit(1);    // no point calling lib99_exit here
     }
 }
 
