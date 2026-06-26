@@ -27,6 +27,18 @@
 
 #include <raylib.h>
 
+// rlgl low-level functions used for the perspective quad - forward-declared
+// here to avoid the rlgl.h / raylib.h header interaction on some builds.
+#define RL_QUADS 0x0007
+extern int  rlCheckRenderBatchLimit(int vCount);
+extern void rlSetTexture(unsigned int id);
+extern void rlBegin(int mode);
+extern void rlEnd(void);
+extern void rlColor4ub(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+extern void rlNormal3f(float x, float y, float z);
+extern void rlTexCoord2f(float x, float y);
+extern void rlVertex2f(float x, float y);
+
 #include <vdp.h>
 #include <tursigb.h>
 #include <setjmp.h>
@@ -455,11 +467,39 @@ void raylibPresentFrame() {
     compositeFrame();
     UpdateTexture(screenTexture, framebuffer);
 
+    extern unsigned short isStretched;
     BeginDrawing();
     ClearBackground(BLACK);
-    Rectangle src = {0, 0, (float)SCREEN_W, (float)SCREEN_H};
-    Rectangle dst = {0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()};
-    DrawTexturePro(screenTexture, src, dst, (Vector2){0,0}, 0.0f, WHITE);
+    if (isStretched) {
+        float sw = (float)GetScreenWidth();
+        float sh = (float)GetScreenHeight();
+        float pinch = sw * 0.25f;
+        // Subdivide into horizontal strips to eliminate affine-mapping seam.
+        // Each strip is nearly rectangular so UV distortion per strip is tiny.
+        const int STRIPS = 32;
+        rlSetTexture(screenTexture.id);
+        for (int i = 0; i < STRIPS; i++) {
+            float t0 = (float)i       / STRIPS;
+            float t1 = (float)(i + 1) / STRIPS;
+            float y0 = sh * t0,  y1 = sh * t1;
+            float l0 = pinch * (1.0f - t0), l1 = pinch * (1.0f - t1);
+            float r0 = sw - l0,             r1 = sw - l1;
+            rlCheckRenderBatchLimit(4);
+            rlBegin(RL_QUADS);
+                rlColor4ub(255, 255, 255, 255);
+                rlNormal3f(0.0f, 0.0f, 1.0f);
+                rlTexCoord2f(0.0f, t0); rlVertex2f(l0, y0); // TL
+                rlTexCoord2f(0.0f, t1); rlVertex2f(l1, y1); // BL
+                rlTexCoord2f(1.0f, t1); rlVertex2f(r1, y1); // BR
+                rlTexCoord2f(1.0f, t0); rlVertex2f(r0, y0); // TR
+            rlEnd();
+        }
+        rlSetTexture(0);
+    } else {
+        Rectangle src = {0, 0, (float)SCREEN_W, (float)SCREEN_H};
+        Rectangle dst = {0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()};
+        DrawTexturePro(screenTexture, src, dst, (Vector2){0,0}, 0.0f, WHITE);
+    }
     EndDrawing();
 
     VDP_INT_COUNTER++;
