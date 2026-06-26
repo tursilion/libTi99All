@@ -53,7 +53,7 @@ unsigned char check_reset() {
 #endif
 #endif
 
-#if defined(GBA) || defined(RAYLIB)
+#if defined(GBA)
 
 // GBA Version
 // TODO: do I want a dedicated reset sequence? Probably?
@@ -64,3 +64,13 @@ unsigned char check_reset() {
 
 #endif
 
+#if defined(RAYLIB)
+
+// GBA Version
+// TODO: do I want a dedicated reset sequence? Probably?
+
+unsigned char check_reset() {
+    return WindowShouldClose() ? 1 : 0;
+}
+
+#endif

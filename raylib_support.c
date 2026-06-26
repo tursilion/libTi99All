@@ -38,6 +38,9 @@ extern void rlColor4ub(unsigned char r, unsigned char g, unsigned char b, unsign
 extern void rlNormal3f(float x, float y, float z);
 extern void rlTexCoord2f(float x, float y);
 extern void rlVertex2f(float x, float y);
+extern void rlVertex3f(float x, float y, float z);
+extern void rlDisableBackfaceCulling(void);
+extern void rlEnableBackfaceCulling(void);
 
 #include <vdp.h>
 #include <tursigb.h>
@@ -50,6 +53,7 @@ extern void rlVertex2f(float x, float y);
 
 #define SCREEN_W 240
 #define SCREEN_H 160
+#define RENDER_SCALE 4
 
 extern jmp_buf raylibRebootPoint;
 void raylibSoftReset(int n) {
@@ -192,6 +196,7 @@ static inline Color gbaColor(u16 c) {
 }
 
 static Color framebuffer[SCREEN_H][SCREEN_W];
+static Color renderBuffer[SCREEN_H * RENDER_SCALE][SCREEN_W * RENDER_SCALE];
 
 static void compositeBG2Bitmap() {
     // MODE4 supports page flipping (REG_DISPCNT's PAGE2 bit) between the two
@@ -436,12 +441,15 @@ static Texture2D screenTexture;
 static bool inited = false;
 
 static void initPresentation() {
-    InitWindow(SCREEN_W*3, SCREEN_H*3, "Super Space Acer");
+    InitWindow(SCREEN_W * RENDER_SCALE, SCREEN_H * RENDER_SCALE, "Super Space Acer");
     SetTargetFPS(60);
-    Image img = GenImageColor(SCREEN_W, SCREEN_H, BLACK);
+    Image img = GenImageColor(SCREEN_W * RENDER_SCALE, SCREEN_H * RENDER_SCALE, BLACK);
     ImageFormat(&img, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
     screenTexture = LoadTextureFromImage(img);
     UnloadImage(img);
+    // Clamp so negative V coords (used by the perspective strip formula) show
+    // the first texture row rather than wrapping to the bottom.
+    SetTextureWrap(screenTexture, TEXTURE_WRAP_CLAMP);
 
     inited = true;
 }
@@ -465,22 +473,42 @@ void raylibPresentFrame() {
     REG_KEYINPUT = keys;
 
     compositeFrame();
-    UpdateTexture(screenTexture, framebuffer);
+    for (int y = 0; y < SCREEN_H; y++)
+        for (int x = 0; x < SCREEN_W; x++) {
+            Color c = framebuffer[y][x];
+            for (int dy = 0; dy < RENDER_SCALE; dy++)
+                for (int dx = 0; dx < RENDER_SCALE; dx++)
+                    renderBuffer[y*RENDER_SCALE+dy][x*RENDER_SCALE+dx] = c;
+        }
+    UpdateTexture(screenTexture, renderBuffer);
 
     extern unsigned short isStretched;
+    SetTextureFilter(screenTexture, isStretched ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
     BeginDrawing();
     ClearBackground(BLACK);
     if (isStretched) {
         float sw = (float)GetScreenWidth();
         float sh = (float)GetScreenHeight();
-        float pinch = sw * 0.25f;
-        // Subdivide into horizontal strips to eliminate affine-mapping seam.
-        // Each strip is nearly rectangular so UV distortion per strip is tiny.
-        const int STRIPS = 32;
+        // Strips: 256 thin trapezoids taper horizontally from pinch inset at
+        // the top to full width at the bottom. Affine UV error per strip is
+        // sub-pixel at this count.
+        const int STRIPS = 256;
+        // pinch: pixels inset from each side at the top of the screen.
+        //   sw*0.25 → top edge = 50% width (dramatic); sw*0.15 → 70%; sw*0.10 → 80%.
+        // V is linear (skew=0) so V spans exactly 0..1 — bottom aspect is always
+        // correct. Sprites at the top appear proportionally taller by 1/(1-2p/sw)
+        // where p=pinch; reducing pinch reduces that top stretch.
+        float pinch = sw * 0.15f;
+        // V is linear: no squish at the bottom, some stretch at the top.
         rlSetTexture(screenTexture.id);
+        float texv = 0.0f;
         for (int i = 0; i < STRIPS; i++) {
             float t0 = (float)i       / STRIPS;
             float t1 = (float)(i + 1) / STRIPS;
+            float step = 1.0f / STRIPS;
+            float v0 = texv;
+            float v1 = texv + step;
+            texv = v1;
             float y0 = sh * t0,  y1 = sh * t1;
             float l0 = pinch * (1.0f - t0), l1 = pinch * (1.0f - t1);
             float r0 = sw - l0,             r1 = sw - l1;
@@ -488,15 +516,15 @@ void raylibPresentFrame() {
             rlBegin(RL_QUADS);
                 rlColor4ub(255, 255, 255, 255);
                 rlNormal3f(0.0f, 0.0f, 1.0f);
-                rlTexCoord2f(0.0f, t0); rlVertex2f(l0, y0); // TL
-                rlTexCoord2f(0.0f, t1); rlVertex2f(l1, y1); // BL
-                rlTexCoord2f(1.0f, t1); rlVertex2f(r1, y1); // BR
-                rlTexCoord2f(1.0f, t0); rlVertex2f(r0, y0); // TR
+                rlTexCoord2f(0.0f, v0); rlVertex2f(l0, y0); // TL
+                rlTexCoord2f(0.0f, v1); rlVertex2f(l1, y1); // BL
+                rlTexCoord2f(1.0f, v1); rlVertex2f(r1, y1); // BR
+                rlTexCoord2f(1.0f, v0); rlVertex2f(r0, y0); // TR
             rlEnd();
         }
         rlSetTexture(0);
     } else {
-        Rectangle src = {0, 0, (float)SCREEN_W, (float)SCREEN_H};
+        Rectangle src = {0, 0, (float)screenTexture.width, (float)screenTexture.height};
         Rectangle dst = {0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()};
         DrawTexturePro(screenTexture, src, dst, (Vector2){0,0}, 0.0f, WHITE);
     }
