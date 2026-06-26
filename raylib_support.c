@@ -430,6 +430,7 @@ static void initPresentation() {
     ImageFormat(&img, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
     screenTexture = LoadTextureFromImage(img);
     UnloadImage(img);
+
     inited = true;
 }
 
@@ -438,13 +439,6 @@ extern void gbastopaudio();
 
 void raylibPresentFrame() {
     if (!inited) initPresentation();
-
-    if (WindowShouldClose()) {
-        gbastopaudio();     // stop music stream before tearing down audio
-        CloseAudioDevice(); // joins the audio thread cleanly
-        CloseWindow();
-        _Exit(0);           // skip atexit/stdio flush - no cleanup can hang us
-    }
 
     // live keyboard state for any direct REG_KEYINPUT reads (active low)
     unsigned short keys = 0xffff;
@@ -471,4 +465,12 @@ void raylibPresentFrame() {
     VDP_INT_COUNTER++;
     vdp_status = VDP_ST_INT;
     raylibCallUserInt();
+
+    if (WindowShouldClose()) {
+        gbastopaudio();     // stop music stream before tearing down audio
+        CloseAudioDevice(); // joins the audio thread cleanly
+        CloseWindow();
+        _Exit(0);           // skip atexit/stdio flush - no cleanup can hang us
+    }
+
 }
