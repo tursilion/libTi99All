@@ -166,3 +166,47 @@ void joystfast(unsigned char unit) {
 }
 
 #endif
+
+#ifdef RAYLIB
+#include <raylib.h>
+
+// Address to read back the detected key. 0xFF if no key was pressed.
+volatile unsigned char KSCAN_KEY;
+// Address to read back the joystick X axis (scan modes 1 and 2 only)
+volatile unsigned char KSCAN_JOYY;
+// Address to read back the joystick Y axis (scan modes 1 and 2 only)
+volatile unsigned char KSCAN_JOYX;
+// Address to check the status byte. KSCAN_MASK is set if a key was pressed
+volatile unsigned char KSCAN_STATUS;
+
+// Documented controls: left joystick (arrow keys), or ESDX, period to fire.
+// A gamepad's left stick/d-pad is also supported if one is connected.
+//
+// Poll here too, same reason as kscanfast() - some unmodified GBA code calls
+// this in a tight loop with no frame-pump call in between, and raylib only
+// refreshes its input state when PollInputEvents() runs.
+void joystfast(unsigned char unit) {
+	PollInputEvents();
+
+	if (unit != KSCAN_MODE_LEFT) {
+		return;
+	}
+
+	KSCAN_JOYX = 0;
+	KSCAN_JOYY = 0;
+
+	if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_S)) KSCAN_JOYX = JOY_LEFT;
+	if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_X)) KSCAN_JOYX = JOY_RIGHT;
+	if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_D)) KSCAN_JOYY = JOY_DOWN;
+	if (IsKeyDown(KEY_UP) || IsKeyDown(KEY_E)) KSCAN_JOYY = JOY_UP;
+
+	if (IsGamepadAvailable(0)) {
+		float ax = GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_X);
+		float ay = GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_Y);
+		if ((ax < -0.3f) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT)) KSCAN_JOYX = JOY_LEFT;
+		if ((ax > 0.3f) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) KSCAN_JOYX = JOY_RIGHT;
+		if ((ay > 0.3f) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_DOWN)) KSCAN_JOYY = JOY_DOWN;
+		if ((ay < -0.3f) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_UP)) KSCAN_JOYY = JOY_UP;
+	}
+}
+#endif

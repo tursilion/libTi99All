@@ -18,7 +18,7 @@ void speech_start(struct LpcPlaybackCtx* ctx) {
 void speech_start(struct LpcPlaybackCtx* ctx) { (void)ctx; }
 #endif
 
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
 void speech_start(struct LpcPlaybackCtx* ctx) { (void)ctx; }
 #endif
 

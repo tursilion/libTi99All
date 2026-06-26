@@ -233,3 +233,50 @@ void kscanfast(unsigned char mode) {
     kscan(mode);
 }
 #endif
+
+#ifdef RAYLIB
+#include <raylib.h>
+
+// Documented controls: period to fire, comma to pause (handled by the game itself).
+// For RAYLIB there's only ever 1 controller (keyboard + optional gamepad 0), and
+// only one fire button - unlike GBA's A/B. mode==0 (e.g. getDifficulty()'s menu)
+// expects A/B split out as distinct key codes ('A'/'B') instead of plain
+// JOY_FIRE, specifically to detect the OPTIONS row's select action - matches
+// GBA's kscanfast() ("mode 0 will split A and B, mode 1 returns both as FIRE").
+// We only have the one button, so just always report it as 'A' in that mode.
+// mode KSCAN_MODE_RIGHT has nothing to read (matches GBA's single-controller behavior).
+//
+// Some unmodified GBA code (e.g. soundtest.c/highscores.c "wait for key release"
+// loops) calls this in a tight loop with no frame-pump call in between - fine on
+// real hardware, where it's just a live register read, but raylib only refreshes
+// its keyboard state when PollInputEvents() runs (normally inside the
+// present/frame call). Without this, such a loop would spin forever seeing
+// whatever key was down at the last real poll. Poll here too so kscanfast()
+// behaves like a live hardware read regardless of who's calling it.
+void kscanfast(unsigned char mode) {
+    PollInputEvents();
+
+    if (mode == KSCAN_MODE_RIGHT) {
+        KSCAN_KEY = 0xff;
+        return;
+    }
+
+    bool fire = IsKeyDown(KEY_PERIOD) || IsKeyDown(KEY_SPACE) ||
+                (IsGamepadAvailable(0) && (IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN) ||
+                                           IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT)));
+
+    if (fire) {
+        KSCAN_KEY = (mode == 0) ? 'A' : JOY_FIRE;
+    } else if (IsKeyDown(KEY_BACKSPACE)) {
+        KSCAN_KEY = 8;  // backspace
+    } else if (IsKeyDown(KEY_ENTER) || (IsGamepadAvailable(0) && IsGamepadButtonDown(0, GAMEPAD_BUTTON_MIDDLE_RIGHT))) {
+        KSCAN_KEY = 13; // enter/start
+    } else if (IsKeyDown(KEY_N)) {
+        KSCAN_KEY = 'N';
+    } else if (IsKeyDown(KEY_Y)) {
+        KSCAN_KEY = 'Y';
+    } else {
+        KSCAN_KEY = 0xff;
+    }
+}
+#endif

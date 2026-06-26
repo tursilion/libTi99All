@@ -86,7 +86,7 @@ extern "C" {
 volatile __sfr __at 0x00 SERIAL_IO;	// do not use directly
 volatile __sfr __at 0x01 PIO_PORT;
 #endif
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
 // no PIO port at the moment - maybe we could use it for the emulator debug console?
 #define PIO_PORT *((unsigned char*)(0))
 #define SERIAL_IO *((unsigned char*)(0))

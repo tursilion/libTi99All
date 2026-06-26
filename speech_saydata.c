@@ -28,7 +28,7 @@ void say_data(const char* addr, int len) {
 void say_data(const char* addr, int len) { (void)addr; (void)len; }
 #endif
 
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
 void say_data(const char* addr, int len) { (void)addr; (void)len; }
 #endif
 

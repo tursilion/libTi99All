@@ -71,7 +71,7 @@ struct PAB {
 #ifdef COLECO
 struct PAB {
 #endif
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
 struct PAB {
 #endif
 #ifdef CLASSIC99

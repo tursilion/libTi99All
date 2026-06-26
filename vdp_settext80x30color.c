@@ -1,6 +1,6 @@
 #include "vdp.h"
 #include "f18a.h"
-#include "string.h"
+#include "ti_string.h"
 
 // TODO: text modes should not rely on conio support if possible...
 extern unsigned int conio_scrnCol; // conio_bgcolor.c
@@ -52,7 +52,7 @@ static void gpu_scroll(void)
 }
 #endif
 
-#ifndef GBA
+#if !defined(GBA) && !defined(RAYLIB)
 static const unsigned char gpu_scroll80x30[] = {
     // this is the assembled code of the above routine
     0x02,0x00,0x3F,0x16,0x02,0x01,0x40,0x00,
@@ -83,7 +83,7 @@ static void fast_scrn_scroll_80color() {
     return;
 }
 #endif
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
 extern unsigned char vdp_ram[16384] DATA_IN_EWRAM;
 static void fast_scrn_scroll_80color() {
     // GBA easily scrolls the whole screen
@@ -148,7 +148,7 @@ unsigned char set_text80x30_color_raw() {
     vdpmemset(gSprite, 0xd0, 128);
     vdpmemset(gColor, conio_scrnCol, nTextEnd+1);	// clear the color table
 
-#ifndef GBA
+#if !defined(GBA) && !defined(RAYLIB)
     // load GPU scroll function
     vdpmemcpy(0x3f00, (unsigned char*)gpu_scroll80x30, sizeof(gpu_scroll80x30));
 	startgpu_f18a(0x3f00);

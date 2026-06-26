@@ -58,7 +58,7 @@ int puff16k(unsigned char *dest,          /* pointer to destination pointer */
 #define puff16k puff
 #endif
 
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
 // no need to do anything special on GBA for 16k
 #define puff16k puff
 #endif

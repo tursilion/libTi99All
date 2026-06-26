@@ -16,7 +16,7 @@ int detect_speech() {
 int detect_speech() { return 0; }
 #endif
 
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
 int detect_speech() { return 0; }
 #endif
 

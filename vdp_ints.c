@@ -196,7 +196,7 @@ void clearUserIntHook() {
 #ifdef GBA
 #include <tursigb.h>
 #include <GBASNPlay.h>
-#include "string.h"
+#include "ti_string.h"
 
 // GBA specific init code so that the vblank counts like the TI interrupt
 // it also provides the user interrupt hook
@@ -338,6 +338,64 @@ void clearOtherIntHook() {
 	otherint = 0;
 }
 
+#endif
+
+#ifdef RAYLIB
+// RAYLIB specific init code. There's no real interrupt - vdpwaitvint() (see
+// vdp_waitvint.c) IS the frame pump, calling raylibPresentFrame() once per
+// game frame to render vdp_ram, present it, poll input, and feed audio.
+
+// storage for VDP status byte
+volatile unsigned char VDP_STATUS_MIRROR = 0;
+
+// interrupt counter - bumped once per presented frame by raylibPresentFrame()
+volatile unsigned char VDP_INT_COUNTER = 0;
+
+// address of user interrupt function (called once per presented frame, like vblank)
+static void (*userint)() = 0;
+
+// used by vdpwaitvint - make certain it's reset
+extern unsigned char gSaveIntCnt;
+
+void raylibCallUserInt() {
+    if (0 != userint) userint();
+}
+
+extern void gbasninit();
+
+void vdpinit() {
+    // set up the music AudioStream (mirrors gbainit()'s GBA hardware bring-up -
+    // the game's main() calls gbastartaudio() itself, via stealinterrupt())
+    gbasninit();
+
+    // shut off the sound generator
+    SOUND(0x9f);
+    SOUND(0xbf);
+    SOUND(0xdf);
+    SOUND(0xff);
+
+    // zero variables
+    VDP_STATUS_MIRROR = 0;
+    userint = (void (*)())0;
+    VDP_INT_COUNTER = 1;
+    gSaveIntCnt = 0;
+
+    // reset the system and accomodate known alternate VDPs
+    // First, reset then lock the F18A if any - this also turns off the screen
+    reset_f18a();
+    lock_f18a();
+
+    VDP_STATUS_MIRROR = VDPST();	// init and clear any pending interrupt
+}
+
+// NOT atomic! Do NOT call with interrupts enabled! (no real interrupts here, but kept for API parity)
+void setUserIntHook(void (*hookfn)()) {
+    userint = hookfn;
+}
+
+void clearUserIntHook() {
+    userint = 0;
+}
 #endif
 
 #ifdef CLASSIC99

@@ -12,7 +12,7 @@ void say_vocab(int phrase_addr) {
 void say_vocab(int phrase_addr) { (void)phrase_addr; }
 #endif
 
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
 void say_vocab(int phrase_addr) { (void)phrase_addr; }
 #endif
 

@@ -140,7 +140,7 @@ unsigned char dsrlnkraw(unsigned int vdp) {
 
 #endif
 
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
 // no equivalent
 
 unsigned char dsrlnkraw(unsigned int vdp) {

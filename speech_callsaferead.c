@@ -11,7 +11,7 @@ unsigned char __attribute__((noinline)) call_safe_read() {
 #ifdef COLECO
 #endif
 
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
 #endif
 
 #ifdef CLASSIC99

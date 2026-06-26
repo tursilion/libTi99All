@@ -1,0 +1,39 @@
+# RAYLIB (Linux/PC) target - builds libti99_pc.a with the host's native gcc.
+# No cross compiler, no bank switching, no linker scripts - this is a normal
+# flat-memory executable, just like CLASSIC99, but self-contained.
+
+RAYLIB_PREFIX=$(shell brew --prefix raylib 2>/dev/null || echo /usr/local)
+
+CC=gcc
+AR=ar
+
+C_FLAGS=\
+  -g -Wall -O2 -fsigned-char -std=gnu99 \
+  -DRAYLIB -DBUILD_GBA -DUSE_SN_PSG -I../ -I$(RAYLIB_PREFIX)/include
+
+# extension on output files
+EXT=o
+
+# output file
+NAME=libti99_pc.a
+
+include ../Makefile.sources
+
+# real libc provides correct-signature atoi/tolower already - avoid the symbol clash
+OBJECT_LIST:=$(filter-out str_atoi.$(EXT) str_tolower.$(EXT),$(OBJECT_LIST))
+OBJECT_LIST+=raylib_support.$(EXT) raylib_audio.$(EXT) CPlayerCommon.$(EXT)
+
+.PHONY: all clean
+
+all: library
+
+library: $(OBJECT_LIST)
+	$(RM) testlib.$(EXT)
+	$(AR) -rcs $(NAME) $(OBJECT_LIST)
+
+clean:
+	-rm -f *.o $(NAME)
+
+# Recipe to compile all C files
+%.o: ../%.c
+	$(CC) -c $< $(C_FLAGS) $(INCLUDES) -o $@

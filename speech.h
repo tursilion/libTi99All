@@ -42,7 +42,7 @@ void load_speech_addr(int phrase_addr);
 #define SPCHWT	  *((volatile unsigned char*)0)
 #define SAFE_PAD_READ
 #endif
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
 // this is of limited value. Maybe we can port an emulation in the future
 // but for now, all stubbed out
 #define SPCHRD    *((volatile unsigned char*)0)
@@ -78,7 +78,7 @@ struct LpcPlaybackCtx {
     int remaining;
 };
 #endif
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
 struct LpcPlaybackCtx {
     char* addr;
     int remaining;

@@ -15,7 +15,7 @@ void speech_wait() {
 void speech_wait() { }
 #endif
 
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
 void speech_wait() { }
 #endif
 

@@ -35,7 +35,7 @@ void gplvdp(int vect, int adr, int cnt) {
     (void)cnt;
 #endif
 // there is no GROM on GBA
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
     (void)vect;
     (void)adr;
     (void)cnt;

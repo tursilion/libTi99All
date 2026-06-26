@@ -40,7 +40,7 @@ void rs232_setcontrol(int card, int uart, int control) {
 #ifdef COLECO
     (void)control;
 #endif
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
     (void)control;
 #endif
 #ifdef CLASSIC99

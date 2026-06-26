@@ -13,7 +13,7 @@ void rs232raw_deactivateCard(int card) {
 #ifdef COLECO
     (void)card;
 #endif
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
     (void)card;
 #endif
 #ifdef CLASSIC99

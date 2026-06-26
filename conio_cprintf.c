@@ -1,5 +1,5 @@
 #include "conio.h"
-#include "string.h"
+#include "ti_string.h"
 
 extern unsigned char vdp_bigbuf[256];
 

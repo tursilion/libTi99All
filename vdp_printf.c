@@ -1,5 +1,5 @@
 #include "vdp.h"
-#include "string.h"
+#include "ti_string.h"
 #include <stdarg.h>
 
 /* a quick hacky printf workaround */

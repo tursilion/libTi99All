@@ -1,5 +1,5 @@
 #include "conio.h"
-#include "string.h"
+#include "ti_string.h"
 
 // a smaller printf with no formatting, and only ints and strings can be printed
 

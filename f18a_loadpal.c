@@ -5,7 +5,7 @@
 
 // load an F18A palette from ptr (16-bit words, little endian)
 // data format is 12-bit 0RGB color.
-#ifndef GBA
+#if !defined(GBA) && !defined(RAYLIB)
 void loadpal_f18a(const unsigned int *ptr, unsigned char first, unsigned char cnt) {
 	VDP_SET_REGISTER(F18A_REG_DPM, F18A_DPM_ENABLE|F18A_DPM_INC|(first&0x3f));
 	// Reg 47, value: 1100 0000, DPM = 1, AUTO INC = 1, palreg 0.       
@@ -26,7 +26,7 @@ void loadpal_f18a(const unsigned int *ptr, unsigned char first, unsigned char cn
 }
 #endif
 
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
 // fake it more directly. note that on the GBA ints are 32-bit, not 16-bit like
 // the library expects, so things may be a bit weird.
 // F18A paletes are 12-bit 0000 RRRR GGGG BBBB, GBA palettes are 15-bit 0BBB BBGG GGGR RRRR

@@ -16,7 +16,7 @@ void delay_asm_42() {
 #ifdef COLECO
 #endif
 
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
 #endif
 
 #ifdef CLASSIC99

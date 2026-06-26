@@ -22,7 +22,7 @@ int rs232raw_geterrs(int rawCRU) {
     (void)rawCRU;
 	return 0;
 #endif
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
     (void)rawCRU;
 	return 0;
 #endif

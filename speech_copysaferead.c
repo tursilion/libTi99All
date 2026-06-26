@@ -27,7 +27,7 @@ void copy_safe_read() {
 #ifdef COLECO
 #endif
 
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
 #endif
 
 #ifdef CLASSIC99

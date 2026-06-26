@@ -105,6 +105,18 @@ unsigned char vdpwaitvint() {
 }
 #endif
 
+#ifdef RAYLIB
+// there's no real interrupt to wait for - this call IS the frame pump. We are
+// the timing source, so we're never "late"; always return 0.
+extern void raylibPresentFrame();
+
+unsigned char vdpwaitvint() {
+    raylibPresentFrame();		// renders vdp_ram, presents, polls input/audio, bumps VDP_INT_COUNTER, throttles to 60fps
+    gSaveIntCnt = VDP_INT_COUNTER;
+    return 0;
+}
+#endif
+
 #ifdef CLASSIC99
 #include <Windows.h>
 

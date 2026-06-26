@@ -37,6 +37,14 @@ volatile __sfr __at 0xff SOUNDCHIP;
 #define SOUNDCHIP
 #define SOUND(x) snsim(x)
 #endif
+#ifdef RAYLIB
+// routed to a software SN76489 emulator feeding a raylib AudioStream (see raylib_support.c)
+// some game code calls snsim() directly rather than through SOUND() - GBASNPlay.h
+// (a project-local stub for now, see ssa/GBASNPlay.h) declares it
+#include <GBASNPlay.h>
+#define SOUNDCHIP
+#define SOUND(x) snsim(x)
+#endif
 #ifdef CLASSIC99
 #include "vdp.h"
 

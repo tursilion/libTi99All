@@ -52,9 +52,16 @@ typedef     unsigned short int      u16;
 typedef     unsigned int            u32;
 typedef     unsigned long long int  u64;
 typedef     signed int              s32;
+
+// on the RAYLIB target, raylib.h already pulled in <stdbool.h> (or defined its own
+// bool/true/false) - don't redefine on top of it
+#ifndef __cplusplus
+#ifndef __bool_true_false_are_defined
 typedef     int                     bool;
 #define true (1)
 #define false (0)
+#endif
+#endif
 
 // Video functions
 #define VCOUNT (*(volatile u16*)0x04000006)

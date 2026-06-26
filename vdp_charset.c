@@ -20,7 +20,7 @@ void charset() {
 }
 #endif
 
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
 void charset() {
     // TODO: the GBA doesn't apparently have a ROM font, we need to provide it
     // for now I'll be very evil and copy the LC font in, but that leaves out all the numbers and punctuation

@@ -20,15 +20,22 @@ extern "C" {
 #ifndef TI99
 #ifndef GBA
 #ifndef CLASSIC99
+#ifndef RAYLIB
 // GBA is an unofficial target with a big gotcha - ints are suddenly 32-bit. So all pointer math MAY be wrong!
-// Be careful about types.
-#error Make sure to define either COLECO (for Coleco or SMS) or TI99 or CLASSIC99
+// Be careful about types. RAYLIB is also unofficial and shares the same gotcha (native int size).
+#error Make sure to define either COLECO (for Coleco or SMS) or TI99 or CLASSIC99 or GBA or RAYLIB
+#endif
 #endif
 #endif
 #endif
 #endif
 
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
+// RAYLIB reuses the GBA hardware-register surface verbatim (REG_DISPCNT, BG_RAM_BASE,
+// OAM_BASE, SPR_ macros, fastcopy/fastset, etc). raylib_support.c backs the handful of
+// real GBA physical addresses these macros expand to with real (mmap'd) memory at the
+// same addresses, so all of the GBA-native game code that pokes them directly works
+// completely unmodified - see raylib_support.c for the why.
 #include "tursigb.h"
 #endif
 
@@ -78,6 +85,36 @@ extern void CODE_IN_IWRAM gbaVDPWD(unsigned char x);
 #define VDPWD(x) gbaVDPWD(x)
 
 extern volatile unsigned char vdp_status;        // for vertical blank only, set by interrupt
+#endif
+
+#ifdef RAYLIB
+// we have a real libc here, so rename ours to avoid clashing with it - same trick
+// CLASSIC99 uses. Game code that calls printf()/puts()/putchar() expects it to write
+// to the VDP screen, not to the host terminal, so we keep our own.
+#define printf printf_ti
+#define puts puts_ti
+#define putchar putchar_ti
+
+// game code calls exit() expecting GBA hardware's "jump back to ROM start"
+// soft-reset behavior (EWRAM/IWRAM survive), not a real process exit - see
+// reboot()/doShowHighScores() in the game. Redirect to a longjmp-based
+// equivalent instead. (raylib_support.c #undef's this so its own real exit()
+// calls - fatal init errors, window-close handling - are unaffected.)
+extern void raylibSoftReset(int n) __attribute__((noreturn));
+#define exit raylibSoftReset
+
+// these have to call out to functions, just like GBA
+extern unsigned char raylibVDPRD();
+extern unsigned char raylibVDPST();
+extern void raylibVDPWA(unsigned char x);
+extern void raylibVDPWD(unsigned char x);
+
+#define VDPRD() raylibVDPRD()
+#define VDPST() raylibVDPST()
+#define VDPWA(x) raylibVDPWA(x)
+#define VDPWD(x) raylibVDPWD(x)
+
+extern volatile unsigned char vdp_status;        // set true once per rendered frame, cleared by VDPST()
 #endif
 
 #ifdef CLASSIC99
@@ -145,6 +182,10 @@ __endasm;
 }
 #endif
 #ifdef GBA
+// no delays needed
+inline void VDP_SAFE_DELAY() {	}
+#endif
+#ifdef RAYLIB
 // no delays needed
 inline void VDP_SAFE_DELAY() {	}
 #endif
@@ -260,6 +301,22 @@ extern volatile unsigned char VDP_STATUS_MIRROR;
 // This flag byte allows you to turn parts of the console interrupt handler on and off
 // Has no meaning on GBA.
 #define VDP_INT_CTRL			*((volatile unsigned char*)0)
+#endif
+
+#ifdef RAYLIB
+// Interrupt counter - incremented once per rendered frame
+// WARNING: NEVER WRITE TO THIS VALUE. READ ONLY.
+extern volatile unsigned char VDP_INT_COUNTER;
+
+// Copy of the VDP status byte. No reset if you read this.
+extern volatile unsigned char VDP_STATUS_MIRROR;
+
+// This flag byte allows you to turn parts of the console interrupt handler on and off
+// Has no meaning on the RAYLIB target. (NULL is never a real mapped address on a
+// normal OS process - unlike GBA/Coleco, an actual write there always segfaults,
+// so this needs real backing storage instead of address 0.)
+extern volatile unsigned char raylibIntCtrlDummy;
+#define VDP_INT_CTRL			raylibIntCtrlDummy
 #endif
 
 #ifdef CLASSIC99
@@ -391,6 +448,34 @@ extern void setGBAAutoRender(unsigned short mode);
 
 // force a manual redraw, not needed if you set autorender
 extern void gbaRender();
+#endif
+
+#ifdef RAYLIB
+// There's no real interrupt here - vdpwaitvint() IS the frame pump (it renders
+// vdp_ram, presents via raylib, polls input/audio, and throttles to 60fps), so
+// these are simplified to do nothing extra. See vdp_waitvint.c / vdp_ints.c.
+#define VDPSTCRU raylibVDPSTCRU
+extern unsigned char raylibVDPSTCRU();
+#define VDP_WAIT_VBLANK_CRU	  while ((VDPSTCRU() & VDP_ST_INT)==0) { }
+
+// clear any pending interrupt
+#define VDP_CLEAR_VBLANK        { VDP_STATUS_MIRROR = VDPST(); }
+
+#define VDP_INT_ENABLE			{ }
+#define VDP_INT_DISABLE			{ }
+
+// not needed on the RAYLIB target (NULL is never a real mapped address on a
+// normal OS process, unlike on GBA/Coleco, so this needs real backing storage)
+extern volatile unsigned char raylibRegKscanMirrorDummy;
+#define VDP_REG1_KSCAN_MIRROR	raylibRegKscanMirrorDummy
+#define FIX_KSCAN(x)
+
+// autorender doesn't apply here - raylibPresentFrame() always composites fresh
+// from the fake-GBA-hardware surface, so this is just a no-op for API parity
+extern void setGBAAutoRender(unsigned short mode);
+#define GBA_AUTORENDER_NONE 0
+#define GBA_AUTORENDER_FULL 1
+#define GBA_AUTORENDER_SCALE 2
 #endif
 
 #ifdef CLASSIC99

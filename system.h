@@ -27,7 +27,7 @@ void halt();
 void lib99_exit(int n);
 #endif
 
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
 // Halt still freezes and waits, but only the reset button gets you out
 void halt()  __attribute__ ((noreturn));
 

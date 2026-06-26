@@ -27,6 +27,13 @@ void lib99_exit(int n) {
 }
 #endif
 
+#ifdef RAYLIB
+#include <stdlib.h>
+void lib99_exit(int n) {
+    exit(n);
+}
+#endif
+
 #ifdef CLASSIC99
 void lib99_exit(int n) {
     // reset the emulator. it should be running a stub at >a000

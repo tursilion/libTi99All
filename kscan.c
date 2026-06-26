@@ -142,6 +142,27 @@ unsigned char kscan(unsigned char mode) {
 
 #endif
 
+#ifdef RAYLIB
+// this is pretty much the same as kscanfast but it returns a value and sets status
+// it also reads the joystick
+
+unsigned char kscan(unsigned char mode) {
+	kscanfast(mode);
+
+	if (mode == KSCAN_MODE_LEFT) {
+        joystfast(mode);
+	}
+
+	if (KSCAN_KEY != 0xff) {
+        KSCAN_STATUS |= KSCAN_MASK;
+	} else {
+        KSCAN_STATUS = 0;
+	}
+
+	return KSCAN_KEY;
+}
+#endif
+
 #ifdef CLASSIC99
 #include <Windows.h>
 

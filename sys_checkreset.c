@@ -53,7 +53,7 @@ unsigned char check_reset() {
 #endif
 #endif
 
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
 
 // GBA Version
 // TODO: do I want a dedicated reset sequence? Probably?

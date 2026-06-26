@@ -12,7 +12,7 @@ void speech_reset() {
 void speech_reset() { }
 #endif
 
-#ifdef GBA
+#if defined(GBA) || defined(RAYLIB)
 void speech_reset() { }
 #endif
 

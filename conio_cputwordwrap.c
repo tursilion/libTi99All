@@ -1,5 +1,5 @@
 #include "conio.h"
-#include "string.h"
+#include "ti_string.h"
 
 // cnt is used to limit the string to before the NUL termination
 // if zero, then the whole string is used - no control codes, direct to output function

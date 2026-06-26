@@ -8,7 +8,10 @@
 extern "C" {
 #endif
 
-//#ifndef CLASSIC99
+// On RAYLIB we have a real libc with these (correct, standard-signature) already -
+// rely on <string.h>/<stdlib.h>/<ctype.h> instead of redeclaring with embedded-style
+// signatures (which would conflict with glibc's prototypes for the same names).
+#ifndef RAYLIB
 // strlen - returns the length of a zero terminated string
 unsigned int strlen(const char *s);
 
@@ -38,7 +41,14 @@ void *memmove(void *dest, const void *src, int cnt);
 
 // set a block of memory at dest to src, of cnt bytes. Returns dest.
 void *memset(void *dest, int src, int cnt);
-//#endif
+
+// if a character is uppercase, return lowercase, else return character as is
+char tolower(char c);
+#else
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+#endif
 
 // returns a pointer to a static string, a number converted as unsigned
 // Not thread safe, don't use from interrupt handlers.
@@ -52,6 +62,13 @@ char *int2str(int x);
 // Not thread safe, don't use from interrupt handlers.
 char* uint2hex(unsigned int x);
 
+#ifdef RAYLIB
+// these read from the emulated VDP keyboard, not the host terminal/stdin -
+// rename like printf/puts/putchar so we don't clash with libc's real getchar/gets
+#define getchar getchar_ti
+#define gets gets_ti
+#endif
+
 // waits for a character from the keyboard - pulls in KSCAN. Uses keyboard mode 5.
 int getchar();
 
@@ -59,9 +76,6 @@ int getchar();
 // Displays a solid cursor. The only edit key supported is Fctn-S. Stops
 // at maxlen, returned string is zero-terminated. Needs KSCAN, VDP, etc.
 void gets(char *buf, int maxlen);
-
-// if a character is uppercase, return lowercase, else return character as is
-char tolower(char c);
 
 #ifdef __cplusplus
 }   // extern C
