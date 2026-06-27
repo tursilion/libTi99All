@@ -51,9 +51,13 @@ extern void rlEnableBackfaceCulling(void);
 // to be the real thing.
 #undef exit
 
-#define SCREEN_W 240
-#define SCREEN_H 160
+#define SCREEN_W 256
+#define SCREEN_H 192
 #define RENDER_SCALE 4
+// GBA MODE4 (bitmap) scanline stride is fixed at 240 pixels by hardware.
+// The framebuffer is wider/taller; pixels outside the bitmap show backdrop.
+#define GBA_BITMAP_W 240
+#define GBA_BITMAP_H 160
 
 extern jmp_buf raylibRebootPoint;
 void raylibSoftReset(int n) {
@@ -200,10 +204,8 @@ static Color renderBuffer[SCREEN_H * RENDER_SCALE][SCREEN_W * RENDER_SCALE];
 
 static void compositeBG2Bitmap() {
     // MODE4 supports page flipping (REG_DISPCNT's PAGE2 bit) between the two
-    // 240x160 bitmap pages - win-sequence code (e.g. cruiserwin()) draws into
-    // the back page while the front page is shown, then flips. We were always
-    // reading page 0, so all of that drawing was invisible until whatever
-    // step copied/cleared back to page 0.
+    // GBA_BITMAP_W×GBA_BITMAP_H bitmap pages. Stride is GBA_BITMAP_W bytes
+    // per scanline regardless of the wider framebuffer.
     const u8 *vram = (const u8*)((REG_DISPCNT & PAGE2) ? BG_RAM_PAGE2 : BG_RAM_BASE);
     const u16 *pal = (const u16*)BG_PALETTE;
     // simple whole-screen darken (used for the fadeingfx()-style fade-in/out effect)
@@ -213,9 +215,20 @@ static void compositeBG2Bitmap() {
         if (dark < 0) dark = 0;
         if (dark > 16) dark = 16;
     }
-    for (int y = 0; y < SCREEN_H; ++y) {
-        for (int x = 0; x < SCREEN_W; ++x) {
-            Color c = gbaColor(pal[vram[y*SCREEN_W+x]]);
+    // Fill entire (wider/taller) framebuffer with backdrop first.
+    Color backdrop = gbaColor(pal[0]);
+    if (dark != 16) {
+        backdrop.r = (unsigned char)((backdrop.r * dark) / 16);
+        backdrop.g = (unsigned char)((backdrop.g * dark) / 16);
+        backdrop.b = (unsigned char)((backdrop.b * dark) / 16);
+    }
+    for (int y = 0; y < SCREEN_H; ++y)
+        for (int x = 0; x < SCREEN_W; ++x)
+            framebuffer[y][x] = backdrop;
+    // Overlay the GBA bitmap (GBA_BITMAP_W×GBA_BITMAP_H, stride=GBA_BITMAP_W).
+    for (int y = 0; y < GBA_BITMAP_H; ++y) {
+        for (int x = 0; x < GBA_BITMAP_W; ++x) {
+            Color c = gbaColor(pal[vram[y*GBA_BITMAP_W+x]]);
             if (dark != 16) {
                 c.r = (unsigned char)((c.r * dark) / 16);
                 c.g = (unsigned char)((c.g * dark) / 16);
@@ -358,9 +371,9 @@ static void compositeSprites() {
         int h = objDimH[shape][size];
 
         int sy = a0 & 0xff;
-        if (sy >= 256-h && sy >= 160) sy -= 256;
+        if (sy >= 256-h && sy >= SCREEN_H) sy -= 256;
         int sx = a1 & 0x1ff;
-        if (sx >= 512-w && sx >= 240) sx -= 512;
+        if (sx >= 512-w && sx >= SCREEN_W) sx -= 512;
 
         if (sy >= SCREEN_H || sy+h <= 0 || sx >= SCREEN_W || sx+w <= 0) continue;
 
