@@ -66,6 +66,8 @@ unsigned char check_reset() {
 
 #if defined(RAYLIB)
 
+#include <raylib.h>
+
 // GBA Version
 // TODO: do I want a dedicated reset sequence? Probably?
 

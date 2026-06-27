@@ -349,6 +349,8 @@ static const int objDimH[3][4] = {
     {16,32,32,64},  // shape 2 (tall) - heights
 };
 
+// %$%$32ing pcs. This many layers of emulation shouldn't even work. ;)
+extern int spriteClipY;
 static void compositeSprites() {
     const u16 *oam = (const u16*)OAM_BASE;
     const u8 *objTiles = (const u8*)SPR_RAM_BASE;
@@ -388,6 +390,7 @@ static void compositeSprites() {
         for (int py = 0; py < h; ++py) {
             int dy = sy+py;
             if ((unsigned)dy >= SCREEN_H) continue;
+            if ((unsigned)dy < spriteClipY) continue;
             int spy = vflip ? (h-1-py) : py;
             int tileRow = spy/8, rowInTile = spy%8;
             for (int px = 0; px < w; ++px) {
@@ -499,6 +502,7 @@ void raylibPresentFrame() {
     SetTextureFilter(screenTexture, isStretched ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
     BeginDrawing();
     ClearBackground(BLACK);
+    // we shouldn't be reaching into the app for this... though I suppose could make it a feature...
     if (isStretched) {
         float sw = (float)GetScreenWidth();
         float sh = (float)GetScreenHeight();
@@ -537,6 +541,7 @@ void raylibPresentFrame() {
         }
         rlSetTexture(0);
     } else {
+        // just copy it square
         Rectangle src = {0, 0, (float)screenTexture.width, (float)screenTexture.height};
         Rectangle dst = {0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()};
         DrawTexturePro(screenTexture, src, dst, (Vector2){0,0}, 0.0f, WHITE);
@@ -548,6 +553,7 @@ void raylibPresentFrame() {
     raylibCallUserInt();
 
     if (WindowShouldClose()) {
+        fprintf(stderr, "Window should close.\n");
         gbastopaudio();     // stop music stream before tearing down audio
         CloseAudioDevice(); // joins the audio thread cleanly
         CloseWindow();
