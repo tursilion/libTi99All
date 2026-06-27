@@ -51,8 +51,8 @@ extern void rlEnableBackfaceCulling(void);
 // to be the real thing.
 #undef exit
 
-#define SCREEN_W 256
-#define SCREEN_H 192
+#define SCREEN_W 192
+#define SCREEN_H 256
 #define RENDER_SCALE 4
 // GBA MODE4 (bitmap) scanline stride is fixed at 240 pixels by hardware.
 // The framebuffer is wider/taller; pixels outside the bitmap show backdrop.
@@ -226,8 +226,11 @@ static void compositeBG2Bitmap() {
         for (int x = 0; x < SCREEN_W; ++x)
             framebuffer[y][x] = backdrop;
     // Overlay the GBA bitmap (GBA_BITMAP_W×GBA_BITMAP_H, stride=GBA_BITMAP_W).
+    // Clamp x to SCREEN_W: if SCREEN_W < GBA_BITMAP_W the right edge is cropped;
+    // if SCREEN_W > GBA_BITMAP_W the extra columns were already filled with backdrop.
+    int blit_w = GBA_BITMAP_W < SCREEN_W ? GBA_BITMAP_W : SCREEN_W;
     for (int y = 0; y < GBA_BITMAP_H; ++y) {
-        for (int x = 0; x < GBA_BITMAP_W; ++x) {
+        for (int x = 0; x < blit_w; ++x) {
             Color c = gbaColor(pal[vram[y*GBA_BITMAP_W+x]]);
             if (dark != 16) {
                 c.r = (unsigned char)((c.r * dark) / 16);
