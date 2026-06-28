@@ -200,7 +200,6 @@ static inline Color gbaColor(u16 c) {
 }
 
 static Color framebuffer[SCREEN_H][SCREEN_W];
-static Color renderBuffer[SCREEN_H * RENDER_SCALE][SCREEN_W * RENDER_SCALE];
 
 static void compositeBG2Bitmap() {
     // MODE4 supports page flipping (REG_DISPCNT's PAGE2 bit) between the two
@@ -353,6 +352,7 @@ static const int objDimH[3][4] = {
 };
 
 // %$%$32ing pcs. This many layers of emulation shouldn't even work. ;)
+// NOTE: We are using the GBA scaling control bit as a sine bit for the new larger y axis
 extern int spriteClipY;
 static void compositeSprites() {
     const u16 *oam = (const u16*)OAM_BASE;
@@ -365,7 +365,7 @@ static void compositeSprites() {
         u16 a1 = oam[n*4+1];
         u16 a2 = oam[n*4+2];
 
-        int affine = a0 & 0x0100;
+        int affine = 0;     // a0 & 0x0100; (we are not using this flag anymore)
         int disable = a0 & 0x0200;
         if (!affine && disable) continue;   // hidden
 
@@ -375,8 +375,10 @@ static void compositeSprites() {
         int w = objDim[shape][size];
         int h = objDimH[shape][size];
 
-        int sy = a0 & 0xff;
-        if (sy >= 256-h && sy >= SCREEN_H) sy -= 256;
+        int sy = a0 & 0x1ff;    // extra bit used here for sign, instead of affine
+        //if (sy >= 256-h && sy >= SCREEN_H) sy -= 256;
+        if (sy&0x100) sy -= 512;
+
         int sx = a1 & 0x1ff;
         if (sx >= 512-w && sx >= SCREEN_W) sx -= 512;
 
@@ -462,7 +464,7 @@ static bool inited = false;
 static void initPresentation() {
     InitWindow(SCREEN_W * RENDER_SCALE, SCREEN_H * RENDER_SCALE, "Super Space Acer");
     SetTargetFPS(60);
-    Image img = GenImageColor(SCREEN_W * RENDER_SCALE, SCREEN_H * RENDER_SCALE, BLACK);
+    Image img = GenImageColor(SCREEN_W, SCREEN_H, BLACK);
     ImageFormat(&img, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
     screenTexture = LoadTextureFromImage(img);
     UnloadImage(img);
@@ -492,14 +494,7 @@ void raylibPresentFrame() {
     REG_KEYINPUT = keys;
 
     compositeFrame();
-    for (int y = 0; y < SCREEN_H; y++)
-        for (int x = 0; x < SCREEN_W; x++) {
-            Color c = framebuffer[y][x];
-            for (int dy = 0; dy < RENDER_SCALE; dy++)
-                for (int dx = 0; dx < RENDER_SCALE; dx++)
-                    renderBuffer[y*RENDER_SCALE+dy][x*RENDER_SCALE+dx] = c;
-        }
-    UpdateTexture(screenTexture, renderBuffer);
+    UpdateTexture(screenTexture, framebuffer);
 
     extern unsigned short isStretched;
     SetTextureFilter(screenTexture, isStretched ? TEXTURE_FILTER_BILINEAR : TEXTURE_FILTER_POINT);
