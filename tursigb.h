@@ -469,10 +469,17 @@ typedef     int                     bool;
 #define ROM_PREFETCH    0x4000
 
 // DMA3 based memcpy - max size is 32k - watch alignment!
+#ifndef RAYLIB
 void fastcopy16(u32 pDest, u32 pSrc, u32 nCount);
 void fastcopy(u32 pDest, u32 pSrc, u32 nCount);
 void fastset(u32 pDest, u32 value, u32 nCount);
 void fastset16(u32 pDest, u16 value, u32 nCount);
+#else
+void fastcopy16(void* pDest, void* pSrc, u32 nCount);
+void fastset16(void* pDest, u16 value, u32 nCount);
+void fastcopy(void* pDest, void* pSrc, u32 nCount);
+void fastset(void* pDest, u32 value, u32 nCount);
+#endif
 
 #endif
 

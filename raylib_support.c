@@ -107,13 +107,13 @@ void raylibInitHardware() {
 }
 
 // DMA-backed on real GBA, just real copies/fills here - no hardware to drive
-void fastcopy16(u32 pDest, u32 pSrc, u32 nCount) { memcpy((void*)(uintptr_t)pDest, (void*)(uintptr_t)pSrc, nCount); }
-void fastset16(u32 pDest, u16 value, u32 nCount) {
-    for (u32 i = 0; i < nCount; i += 2) *(u16*)(uintptr_t)(pDest+i) = value;
+void fastcopy16(void* pDest, void* pSrc, u32 nCount) { memcpy(pDest, pSrc, nCount); }
+void fastset16(void* pDest, u16 value, u32 nCount) {
+    for (u32 i = 0; i < nCount; i += 2) *(u16*)(pDest+i) = value;
 }
-void fastcopy(u32 pDest, u32 pSrc, u32 nCount) { memcpy((void*)(uintptr_t)pDest, (void*)(uintptr_t)pSrc, nCount); }
-void fastset(u32 pDest, u32 value, u32 nCount) {
-    for (u32 i = 0; i < nCount; i += 4) *(u32*)(uintptr_t)(pDest+i) = value;
+void fastcopy(void* pDest, void* pSrc, u32 nCount) { memcpy(pDest, pSrc, nCount); }
+void fastset(void* pDest, u32 value, u32 nCount) {
+    for (u32 i = 0; i < nCount; i += 4) *(u32*)(pDest+i) = value;
 }
 
 //*********************

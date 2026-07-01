@@ -2,14 +2,17 @@
 # No cross compiler, no bank switching, no linker scripts - this is a normal
 # flat-memory executable, just like CLASSIC99, but self-contained.
 
-RAYLIB_PREFIX=$(shell brew --prefix raylib 2>/dev/null || echo /usr/local)
+#RAYLIB_PREFIX=$(shell brew --prefix raylib 2>/dev/null || echo /usr/local)
+#RAYLIB_INCLUDE=$(RAYLIB_PREFIX)/include
+RAYLIB_PREFIX=/home/tursi/raylib/src/
+RAYLIB_INCLUDE=$(RAYLIB_PREFIX)
 
 CC=gcc
 AR=ar
 
 C_FLAGS=\
   -g -Wall -O2 -fsigned-char -std=gnu99 \
-  -DRAYLIB -DBUILD_GBA -DUSE_SN_PSG -I../ -I$(RAYLIB_PREFIX)/include
+  -DRAYLIB -DBUILD_GBA -DUSE_SN_PSG -I../ -I$(RAYLIB_INCLUDE)
 
 # extension on output files
 EXT=o
