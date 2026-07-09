@@ -206,6 +206,7 @@
     <ClCompile Include="grom_set_address.c" />
     <ClCompile Include="grom_writedata.c" />
     <ClCompile Include="joystfast.c" />
+    <ClCompile Include="keymeta.c" />
     <ClCompile Include="kscan.c" />
     <ClCompile Include="kscanfast.c" />
     <ClCompile Include="math_abs.c" />

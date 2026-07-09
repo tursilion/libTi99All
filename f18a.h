@@ -14,6 +14,11 @@ extern "C" {
 // all methods except detect_f18a() and unlock_f18a() require the F18A to be unlocked!
 // recommended to use detect_f18a() in preference to unlock_f18a() blindly.
 
+// A note on ECM palettes - there are 64 colors available in total. Palettes are indexed
+// as if they were 4 color palettes (even when using 8 color mode - in this case the LSB
+// is ignored). So the default 16 color palette is ECM palettes 0-3, and in 8 color mode
+// only 0 and 2 are meaningful.
+
 // return 1 if f18a is installed, else 0
 // corrupts VDP Register 1 if no F18A
 unsigned char detect_f18a();
@@ -39,7 +44,7 @@ void startgpu_f18a(unsigned int adr);
 void stopgpu_f18a();
 
 // extra F18A registers
-#define F18A_REG_SIT2           (unsigned char)0x0A	    // SIT2 - this value times >0400
+#define F18A_REG_SIT2           (unsigned char)0x0A	 // SIT2 - this value times >0400
 #define F18A_REG_CT2            (unsigned char)0x0B     // CT2 - this value times >0040
 #define F18A_REG_STATUS         (unsigned char)0x0F     // Status register to read
 #define F18A_REG_HINT           (unsigned char)0x13     // Horizontal interrupt line

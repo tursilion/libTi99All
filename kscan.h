@@ -95,6 +95,14 @@ extern volatile unsigned char KSCAN_STATUS;
 #define KSCAN_MODE_BASIC	5		// Normal 99/4A BASIC mode
 
 //*********************
+// KSCAN meta keys
+//*********************
+
+#define KEY_CTRL        0x04
+#define KEY_SHIFT       0x02
+#define KEY_FCTN        0x01
+
+//*********************
 // Joystick return values
 //*********************
 
@@ -120,6 +128,10 @@ unsigned char kscan(unsigned char mode);
 // Fire buttons are /not/ aliased to 'Q' and 'Y' on the keyboard. Returns key in KSCAN_KEY,
 // no status. Key is 0xff if none pressed.
 void kscanfast(unsigned char mode);
+
+// checks the keyboard meta keys - returns KEY_SHIFT, KEY_FCTN, and/or KEY_CTRL
+// multiple keys are OR'd together if they can be detected
+unsigned char keymeta(void);
 
 // read a joystick directly. 'unit' is either 1 or 2 for the joystick desired
 // returns data in KSCAN_JOYY and KSCAN_JOYX

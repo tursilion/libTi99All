@@ -589,6 +589,9 @@
     <ClCompile Include="vdp_scrnscrolldefault.c">
       <Filter>Source Files\vdp</Filter>
     </ClCompile>
+    <ClCompile Include="keymeta.c">
+      <Filter>Source Files\input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="crt0_coleco.assembly">

@@ -451,6 +451,49 @@ int main() {
 #endif
     }
 
+    {
+        unsigned char final = 0;
+        cprintf("\npress ctrl, alt and fctn\n");
+#ifdef GBA
+    gbaRender();
+#endif
+        while (final != (KEY_CTRL|KEY_FCTN|KEY_SHIFT)) {
+            if (keymeta()&KEY_CTRL) {
+                if ((final&KEY_CTRL) == 0) {
+                    final|=KEY_CTRL;
+                    cprintf("CTRL ");
+#ifdef GBA
+    gbaRender();
+#endif
+                }
+            }
+            if (keymeta()&KEY_SHIFT) {
+                if ((final&KEY_SHIFT) == 0) {
+                    final|=KEY_SHIFT;
+                    cprintf("SHIFT ");
+#ifdef GBA
+    gbaRender();
+#endif
+                }
+            }
+            if (keymeta()&KEY_FCTN) {
+                if ((final&KEY_FCTN) == 0) {
+                    final|=KEY_FCTN;
+                    cprintf("FCTN ");
+#ifdef GBA
+    gbaRender();
+#endif
+                }
+            }
+            VDP_SET_ADDRESS_WRITE(128);
+            faster_hexprint(final);
+        }
+        cprintf("\n");
+#ifdef GBA
+    gbaRender();
+#endif
+    }
+
     clrscr();
     for (int idx = 0; idx < 5; ++idx) {
         gotoxy(idx, idx);
