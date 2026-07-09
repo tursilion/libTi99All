@@ -95,12 +95,41 @@ extern volatile unsigned char KSCAN_STATUS;
 #define KSCAN_MODE_BASIC	5		// Normal 99/4A BASIC mode
 
 //*********************
-// KSCAN meta keys
+// KSCAN meta keys (kscan can not detect these)
 //*********************
 
 #define KEY_CTRL        0x04
 #define KEY_SHIFT       0x02
 #define KEY_FCTN        0x01
+
+//*********************
+// KSCAN control keys (future: these may differ by platform?)
+// note that only kscan() can return these, not kscanfast()
+// If you need the fast scan, use keymeta() to check for the
+// meta keys and modify as needed.
+//*********************
+
+#define KSCAN_NOKEY     0xff
+
+#define KEY_DELETE      0x03
+#define KEY_INSERT      0x04
+#define KEY_ERASE       0x07
+#define KEY_CLEAR       0x02
+#define KEY_BEGIN       0x0e
+#define KEY_PROCEED     0x0c
+#define KEY_AID         0x01
+#define KEY_REDO        0x06
+#define KEY_BACK        0x0f
+// QUIT can't be read via kscan, use check_reset() instead
+
+#define KEY_UP        0x0b
+#define KEY_DOWN      0x0a
+#define KEY_LEFT      0x08
+#define KEY_RIGHT     0x09
+
+#define KEY_ENTER       0x0d
+#define KEY_SPACE       0x20
+
 
 //*********************
 // Joystick return values
