@@ -8,6 +8,8 @@
 // NOTE: because this does not return the entire PAB back to you,
 // if you need data from the DSR other than the error byte
 // (ie: RECORD NUMBER), then you have to get it yourself!
+// NOTE: expect 1 more byte in VDP to be used if your name does not
+// contain a period!
 unsigned char dsrlnk(struct PAB *pab, unsigned int vdp) {
 	unsigned char x;
 
@@ -22,10 +24,16 @@ unsigned char dsrlnk(struct PAB *pab, unsigned int vdp) {
 	VDPWD(x);
 
 	// and the filename itself - note we assume 'x' is valid!
-	unsigned char *p = pab->pName;
-	while (x--) {
-		VDPWD(*(p++));
-	}
+	{ 
+        int hasDot = 0;
+        unsigned char *p = pab->pName;
+        while (x--) {
+            if (*p == '.') hasDot = 1;
+            VDPWD(*(p++));
+        }
+        // dsrlnkraw requires this to determine the device name length
+        if (!hasDot) VDPWD('.');
+    }
 
 	// now we can call it
 	if (dsrlnkraw(vdp)) {

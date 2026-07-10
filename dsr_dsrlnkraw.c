@@ -18,6 +18,7 @@
 
 // This returns an error (non-zero) only if the lookup fails 
 // - a DSR will return error codes in the PAB Status byte
+// not QUITE as raw as it should be. The DSR name MUST be '.' terminated - dsrlnk will do this.
 unsigned char __attribute__((noinline)) dsrlnkraw(unsigned int vdp) {
 	// modified version of the e/a DSRLNK, for data >8 (DSR) only
 	// this one does not modify data in low memory expansion so "boot tracking" there may not work.
