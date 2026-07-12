@@ -39,6 +39,8 @@ unsigned char dsrlnk(struct PAB *pab, unsigned int vdp) {
 	if (dsrlnkraw(vdp)) {
         return DSR_ERR_DSRNOTFOUND;
     }
+    
+    // otherwise we found a DSR, see if it returned an error in the PAB
     unsigned char ret = vdpreadchar(vdp+1);
     ret = GET_ERROR(ret);
     if (ret != 0) {

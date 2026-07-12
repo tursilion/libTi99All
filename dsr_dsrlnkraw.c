@@ -111,7 +111,7 @@ unsigned char __attribute__((noinline)) dsrlnkraw(unsigned int vdp) {
 	"       jmp alldn\n"
 	"axxx   seto r12                ; set tmp error flag\n"
 	"       jmp clnup               ; go back and restore\n"
-	"alldn  mov @>83f8,%0           ; get the error flag\n"
+	"alldn  mov @>83f8,%0           ; get the return flag (we stored in R12 in GPLWS)\n"
 
         : "=r" (ret)
 		: "r" (buf)
