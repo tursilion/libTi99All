@@ -373,6 +373,10 @@ void test_filesystem() {
     cprintf("(%d)\n", ret);
     cgetc();
 
+    cprintf("\nBad Sector read 5000... ");
+    ret = readsector("DSK1.", vdp, 5000, 0);
+    cprintf("(%d)\n", ret);
+
     // TODO - create it ourselves...
     // rename in root
     cputs("You need to create DSK1.DUMMYX...\n");

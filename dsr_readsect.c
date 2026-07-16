@@ -30,11 +30,6 @@ unsigned char readsector(const char *szPath, unsigned int vdp, unsigned int sect
         return DSR_ERR_DSRNOTFOUND;
     }
 
-    if (SBR_CODE != 0) {
-        // then an error occured and not all sectors were written
-        return DSR_ERR_DEVICEERROR;
-    }
-
     return sbr_error_check(szPath);
 }
 
