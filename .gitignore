@@ -14,3 +14,9 @@
 *.bin
 *.elf
 .vs/
+buildclassic99
+buildti
+example
+testlib
+debug
+libti99ALL1

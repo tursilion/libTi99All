@@ -5,6 +5,7 @@
 #include "speech.h"
 #include "f18a.h"
 #include "system.h"
+#include "files.h"
 
 unsigned char helloworldraw[] = {
   0xF3,0x48,0xCD,0xC9 ,0xC9 ,0x57 ,0x70 ,0xF6 ,0xF7 
@@ -349,6 +350,125 @@ void test_compiler() {
 
 }
 
+void test_filesystem() {
+#ifdef TI99
+    // TODO: should also test DSRLNK...
+    unsigned char infobuf[14];  // 10 bytes on TI, but up to 14 on some extended
+
+	cputs("\n\nTest SBRLNK on DSK1? (Y/N)");
+	for(;;) {
+		kscan(KSCAN_MODE_BASIC);
+		if ((KSCAN_KEY == 'Y')||(KSCAN_KEY=='N')||(KSCAN_KEY=='1')||(KSCAN_KEY=='0')) break;
+	}
+	if ((KSCAN_KEY != 'Y')&&(KSCAN_KEY!='1')) {
+        return;
+    }
+
+    // all buffers will be here
+    int vdp = 0x2000;
+    cprintf("\nSector read 0... ");
+    unsigned char ret = readsector("DSK1.", vdp, 0, 0);
+    cprintf("(%d), 1... ", ret);
+    ret = readsector("DSK1.", vdp+256, 1, 0);
+    cprintf("(%d)\n", ret);
+    cgetc();
+
+    // TODO - create it ourselves...
+    // rename in root
+    cputs("You need to create DSK1.DUMMYX...\n");
+    cgetc();
+    cputs("Rename to DSK1.DUMMYY... ");
+    ret = dsr_renamefile("DSK1.DUMMYX", vdp, "DUMMYY", 0, 0);
+    cprintf("(%d)\n", ret);
+    cgetc();
+
+    cputs("You need to create DSK1.DUMMYLONGLONG...\n");
+    cgetc();
+    cputs("Rename to DSK1.DUMMYLONGERLONGER... ");
+    ret = dsr_renamefile("DSK1.DUMMYLONGLONG", vdp, "DUMMYLONGERLONGER", 0, 0);
+    cprintf("(%d)\n", ret);
+    cgetc();
+
+    // subdirectory stuff is iffy at best... 
+
+    // rename directory in root
+    cputs("You need to create directory DSK1.DUMDIR...\n");
+    cgetc();
+    cputs("Rename to DSK1.DUMDIRECT... ");
+    ret = dsr_renamefile("DSK1.DUMDIR", vdp, "DUMDIRECT", 0, 1);
+    cprintf("(%d)\n", ret);
+    cgetc();
+
+    cputs("You need to create directory DSK1.DUMLONGERDIR...\n");
+    cgetc();
+    cputs("Rename to DSK1.DUMDIRECTLONG... ");
+    ret = dsr_renamefile("DSK1.DUMLONGERDIR", vdp, "DUMDIRECTLONG", 0, 1);
+    cprintf("(%d)\n", ret);
+    cgetc();
+
+    // rename file in subdirectory
+    cputs("You need to create DSK1.DUMDIRECT.DUMMYX...\n");
+    cgetc();
+    cputs("Rename to DSK1.DUMDIRECT.DUMMYY... ");
+    ret = dsr_renamefile("DSK1.DUMDIRECT.DUMMYX", vdp, "DUMMYY", 1, 0);
+    cprintf("(%d)\n", ret);
+    cgetc();
+
+    cputs("You need to create DSK1.DUMDIRECT.DUMMYLONGLONG...\n");
+    cgetc();
+    cputs("Rename to DSK1.DUMDIRECT.DUMMYLONGERLONGER... ");
+    ret = dsr_renamefile("DSK1.DUMDIRECT.DUMMYLONGLONG", vdp, "DUMMYLONGERLONGER", 1, 0);
+    cprintf("(%d)\n", ret);
+    cgetc();
+
+    // rename directory in directory
+    cputs("You need to create directory DSK1.DUMDIRECT.DUMDIR...\n");
+    cgetc();
+    cputs("Rename to DSK1.DUMDIRECT.DUMDIRECT... ");
+    ret = dsr_renamefile("DSK1.DUMDIRECT.DUMDIR", vdp, "DUMDIRECT", 1, 1);
+    cprintf("(%d)\n", ret);
+    cgetc();
+
+    cputs("You need to create directory DSK1.DUMDIRECT.DUMLONGERDIR...\n");
+    cgetc();
+    cputs("Rename to DSK1.DUMDIRECT.DUMDIRECTLONG... ");
+    ret = dsr_renamefile("DSK1.DUMDIRECT.DUMLONGERDIR", vdp, "DUMDIRECTLONG", 1, 1);
+    cprintf("(%d)\n", ret);
+    cgetc();
+
+    // test file input
+    cputs("You need to create small TI file DSK1.DUMTEST...\n");
+    cgetc();
+    cprintf("Read info to 0x%04X... ", SBR_DEFAULT_INFO_ADR);
+    ret = readfilesect("DSK1.DUMTEST", vdp, vdp+0x80, 0, 0, 0);
+    memcpy(infobuf, (char*)SBR_DEFAULT_INFO_ADR, sizeof(infobuf)); // save it off for later restore
+    cprintf("(%d)\n", ret);
+    cgetc();
+    cputs("Read first two sectors to VDP@>2080... ");
+    ret = readfilesect("DSK1.DUMTEST", vdp, vdp+0x80, 0, 2, 0);
+    cprintf("(%d)\n", ret);
+    cgetc();
+
+    cputs("Attempting to copy first two sectors to DSK1.DUMTESTLONGER...");
+    memcpy((char*)SBR_DEFAULT_INFO_ADR, infobuf, sizeof(infobuf)); // restore info data
+    ret = writefilesect("DSK1.DUMTESTLONGER", vdp, vdp+0x80, 0, 0, 0);
+    cprintf("(%d)", ret);
+    ret = writefilesect("DSK1.DUMTESTLONGER", vdp, vdp+0x80, 0, 2, 0);
+    cprintf("(%d)\n", ret);
+    cgetc();
+
+    cputs("Create directory DSK1.DUMDIRT... ");
+    ret = dsr_mkdir("DSK1.DUMDIRT", vdp);
+    cprintf("(%d)\n", ret);
+    cgetc();
+
+    cputs("Try to delete it... ");
+    ret = dsr_rmdir("DSK1.DUMDIRT", vdp);
+    cprintf("(%d)\n", ret);
+    cgetc();
+#endif
+}
+
 int main() {
 	int f18 = 0;
 
@@ -373,6 +493,7 @@ int main() {
 	if ((KSCAN_KEY == 'Y')||(KSCAN_KEY=='1')) f18=1;
 	
 	test_compiler();
+    test_filesystem();
     testBitmapMode();
 
  	set_text();

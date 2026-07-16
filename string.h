@@ -25,6 +25,10 @@ char *strncpy(char *d, const char *s, int len);
 // compare two zero-terminated strings, return >0 if s1 is greater,
 // <0 if s2 is greater, or 0 if the strings are equal
 int strcmp(const char *s1, const char *s2);
+// same, but case insensitive
+int stricmp(const char *s1, const char *s2);
+// case insensitive and limited
+int strnicmp(const char *s1, const char *s2, int n);
 
 // compare two memory blocks, return >0 if s1 is greater,
 // <0 if s2 is greater, or 0 if the blocks are equal

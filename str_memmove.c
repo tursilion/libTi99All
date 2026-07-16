@@ -1,6 +1,8 @@
 // String code for the TI-99/4A by Tursi
 // You can copy this file and use it at will ;)
 
+#include "string.h"
+
 // needs to copy in the right direction to be overlap safe
 void *memmove(void *dest, const void *src, int cnt) {
     char *d = (char*)dest;
@@ -11,7 +13,7 @@ void *memmove(void *dest, const void *src, int cnt) {
         return dest;
     }
 
-    if ((d < s-1)||(s+cnt < d)) {
+    if ((d < s)||(s+cnt < d)) {
         return memcpy(dest, src, cnt);
     }
 

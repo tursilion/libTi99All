@@ -19,6 +19,7 @@
 // This returns an error (non-zero) only if the lookup fails 
 // - a DSR will return error codes in the PAB Status byte
 // not QUITE as raw as it should be. The DSR name MUST be '.' terminated - dsrlnk will do this.
+// nameoffset must be 8 for DSR or 10 for SBR
 unsigned char __attribute__((noinline)) dsrlnkraw(unsigned int vdp) {
 	// modified version of the e/a DSRLNK, for data >8 (DSR) only
 	// this one does not modify data in low memory expansion so "boot tracking" there may not work.
@@ -46,13 +47,12 @@ unsigned char __attribute__((noinline)) dsrlnkraw(unsigned int vdp) {
 	}
 	// save off the device name length (asm below uses it!)
 	DSR_LEN_COUNT=cnt;
-
-	unsigned int CRU = 0;
-	DSR_NAME_LEN = cnt;
 	++cnt;
 	DSR_PAB_POINTER += cnt;
 
-	// TODO: we could rewrite the rest of this in C, just adding support for SBO, SBZ and the actual call which
+    unsigned int CRU = 0;
+    
+    // TODO: we could rewrite the rest of this in C, just adding support for SBO, SBZ and the actual call which
 	// needs to be wrapped with LWPI....
 	__asm__ volatile (
 	"		ai r10,-34				; make stack room to save workspace & zero word\n"
@@ -78,7 +78,7 @@ unsigned char __attribute__((noinline)) dsrlnkraw(unsigned int vdp) {
 	"       li   r2,0x4000			; read card header bytes\n"
 	"       cb   *r2,@dsrdat		; >aa = header\n"
 	"       jne  a2310				; no: loop back for next card\n"
-	"       ai   r2,8            	; offset (contains the data statement, so 8 for a device, for >4008)\n"
+    "       ai   r2,8               ; offset (contains the data statement, so 8 for a device, for >4008)\n"
 	"       jmp  a2340				; always jump into the loop from here\n"
 	"a233a  mov  @0x83d2,r2         ; next sub\n"
 	"       jeq  a2310              ; if no pointer, link back to get next card\n"

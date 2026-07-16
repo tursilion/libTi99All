@@ -27,7 +27,9 @@ LDFLAGS_EA5=\
 
 # specific assembly files
 OBJECT_LIST_TIASM=\
-  vdp_bmasmdrawlinefast.$(EXT)
+  vdp_bmasmdrawlinefast.$(EXT)  \
+  dsr_scratchloaderDesktop.$(EXT)   \
+  dsr_xbloaderDesktop.$(EXT)
 
 # crt replacement functions (SDCC has better ones)
 OBJECT_LIST_CRT=\
@@ -36,6 +38,8 @@ OBJECT_LIST_CRT=\
   str_memmove.$(EXT) \
   str_memset.$(EXT) \
   str_strcmp.$(EXT)	\
+  str_stricmp.$(EXT)	\
+  str_strnicmp.$(EXT)	\
   str_strcpy.$(EXT) \
   str_strlen.$(EXT)	\
   str_strncpy.$(EXT) \

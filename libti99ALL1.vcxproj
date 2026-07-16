@@ -185,7 +185,18 @@
     <ClCompile Include="dsr_dsrlnk.c" />
     <ClCompile Include="dsr_dsrlnkraw.c" />
     <ClCompile Include="dsr_files.c" />
+    <ClCompile Include="dsr_getsbrbase.c" />
     <ClCompile Include="dsr_gpldsrlnk.c" />
+    <ClCompile Include="dsr_mkdir.c" />
+    <ClCompile Include="dsr_readfilesect.c" />
+    <ClCompile Include="dsr_readsect.c" />
+    <ClCompile Include="dsr_renamefile.c" />
+    <ClCompile Include="dsr_sbrerrorcheck.c" />
+    <ClCompile Include="dsr_sbrlnk.c" />
+    <ClCompile Include="dsr_setpath.c" />
+    <ClCompile Include="dsr_writefilename.c" />
+    <ClCompile Include="dsr_writefilesect.c" />
+    <ClCompile Include="dsr_writesect.c" />
     <ClCompile Include="example.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -253,8 +264,10 @@
     <ClCompile Include="str_memset.c" />
     <ClCompile Include="str_strcmp.c" />
     <ClCompile Include="str_strcpy.c" />
+    <ClCompile Include="str_stricmp.c" />
     <ClCompile Include="str_strlen.c" />
     <ClCompile Include="str_strncpy.c" />
+    <ClCompile Include="str_strnicmp.c" />
     <ClCompile Include="str_tolower.c" />
     <ClCompile Include="str_uint2hex.c" />
     <ClCompile Include="str_uint2str.c" />
@@ -342,6 +355,8 @@
     <None Include="crt0_sms.assembly">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </None>
+    <None Include="dsr_scratchloaderDesktop.assembly" />
+    <None Include="dsr_xbloaderDesktop.assembly" />
     <None Include="Makefile">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>

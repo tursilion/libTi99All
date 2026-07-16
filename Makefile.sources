@@ -27,6 +27,17 @@ OBJECT_LIST=\
   dsr_dsrlnk.$(EXT)		\
   dsr_dsrlnkraw.$(EXT)	\
   dsr_files.$(EXT)		\
+  dsr_getsbrbase.$(EXT)	    \
+  dsr_mkdir.$(EXT)      \
+  dsr_readfilesect.$(EXT) \
+  dsr_readsect.$(EXT)   \
+  dsr_renamefile.$(EXT)  \
+  dsr_sbrerrorcheck.$(EXT)	    \
+  dsr_sbrlnk.$(EXT)	    \
+  dsr_setpath.$(EXT)    \
+  dsr_writefilename.$(EXT) \
+  dsr_writesect.$(EXT)  \
+  dsr_writefilesect.$(EXT) \
   f18a_detect.$(EXT)	\
   f18a_loadpal.$(EXT)	\
   f18a_lock.$(EXT)		\

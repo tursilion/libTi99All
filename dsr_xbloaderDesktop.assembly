@@ -1,0 +1,97 @@
+;* load an xb program - pointer to filename in r1, xb gpl start address in r2
+;* void xbld(const char *pfn, unsigned int nstart)
+;* based on ros code by gary bowser - thanks!
+        def dsr_xbld
+
+dsr_xbld
+       mov r2,r3              save off XB start address
+       mov  r1,r0             source is the string
+       clr r2                 calc length
+op0ln2       
+       movb *r1+,r8           test for zero
+       jeq op0ln
+       inc r2
+       jmp op0ln2
+op0ln       
+       li   r1,intpab         dest is the int buffer
+       swpb r2
+       movb r2,*r1+           length byte
+       swpb r2                back to using it to count
+op0bn3 movb *r0+,*r1+         move a word of the fake pab
+       dec  r2                check if finished
+       jne  op0bn3            nope, so move some more
+       li   r1,intld          point to the int loader (our space)
+       mov  *r1+,r0           get location to inloc (destination)
+       mov  *r1+,r2           get the length of the code
+op0bn4 mov  *r1+,*r0+         move a word of the loader
+       dect r2                check if finished
+       jne  op0bn4            nope, so move some more
+       mov  @0x8370,r1         save vdp ram size
+       li   r0,0x8320          point to the top of cpu pad (after our ws)
+       li   r2,224            max. length of the cpu pad
+op0bn5 clr  *r0+              clear a word of the cpu pad
+       dect r2                check if finished
+       jne  op0bn5            nope, so clear some more
+       mov  r1,@0x8370         restore vdp ram size
+       li   r1,0x9e80          reset the stacks to 0x839e & 0x8380
+       mov  r1,@0x8372         reset the gpl stacks pointers
+       li   r0,0xe000          xb default r1
+       movb r0,@0x83d4         tell os what vdp reg 1 is set to
+       li   r8,0x2048          point to the top of xb command area
+       movb r8,@0x8c02
+       swpb r8
+       movb r8,@0x8c02
+       li   r2,360            max.  length of the xb command area
+op0bn6 clr  @0x8c00            clear a byte of the xb command area
+       dec  r2                check if finished
+       jne  op0bn6            nope, so clear some more
+       li   r0,inloc+0x3C      cpu location of our single-stepper
+       mov  r0,@0x83c4         tell the os to run our code too!
+       movb r3,@0x9c02
+       swpb r3
+       movb r3,@0x9c02         set grom address
+       lwpi 0x83e0             load the gpl workspace
+       li   r13,0x9800         grom read data
+       li   r14,0x0108         gpl/os system flags
+       li   r15,0x8c02         vdp write address
+       b    @0x006a            start execution of the xb module from current gpl address
+;*
+;* 0xf000 xb int loader
+;*
+inloc  equ  0x3300             where to move the code
+intld  data inloc,inted       data for this relocode
+intcd  data >ff00        00-01   r00    (byte -1)
+       lwpi 0x83e0       02-05   r01/02 (not used) / (not used)
+       b    @0x006a      06-09   r03/04 (not used) / (not used)
+       data 0x2908       0a-0b   r05    points to the d in vdp pab
+       data 0x2048       0c-0d   r06    points to the len in vdp pab
+       data inloc+0x1c   0e-0f   r07    points to the len in cpu pab
+       data 0x6495       10-11   r08    address after the xb pab mov
+       data 0x83c4       12-13   r09    address of user int vector
+       data 0x8800       14-15   r10    vdp read  data address
+       data 0x8c00       16-17   r11    vdp write data address
+       data 0x8c02       18-19   r12    vdp write address
+       data 0x9c02       1a-1b   r13    grm write address
+intpab bss  32           1c-3b   r14/15 pab length / pab d check
+myint  lwpi inloc        load the our interrupt workspace
+       movb r5,*r12      setup lsbyte of vdp address 0x0829 (confirmed still okay in rxb2025)
+       swpb r5           swap bytes to get 0x08 in the msbyte
+       movb r5,*r12      write the msbyte of the vdp address
+       swpb r5           restore r5 back to 0x2908
+       cb   *r10,@intpab+1     check if xb has written dsk1.load
+       jne  myint1       nope, so try again next 1/60 second
+       movb r6,*r12      yep!, so setup vdp address to 0x0820
+       swpb r6           swap bytes to get 0x48 in the msbyte
+       movb r6,*r12      write the msbyte of the vdp address
+       swpb r6           restore r6 back to 0x2048
+myint0 movb *r7+,*r11    write a byte of the new path
+       ab   r0,r14       check if finished (weve guaranteed already written the first byte)
+       joc  myint0       nope, so write some more
+       movb r8,*r13      reset to just after the xb move (also seems still okay in rxb2025)
+       swpb r8           swap bytes to get the lsbyte
+       movb r8,*r13      finish writing the grom address
+       clr  *r9          done, tell os to forget us now!!!
+myint1 lwpi 0x83e0       load back the gpl workspace
+       rt                return to the console o.s.
+inted  equ  $-intcd      use to calc size of above code
+
