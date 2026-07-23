@@ -6,6 +6,7 @@
 #include "f18a.h"
 #include "system.h"
 #include "files.h"
+#include "string.h"
 
 unsigned char helloworldraw[] = {
   0xF3,0x48,0xCD,0xC9 ,0xC9 ,0x57 ,0x70 ,0xF6 ,0xF7 

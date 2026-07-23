@@ -206,7 +206,7 @@ unsigned char dsr_writefilename(const char *szPath, unsigned int vdp, int bTest)
 // VDP address to use as a name buffer, separate one for data buffer
 // first sector to read
 // number of sectors to read - if 0 then first is ignored, and the file information is generated instead
-// buf is the CPU buffer for the info block (if NULL, will be placed at 0x8352). It's up to 14 bytes on some hardware
+// info is the CPU buffer for the info block (if NULL, will be placed at 0x8352). It's up to 14 bytes on some hardware
 unsigned char readfilesect(const char *szPath, unsigned int vdppath, unsigned int vdpdata, unsigned int start, unsigned int count, char *info);
 
 // Path to the file (LFN will be used if longer than 10 characters)
